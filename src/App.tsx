@@ -22,6 +22,10 @@ import VehicleType from "./pages/Vehicle/VehicleType";
 import Users from "./pages/Users";
 import OrderListing from "./pages/OrderListing";
 
+import Deliveries from './components/dashboard/Deliveries';
+import Earnings from './components/dashboard/Earnings';
+import Riders from './components/dashboard/Riders';
+
 export default function App() {
   return (
     <>
@@ -31,6 +35,11 @@ export default function App() {
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             <Route index path="/" element={<Home />} />
+
+            <Route path="/deliveries" element={<Deliveries />} />
+            <Route path="/earnings" element={<Earnings />} />
+            <Route path="/riders" element={<Riders />} />
+
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
