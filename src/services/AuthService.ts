@@ -45,7 +45,7 @@ const AuthService: AuthServiceType = {
         // Store token and user data
         localStorage.setItem('token', result.data.token);
         localStorage.setItem('user', JSON.stringify(result.data.admin));
-        toastHelper.success(result.message || 'Login successful!');
+        toastHelper.showTost(result.message || 'Login successful!', 'success');
         return result;
       } else {
         toastHelper.showTost(result.message || 'Login failed', 'warning');
