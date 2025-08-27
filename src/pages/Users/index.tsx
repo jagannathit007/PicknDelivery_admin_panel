@@ -421,7 +421,7 @@ function UserTable() {
                       <div className="flex items-center space-x-4">
                         <div className="relative">
                           <img
-                            src={customer.image ? imageBaseUrl + '/' + customer.image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu2XUjKXh-LnMkWDgqaXlVXJ6dJTfLBxIbnQ&s"}
+                            src={imageBaseUrl ? imageBaseUrl + '/' + customer.image : "https://via.placeholder.com/48x48?text=No+Image"}
                             alt={customer.name}
                             className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
                           />

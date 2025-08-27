@@ -11,7 +11,16 @@ interface APIEndpoints {
     GET_ALL_USERS: string;
     UPDATE_USER: string;
     DELETE_USER: string;
-  }
+  };
+  RIDERS: {
+    GET_ALL_RIDERS: string;
+    CREATE_RIDER: string;
+    GET_RIDER: string;
+    DELETE_RIDER: string;
+  };
+  VEHICLE_TYPES: {
+    GET_ALL_VEHICLE_TYPES: string;
+  };
 }
 
 const API_ENDPOINTS: APIEndpoints = {
@@ -21,6 +30,15 @@ const API_ENDPOINTS: APIEndpoints = {
     GET_ALL_USERS: `${ADMIN_API_BASE_URL}/get-customers`,
     UPDATE_USER: `${ADMIN_API_BASE_URL}/save-customer`,
     DELETE_USER: `${ADMIN_API_BASE_URL}/delete-customer`,
+  },
+  RIDERS: {
+    GET_ALL_RIDERS: `${ADMIN_API_BASE_URL}/get-riders`,
+    CREATE_RIDER: `${ADMIN_API_BASE_URL}/create-rider`,
+    GET_RIDER: `${ADMIN_API_BASE_URL}/get-rider`,
+    DELETE_RIDER: `${ADMIN_API_BASE_URL}/delete-rider`,
+  },
+  VEHICLE_TYPES: {
+    GET_ALL_VEHICLE_TYPES: `${ADMIN_API_BASE_URL}/get-vehicle-types`,
   },
 };
 

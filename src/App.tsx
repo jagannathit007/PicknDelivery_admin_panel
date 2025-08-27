@@ -21,6 +21,7 @@ import Vehicle from "./pages/Vehicle/Vehicle";
 import VehicleType from "./pages/Vehicle/VehicleType";
 import Users from "./pages/Users";
 import OrderListing from "./pages/OrderListing";
+import Riders from "./pages/Riders";
 
 export default function App() {
   return (
@@ -46,6 +47,9 @@ export default function App() {
 
             {/* Users */}
             <Route path="/users" element={<Users />} />
+
+            {/* Riders */}
+            <Route path="/riders" element={<Riders />} />
 
             {/* order listing */}
             <Route path="/order-listing" element={<OrderListing />} />

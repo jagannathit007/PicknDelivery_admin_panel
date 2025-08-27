@@ -42,7 +42,7 @@ export default function CustomerModal({
         isActive: customer.isActive,
       });
       if (customer.image) {
-        setImagePreview(customer.image);
+        setImagePreview( imageBaseUrl + '/' + customer.image);
       }
     } else {
       setFormData({
@@ -149,7 +149,7 @@ export default function CustomerModal({
               <div className="mt-2 flex items-center space-x-4">
                 <div className="relative">
                   <img
-                    src={imagePreview ? `${imageBaseUrl}/${imagePreview}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu2XUjKXh-LnMkWDgqaXlVXJ6dJTfLBxIbnQ&s"}
+                    src={imagePreview ? imagePreview : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu2XUjKXh-LnMkWDgqaXlVXJ6dJTfLBxIbnQ&s"}
                     alt="Profile"
                     className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
                   />
