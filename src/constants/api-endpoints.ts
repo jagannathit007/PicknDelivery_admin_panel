@@ -9,11 +9,25 @@ interface APIEndpoints {
   AUTH: {
     LOGIN: string;
   };
+  VEHICLE:{
+    CREATE_VEHICLE: string;
+    GET_VEHICLES: string;
+    GET_VEHICLE: string;
+    UPDATE_VEHICLE: string;
+    DELETE_VEHICLE: string;
+  }
 }
 
 const API_ENDPOINTS: APIEndpoints = {
   AUTH: {
     LOGIN: `${ADMIN_API_BASE_URL}/login`,
+  },
+  VEHICLE: {
+    CREATE_VEHICLE: `${ADMIN_API_BASE_URL}/create-vehicle-type`,
+    GET_VEHICLES: `${ADMIN_API_BASE_URL}/get-vehicle-types`,
+    GET_VEHICLE: `${ADMIN_API_BASE_URL}/get-vehicle-type`,
+    UPDATE_VEHICLE: `${ADMIN_API_BASE_URL}/update-vehicle-type`,
+    DELETE_VEHICLE: `${ADMIN_API_BASE_URL}/delete-vehicle-type`,
   },
 };
 
