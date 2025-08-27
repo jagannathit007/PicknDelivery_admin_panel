@@ -176,7 +176,7 @@ const RiderService: RiderServiceType = {
         }
       );
       const result = response.data;
-      if (result.status === 200) {
+      if (result.status === 200 && result.data) {
         toastHelper.showTost(result.message || 'Rider saved successfully!', 'success');
         return result;
       } else {
@@ -198,7 +198,7 @@ const RiderService: RiderServiceType = {
         { _id: id }
       );
       const result = response.data;
-      if (result.status === 200) {
+      if (result.status === 200 && result.data) {
         toastHelper.showTost(result.message || 'Rider deleted successfully!', 'success');
         return result;
       } else {
@@ -220,7 +220,7 @@ const RiderService: RiderServiceType = {
         { _id: id }
       );
       const result = response.data;
-      if (result.status === 200) {
+      if (result.status === 200 && result.data) {
         return result;
       } else {
         toastHelper.showTost(result.message || 'Failed to fetch rider', 'warning');

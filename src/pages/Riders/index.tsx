@@ -22,6 +22,7 @@ import {
 import RiderService, { Rider, RiderPayload } from "../../services/RiderService";
 import RiderModal from "../../components/common/RiderModal";
 import toastHelper from "../../utils/toastHelper";
+import Swal from "sweetalert2";
 
 interface SortConfig {
   key: keyof Rider | null;
@@ -59,7 +60,7 @@ function RiderTable() {
         limit: itemsPerPage,
         search,
       });
-      
+
       if (response && response.data) {
         setRiders(response.data.docs);
         setTotalPages(response.data.totalPages);
@@ -111,20 +112,21 @@ function RiderTable() {
       const matchesSearch =
         rider.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         rider.mobile.includes(searchTerm) ||
-        (rider.emailId && rider.emailId.toLowerCase().includes(searchTerm.toLowerCase()));
+        (rider.emailId &&
+          rider.emailId.toLowerCase().includes(searchTerm.toLowerCase()));
 
       const matchesStatus =
-        statusFilter === "All" || 
+        statusFilter === "All" ||
         (statusFilter === "Active" && rider.isActive) ||
         (statusFilter === "Inactive" && !rider.isActive);
-      
+
       const matchesVerified =
-        verifiedFilter === "All" || 
+        verifiedFilter === "All" ||
         (verifiedFilter === "Yes" && rider.isVerified) ||
         (verifiedFilter === "No" && !rider.isVerified);
 
       const matchesDuty =
-        dutyFilter === "All" || 
+        dutyFilter === "All" ||
         (dutyFilter === "On Duty" && rider.isDuty) ||
         (dutyFilter === "Off Duty" && !rider.isDuty);
 
@@ -139,8 +141,10 @@ function RiderTable() {
 
         // Handle undefined values
         if (aValue === undefined && bValue === undefined) return 0;
-        if (aValue === undefined) return sortConfig.direction === "ascending" ? 1 : -1;
-        if (bValue === undefined) return sortConfig.direction === "ascending" ? -1 : 1;
+        if (aValue === undefined)
+          return sortConfig.direction === "ascending" ? 1 : -1;
+        if (bValue === undefined)
+          return sortConfig.direction === "ascending" ? -1 : 1;
 
         // Special handling for date sorting
         if (sortConfig.key === "createdAt" || sortConfig.key === "updatedAt") {
@@ -167,11 +171,17 @@ function RiderTable() {
     }
 
     return filtered;
-  }, [riders, searchTerm, sortConfig, statusFilter, verifiedFilter, dutyFilter]);
+  }, [
+    riders,
+    searchTerm,
+    sortConfig,
+    statusFilter,
+    verifiedFilter,
+    dutyFilter,
+  ]);
 
   // Handle rider save (create/update)
   const handleSaveRider = async (riderData: RiderPayload) => {
-    console.log(riderData);
     setIsSaving(true);
     try {
       const response = await RiderService.saveRider(riderData);
@@ -189,13 +199,17 @@ function RiderTable() {
 
   // Handle rider delete
   const handleDeleteRider = async (riderId: string) => {
-    const confirmed = await new Promise<boolean>((resolve) => {
-      toastHelper.warning("Are you sure you want to delete this rider?");
-      // Note: This is a simplified confirmation. In a real app, you'd use a proper confirmation dialog
-      resolve(window.confirm("Are you sure you want to delete this rider?"));
+    const confirmed = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      cancelButtonText: "No, cancel!",
+
+      confirmButtonText: "Yes, delete it!",
     });
 
-    if (!confirmed) return;
+    if (!confirmed.isConfirmed) return;
 
     setIsDeleting(true);
     try {
@@ -244,44 +258,60 @@ function RiderTable() {
         <div className="bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Total Riders</p>
-              <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">{totalDocs}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Total Riders
+              </p>
+              <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                {totalDocs}
+              </p>
             </div>
             <div className="p-2 bg-blue-50 dark:bg-blue-500/10 rounded-lg">
               <FaMotorcycle className="text-blue-600 dark:text-blue-400 text-xl" />
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Active Riders</p>
-              <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">{activeRiders}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Active Riders
+              </p>
+              <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                {activeRiders}
+              </p>
             </div>
             <div className="p-2 bg-green-50 dark:bg-green-500/10 rounded-lg">
               <FaCheckCircle className="text-green-600 dark:text-green-400 text-xl" />
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Verified Riders</p>
-              <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">{verifiedRiders}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Verified Riders
+              </p>
+              <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                {verifiedRiders}
+              </p>
             </div>
             <div className="p-2 bg-purple-50 dark:bg-purple-500/10 rounded-lg">
               <FaIdCard className="text-purple-600 dark:text-purple-400 text-xl" />
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">On Duty</p>
-              <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">{onDutyRiders}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                On Duty
+              </p>
+              <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                {onDutyRiders}
+              </p>
             </div>
             <div className="p-2 bg-orange-50 dark:bg-orange-500/10 rounded-lg">
               <FaClock className="text-orange-600 dark:text-orange-400 text-xl" />
@@ -324,7 +354,7 @@ function RiderTable() {
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
-              
+
               <select
                 value={verifiedFilter}
                 onChange={(e) => {
@@ -371,7 +401,7 @@ function RiderTable() {
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
                   Rider
                 </th>
-                <th 
+                <th
                   className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
                   onClick={() => handleSort("name")}
                 >
@@ -386,7 +416,7 @@ function RiderTable() {
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
                   Vehicle
                 </th>
-                <th 
+                <th
                   className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
                   onClick={() => handleSort("createdAt")}
                 >
@@ -395,7 +425,7 @@ function RiderTable() {
                     {getSortIcon("createdAt")}
                   </div>
                 </th>
-                <th 
+                <th
                   className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
                   onClick={() => handleSort("isActive")}
                 >
@@ -446,7 +476,11 @@ function RiderTable() {
                       <div className="flex items-center">
                         <div className="relative">
                           <img
-                            src={rider.image ? imageBaseUrl + '/' + rider.image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu2XUjKXh-LnMkWDgqaXlVXJ6dJTfLBxIbnQ&s"}
+                            src={
+                              rider.image
+                                ? imageBaseUrl + "/" + rider.image
+                                : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu2XUjKXh-LnMkWDgqaXlVXJ6dJTfLBxIbnQ&s"
+                            }
                             alt={rider.name}
                             className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-700"
                           />
@@ -458,7 +492,7 @@ function RiderTable() {
                         </div>
                       </div>
                     </td>
-                    
+
                     <td className="px-4 py-3">
                       <div className="font-medium text-gray-800 dark:text-white/90 text-sm">
                         {rider.name}
@@ -470,7 +504,7 @@ function RiderTable() {
                         </div>
                       )}
                     </td>
-                    
+
                     <td className="px-4 py-3">
                       <div className="text-gray-600 dark:text-gray-400 text-sm flex items-center">
                         <FaPhone className="w-2 h-2 mr-1" />
@@ -479,15 +513,21 @@ function RiderTable() {
                       {rider.address && (
                         <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center mt-1">
                           <FaMapMarkerAlt className="w-2 h-2 mr-1" />
-                          {rider.address.length > 30 ? rider.address.substring(0, 30) + '...' : rider.address}
+                          {rider.address.length > 30
+                            ? rider.address.substring(0, 30) + "..."
+                            : rider.address}
                         </div>
                       )}
                     </td>
-                    
+
                     <td className="px-4 py-3">
                       <div className="text-gray-600 dark:text-gray-400 text-sm">
-                        <div className="font-medium">{rider.vehicleName || 'N/A'}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">{rider.vehicleNumber || 'N/A'}</div>
+                        <div className="font-medium">
+                          {rider.vehicleName || "N/A"}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          {rider.vehicleNumber || "N/A"}
+                        </div>
                         {rider.vehicleType && (
                           <span className="inline-block px-2 py-0.5 text-xs bg-purple-100 dark:bg-purple-500/10 text-purple-800 dark:text-purple-400 rounded-full mt-1">
                             {rider.vehicleType.name}
@@ -495,11 +535,11 @@ function RiderTable() {
                         )}
                       </div>
                     </td>
-                    
+
                     <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-sm">
                       {rider.createdAt ? formatDate(rider.createdAt) : "N/A"}
                     </td>
-                    
+
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
@@ -511,7 +551,7 @@ function RiderTable() {
                         {rider.isActive ? "Active" : "Inactive"}
                       </span>
                     </td>
-                    
+
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
@@ -520,11 +560,15 @@ function RiderTable() {
                             : "bg-yellow-100 text-yellow-800 dark:bg-yellow-500/10 dark:text-yellow-400"
                         }`}
                       >
-                        {rider.isVerified ? <FaCheckCircle className="w-2 h-2 mr-1" /> : <FaTimesCircle className="w-2 h-2 mr-1" />}
+                        {rider.isVerified ? (
+                          <FaCheckCircle className="w-2 h-2 mr-1" />
+                        ) : (
+                          <FaTimesCircle className="w-2 h-2 mr-1" />
+                        )}
                         {rider.isVerified ? "Verified" : "Pending"}
                       </span>
                     </td>
-                    
+
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
@@ -537,7 +581,7 @@ function RiderTable() {
                         {rider.isDuty ? "On Duty" : "Off Duty"}
                       </span>
                     </td>
-                    
+
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1">
                         <button
