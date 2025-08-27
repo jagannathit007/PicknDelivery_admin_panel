@@ -8,6 +8,9 @@ const ADMIN_API_BASE_URL = `${BASE_URL}/api/${ADMIN_ROUTE}`;
 interface APIEndpoints {
   AUTH: {
     LOGIN: string;
+    GET_ALL_USERS: string;
+    UPDATE_USER: string;
+    DELETE_USER: string;
   };
   VEHICLE:{
     CREATE_VEHICLE: string;
@@ -21,6 +24,10 @@ interface APIEndpoints {
 const API_ENDPOINTS: APIEndpoints = {
   AUTH: {
     LOGIN: `${ADMIN_API_BASE_URL}/login`,
+
+    GET_ALL_USERS: `${ADMIN_API_BASE_URL}/get-customers`,
+    UPDATE_USER: `${ADMIN_API_BASE_URL}/save-customer`,
+    DELETE_USER: `${ADMIN_API_BASE_URL}/delete-customer`,
   },
   VEHICLE: {
     CREATE_VEHICLE: `${ADMIN_API_BASE_URL}/create-vehicle-type`,
