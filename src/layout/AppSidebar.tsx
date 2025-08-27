@@ -17,6 +17,7 @@ import {
   UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
+import { MdDirectionsBike } from "react-icons/md";
 
 type NavItem = {
   name: string;
@@ -62,6 +63,11 @@ const navItems: NavItem[] = [
     icon: <UserCircleIcon />,
     name: "Users",
     path: "/users",
+  },
+  {
+    icon: <MdDirectionsBike />,
+    name: "Riders",
+    path: "/riders",
   },
     {
     icon: <UserCircleIcon />,
