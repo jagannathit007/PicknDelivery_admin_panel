@@ -37,10 +37,30 @@ const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
   isLoading,
 }) => {
   const [formData, setFormData] = useState({
-    name: vehicle?.name || "",
-    maximumWeightCapacity: vehicle?.maximumWeightCapacity || 0,
-    description: vehicle?.description || "",
+    name: "",
+    maximumWeightCapacity: "",
+    description: "",
+    extraDetails: "",
   });
+
+  // Update form data when vehicle prop changes
+  useEffect(() => {
+    if (vehicle) {
+      setFormData({
+        name: vehicle.name || "",
+        maximumWeightCapacity: vehicle.maximumWeightCapacity?.toString() || "",
+        description: vehicle.description || "",
+        extraDetails: vehicle.extraDetails ? JSON.stringify(vehicle.extraDetails, null, 2) : "",
+      });
+    } else {
+      setFormData({
+        name: "",
+        maximumWeightCapacity: "",
+        description: "",
+        extraDetails: "",
+      });
+    }
+  }, [vehicle]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -556,7 +576,7 @@ const VehicleTypeComponent = () => {
       <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-blue-100">
               <tr>
                 <th
                   className="text-left p-6 text-gray-700 font-semibold cursor-pointer hover:bg-gray-100 transition-colors duration-200"
