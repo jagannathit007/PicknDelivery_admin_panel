@@ -99,73 +99,77 @@ const VehicleService: VehicleServiceType = {
   },
 
   createVehicle: async (payload: VehiclePayload): Promise<VehicleResponse | boolean> => {
-    try {
-      const formData = new FormData();
-      formData.append("name", payload.name);
-      formData.append("maximumWeightCapacity", payload.maximumWeightCapacity.toString());
-      if (payload.description) {
-        formData.append("description", payload.description);
+  try {
+    const response = await api.post(
+      API_ENDPOINTS.VEHICLE.CREATE_VEHICLE,
+      {
+        name: payload.name,
+        maximumWeightCapacity: payload.maximumWeightCapacity,
+        description: payload.description,
+        extraDetails: payload.extraDetails,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
       }
-      if (payload.extraDetails) {
-        formData.append("extraDetails", payload.extraDetails);
-      }
-      const response = await api.post(API_ENDPOINTS.VEHICLE.CREATE_VEHICLE, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      const result = response.data;
-      if (result.status === 200) {
-        toastHelper.showTost(result.message || "Vehicle created successfully!", "success");
-        return result;
-      } else {
-        toastHelper.showTost(result.message || "Failed to create vehicle", "warning");
-        return false;
-      }
-    } catch (error: any) {
-      console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
-      toastHelper.error(errorMessage);
-      return false;
-    }
-  },
+    );
 
-  updateVehicle: async (payload: VehiclePayload): Promise<VehicleResponse | boolean> => {
-    try {
-      const formData = new FormData();
-      if (payload._id) {
-        formData.append("_id", payload._id);
-      }
-      formData.append("name", payload.name);
-      formData.append("maximumWeightCapacity", payload.maximumWeightCapacity.toString());
-      if (payload.description) {
-        formData.append("description", payload.description);
-      }
-      if (payload.extraDetails) {
-        formData.append("extraDetails", payload.extraDetails);
-      }
-      const response = await api.post(API_ENDPOINTS.VEHICLE.UPDATE_VEHICLE, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      const result = response.data;
-      if (result.status === 200) {
-        toastHelper.showTost(result.message || "Vehicle updated successfully!", "success");
-        return result;
-      } else {
-        toastHelper.showTost(result.message || "Failed to update vehicle", "warning");
-        return false;
-      }
-    } catch (error: any) {
-      console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
-      toastHelper.error(errorMessage);
+    const result = response.data;
+
+    if (result.status === 200) {
+      toastHelper.showTost(result.message || "Vehicle created successfully!", "success");
+      return result;
+    } else {
+      toastHelper.showTost(result.message || "Failed to create vehicle", "warning");
       return false;
     }
-  },
+  } catch (error: any) {
+    console.log(error);
+    const errorMessage = error.response?.data?.message || "Something went wrong";
+    toastHelper.error(errorMessage);
+    return false;
+  }
+},
+
+
+ updateVehicle: async (payload: VehiclePayload): Promise<VehicleResponse | boolean> => {
+  try {
+    const response = await api.post(
+      API_ENDPOINTS.VEHICLE.UPDATE_VEHICLE,
+      {
+        id: payload._id, // id required hoga backend me
+        name: payload.name,
+        maximumWeightCapacity: payload.maximumWeightCapacity,
+        description: payload.description,
+        extraDetails: payload.extraDetails,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    const result = response.data;
+
+    if (result.status === 200) {
+      toastHelper.showTost(result.message || "Vehicle updated successfully!", "success");
+      return result;
+    } else {
+      toastHelper.showTost(result.message || "Failed to update vehicle", "warning");
+      return false;
+    }
+  } catch (error: any) {
+    console.log(error);
+    const errorMessage = error.response?.data?.message || "Something went wrong";
+    toastHelper.error(errorMessage);
+    return false;
+  }
+},
+
 
   deleteVehicle: async (id: string): Promise<VehicleResponse | boolean> => {
     try {
       const response = await api.post(
         API_ENDPOINTS.VEHICLE.DELETE_VEHICLE,
-        { _id: id },
+        { id: id },
       );
       const result = response.data;
       if (result.status === 200) {
