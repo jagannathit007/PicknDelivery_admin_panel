@@ -165,7 +165,7 @@ const PreviewVehicleModal: React.FC<PreviewVehicleModalProps> = ({ isOpen, onClo
   if (!isOpen || !vehicle) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/50 bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 shadow-2xl">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">Vehicle Type Details</h2>
