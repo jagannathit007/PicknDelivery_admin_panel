@@ -107,10 +107,7 @@ const VehicleService: VehicleServiceType = {
         formData.append("description", payload.description);
       }
       if (payload.extraDetails) {
-        formData.append("extraDetails", JSON.stringify(payload.extraDetails));
-      }
-      if (payload.image) {
-        formData.append("image", payload.image);
+        formData.append("extraDetails", payload.extraDetails);
       }
       const response = await api.post(API_ENDPOINTS.VEHICLE.CREATE_VEHICLE, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -143,10 +140,7 @@ const VehicleService: VehicleServiceType = {
         formData.append("description", payload.description);
       }
       if (payload.extraDetails) {
-        formData.append("extraDetails", JSON.stringify(payload.extraDetails));
-      }
-      if (payload.image) {
-        formData.append("image", payload.image);
+        formData.append("extraDetails", payload.extraDetails);
       }
       const response = await api.post(API_ENDPOINTS.VEHICLE.UPDATE_VEHICLE, formData, {
         headers: { "Content-Type": "multipart/form-data" },
