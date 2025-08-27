@@ -54,9 +54,7 @@ import { ReactComponent as ChatIcon } from "./chat.svg?react";
 import { ReactComponent as MoreDotIcon } from "./moredot.svg?react";
 import { ReactComponent as AlertHexaIcon } from "./alert-hexa.svg?react";
 import { ReactComponent as ErrorHexaIcon } from "./info-hexa.svg?react";
-import {ReactComponent as Riders} from './rider.svg?react'
-import {ReactComponent as Deliveries} from './delivery-truck.svg?react'
-import {ReactComponent as Earnings} from './earning.svg?react'
+
 
 export {
   ErrorHexaIcon,
@@ -115,7 +113,5 @@ export {
   ChatIcon,
   AngleLeftIcon,
   AngleRightIcon,
-  Riders,
-  Deliveries,
-  Earnings
+  
 };
