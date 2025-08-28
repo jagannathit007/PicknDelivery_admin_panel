@@ -14,7 +14,6 @@ import {
 } from "react-icons/fa";
 import UserService, { Customer, CustomerPayload } from "../../services/UserService";
 import CustomerModal from "../../components/common/CustomerModal";
-import toastHelper from "../../utils/toastHelper";
 import Swal from "sweetalert2";
 
 interface SortConfig {
