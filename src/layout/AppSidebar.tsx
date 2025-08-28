@@ -2,6 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { PiCashRegisterLight } from "react-icons/pi";
 import { IoCarOutline } from "react-icons/io5";
+import { IoIosNotificationsOutline } from "react-icons/io";
+import { FaTruck } from "react-icons/fa"; // Import truck icon from react-icons
+import { RiCoupon2Line } from "react-icons/ri";
 
 // Assume these icons are imported from an icon library
 import {
@@ -19,7 +22,6 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import { MdDirectionsBike } from "react-icons/md";
-import { FaTruck } from "react-icons/fa";
 
 type NavItem = {
   name: string;
@@ -81,6 +83,16 @@ const navItems: NavItem[] = [
     icon: <PiCashRegisterLight />,
     name: "Transaction",
     path: "/transaction",
+  },
+  {
+    icon: <IoIosNotificationsOutline />,
+    name: "Notification",
+    path: "/notification",
+  },
+  {
+    icon: <RiCoupon2Line />,
+    name: "Coupons",
+    path: "/coupons",
   },
   // {
   //   name: "Tables",
