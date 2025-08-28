@@ -111,7 +111,6 @@ const AuthService: AuthServiceType = {
       );
       const result = response.data;
       if (result.status === 200 && result.data) {
-        toastHelper.showTost(result.message || 'Profile fetched successfully!', 'success');
         return result;
       } else {
         toastHelper.showTost(result.message || 'Failed to fetch profile', 'warning');
