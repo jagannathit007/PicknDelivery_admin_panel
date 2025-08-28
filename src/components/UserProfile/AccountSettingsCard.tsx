@@ -556,38 +556,6 @@ export default function AccountSettingsCard({}: AccountSettingsCardProps) {
       </div>
 
       <div className="px-8 pb-8">
-        {/* Security Tips - Keep these cards */}
-        <div className="grid md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-2xl border border-green-100">
-            <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h3 className="font-bold text-green-800 mb-2">Use Strong Passwords</h3>
-            <p className="text-green-700 text-sm">At least 8 characters with mix of letters, numbers & symbols</p>
-          </div>
-          
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-100">
-            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h3 className="font-bold text-blue-800 mb-2">Regular Updates</h3>
-            <p className="text-blue-700 text-sm">Change your password every 90 days for optimal security</p>
-          </div>
-          
-          <div className="bg-gradient-to-br from-purple-50 to-violet-50 p-6 rounded-2xl border border-purple-100">
-            <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
-              <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <h3 className="font-bold text-purple-800 mb-2">Unique Passwords</h3>
-            <p className="text-purple-700 text-sm">Don't reuse passwords across different accounts</p>
-          </div>
-        </div>
 
         <div className="grid gap-6">
           <InfoField

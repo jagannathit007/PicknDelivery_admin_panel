@@ -25,7 +25,7 @@ import Riders from "./pages/Riders";
 
 import Deliveries from './components/dashboard/Deliveries';
 import Earnings from './components/dashboard/Earnings';
-import Riders from './components/dashboard/Riders';
+import LiveRiders from './components/dashboard/Riders';
 
 export default function App() {
   return (
@@ -39,7 +39,7 @@ export default function App() {
 
             <Route path="/deliveries" element={<Deliveries />} />
             <Route path="/earnings" element={<Earnings />} />
-            <Route path="/riders" element={<Riders />} />
+            <Route path="/live-riders" element={<LiveRiders />} />
 
 
             {/* Others Page */}

@@ -15,9 +15,7 @@ interface Customer {
 }
 
 interface CustomerListResponse {
-  status: number;
-  message: string;
-  data: {
+
     docs: Customer[];
     totalDocs: number;
     limit: number;
@@ -26,7 +24,7 @@ interface CustomerListResponse {
     hasNextPage: boolean;
     hasPrevPage: boolean;
   };
-}
+
 
 interface CustomerResponse {
   status: number;
@@ -62,8 +60,8 @@ const UserService: UserServiceType = {
         payload
       );
       const result = response.data;
-      if (result.status === 200) {
-        return result;
+      if (result.status === 200 && result.data) {
+        return result.data;
       } else {
         toastHelper.showTost(result.message || 'Failed to fetch customers', 'warning');
         return false;

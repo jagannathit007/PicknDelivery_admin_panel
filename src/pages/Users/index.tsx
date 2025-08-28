@@ -46,24 +46,20 @@ function UserTable() {
   // Fetch customers from API
   const fetchCustomers = async (page = 1, search = "") => {
     setLoading(true);
-    try {
       const response = await UserService.getCustomers({
         page,
         limit: itemsPerPage,
         search,
       });
+
+      console.log('response ', response);
       
-      if (response && response.data) {
-        setCustomers(response.data.docs);
-        setTotalPages(response.data.totalPages);
-        setTotalDocs(response.data.totalDocs);
+      if (response) {
+        setCustomers(response.docs);
+        setTotalPages(response.totalPages);
+        setTotalDocs(response.totalDocs);
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching customers:", error);
-      toastHelper.error("Failed to fetch customers");
-    } finally {
-      setLoading(false);
-    }
   };
 
   useEffect(() => {
