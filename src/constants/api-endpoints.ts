@@ -28,6 +28,11 @@ interface APIEndpoints {
   VEHICLE_TYPES: {
     GET_ALL_VEHICLE_TYPES: string;
   };
+  ORDERS: {
+    GET_ORDERS: string;
+    ASSIGN_ORDER: string;
+    CANCEL_ORDER: string;
+  };
 }
 
 const API_ENDPOINTS: APIEndpoints = {
@@ -53,6 +58,11 @@ const API_ENDPOINTS: APIEndpoints = {
   },
   VEHICLE_TYPES: {
     GET_ALL_VEHICLE_TYPES: `${ADMIN_API_BASE_URL}/get-vehicle-types`,
+  },
+  ORDERS: {
+    GET_ORDERS: `${ADMIN_API_BASE_URL}/get-orders`,
+    ASSIGN_ORDER: `${ADMIN_API_BASE_URL}/assign-order`,
+    CANCEL_ORDER: `${ADMIN_API_BASE_URL}/cancel-order`,
   },
 };
 
