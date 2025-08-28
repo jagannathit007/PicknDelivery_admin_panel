@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { PiCashRegisterLight } from "react-icons/pi";
+import { IoCarSharp } from "react-icons/io5";
+
 
 // Assume these icons are imported from an icon library
 import {
@@ -31,11 +33,12 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [
-      { name: "Deliveries", path: "/deliveries", pro: false },
-      { name: "Earnings", path: "/earnings", pro: false },
-      { name: "Live Riders", path: "/live-riders", pro: false },
-    ],
+    path: "/",
+    // subItems: [
+    //   { name: "Deliveries", path: "/deliveries", pro: false },
+    //   { name: "Earnings", path: "/earnings", pro: false },
+    //   { name: "Live Riders", path: "/live-riders", pro: false },
+    // ],
   },
   {
     icon: <CalenderIcon />,
@@ -47,18 +50,18 @@ const navItems: NavItem[] = [
     name: "User Profile",
     path: "/profile",
   },
+  // {
+  //   name: "Forms",
+  //   icon: <ListIcon />,
+  //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+  // },
   {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    icon: <GridIcon />,
-    name: "Master",
-    subItems: [
-      { name: "Vehicle", path: "/vehicle", pro: false },
-      { name: "Vehicle type", path: "/vehicle-type", pro: false },
-    ],
+    icon: <IoCarSharp />,
+    name: "Vehical Type",
+    path: "/vehicle-type",
+    // subItems: [
+    //   { name: "Vehicle type", path: "/vehicle-type", pro: false },
+    // ],
   },
   {
     icon: <UserCircleIcon />,
@@ -77,22 +80,22 @@ const navItems: NavItem[] = [
   },
   {
     icon: <PiCashRegisterLight />,
-    name: "COD Settlement",
-    path: "/cod-settlement",
+    name: "Transaction",
+    path: "/transaction",
   },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
-    subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
-    ],
-  },
+  // {
+  //   name: "Tables",
+  //   icon: <TableIcon />,
+  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+  // },
+  // {
+  //   name: "Pages",
+  //   icon: <PageIcon />,
+  //   subItems: [
+  //     { name: "Blank Page", path: "/blank", pro: false },
+  //     { name: "404 Error", path: "/error-404", pro: false },
+  //   ],
+  // },
 ];
 
 const othersItems: NavItem[] = [
@@ -367,7 +370,7 @@ const AppSidebar: React.FC = () => {
               </h2>
               {renderMenuItems(navItems, "main")}
             </div>
-            <div className="">
+            {/* <div className="">
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
                   !isExpanded && !isHovered
@@ -382,7 +385,7 @@ const AppSidebar: React.FC = () => {
                 )}
               </h2>
               {renderMenuItems(othersItems, "others")}
-            </div>
+            </div> */}
           </div>
         </nav>
       </div>

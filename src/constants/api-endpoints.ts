@@ -33,6 +33,10 @@ interface APIEndpoints {
     ASSIGN_ORDER: string;
     CANCEL_ORDER: string;
   };
+  TRANSACTIONS: {
+    GET_ALL_TRANSACTIONS: string;
+    GET_TRANSACTION: string;
+  };
 }
 
 const API_ENDPOINTS: APIEndpoints = {
@@ -63,6 +67,10 @@ const API_ENDPOINTS: APIEndpoints = {
     GET_ORDERS: `${ADMIN_API_BASE_URL}/get-orders`,
     ASSIGN_ORDER: `${ADMIN_API_BASE_URL}/assign-order`,
     CANCEL_ORDER: `${ADMIN_API_BASE_URL}/cancel-order`,
+  },
+  TRANSACTIONS: {
+    GET_ALL_TRANSACTIONS: `${ADMIN_API_BASE_URL}/get-transactions`,
+    GET_TRANSACTION: `${ADMIN_API_BASE_URL}/get-transaction`,
   },
 };
 
