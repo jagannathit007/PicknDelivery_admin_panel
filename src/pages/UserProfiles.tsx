@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PageBreadcrumb from "../components/common/PageBreadCrumb";
 import UserMetaCard from "../components/UserProfile/UserMetaCard";
 import UserInfoCard from "../components/UserProfile/UserInfoCard";
 import PageMeta from "../components/common/PageMeta";
 import AccountSettingsCard from "../components/UserProfile/AccountSettingsCard";
+import AuthService from "../services/AuthService";
 
 interface UserProfile {
   firstName: string;
@@ -14,21 +15,49 @@ interface UserProfile {
   avatar: string;
 }
 
-export default function UserProfiles() {
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    firstName: "Musharof",
-    lastName: "Chowdhury",
-    email: "randomuser@pimjo.com",
-    phone: "+09 363 398 46",
-    bio: "Experienced professional with expertise in team leadership, strategic planning, and business development. Passionate about driving organizational growth through innovative solutions and collaborative teamwork.",
-    avatar: "/images/user/owner.jpg",
-  });
+// interface ProfileResponse {
+//   status: number;
+//   message: string;
+//   data: UserProfile;
+// }
 
+export default function UserProfiles() {
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [activeTab, setActiveTab] = useState<"profile" | "account">("profile");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      setIsLoading(true);
+      const profileData = await AuthService.getProfile();
+      if (profileData && profileData.data) {
+        setUserProfile({
+          firstName: profileData.data.name.split(" ")[0] || "",
+          lastName: profileData.data.name.split(" ")[1] || "",
+          email: profileData.data.emailId,
+          phone: "", // Adjust if phone is available in API response
+          bio: "", // Adjust if bio is available in API response
+          avatar: "/images/user/default-avatar.jpg", // Fallback avatar
+        });
+      }
+      setIsLoading(false);
+    };
+    fetchProfile();
+  }, []);
 
   const updateProfile = (updates: Partial<UserProfile>) => {
-    setUserProfile((prev) => ({ ...prev, ...updates }));
+    if (userProfile) {
+      setUserProfile((prev) => ({ ...prev!, ...updates }));
+    }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!userProfile) {
+    return <div>Error loading profile</div>;
+  }
 
   return (
     <>
@@ -40,9 +69,7 @@ export default function UserProfiles() {
       <div className="space-y-8">
         <UserMetaCard userProfile={userProfile} />
 
-        {/* Simple Compact Tab Navigation */}
         <div className="bg-white rounded-lg border border-slate-200">
-          {/* Simple Tab Header - Compact Style */}
           <div className="px-6 pt-6 pb-0 border-b border-slate-200">
             <div className="flex gap-6">
               <button
@@ -80,7 +107,6 @@ export default function UserProfiles() {
             </div>
           </div>
 
-          {/* Simple Tab Content */}
           <div className="p-6">
             {activeTab === "profile" && (
               <UserInfoCard userProfile={userProfile} updateProfile={updateProfile} />

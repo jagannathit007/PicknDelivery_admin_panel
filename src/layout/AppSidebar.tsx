@@ -7,6 +7,7 @@ import { FaTruck } from "react-icons/fa"; // Import truck icon from react-icons
 import { RiCoupon2Line } from "react-icons/ri";
 import { CiBoxes } from "react-icons/ci";
 import { LuUsers } from "react-icons/lu";
+import { GrTemplate } from "react-icons/gr";
 
 // Assume these icons are imported from an icon library
 import {
@@ -85,6 +86,11 @@ const navItems: NavItem[] = [
     icon: <PiCashRegisterLight />,
     name: "Transaction",
     path: "/transaction",
+  },
+  {
+    icon: <GrTemplate />,
+    name: "Template ",
+    path: "/template",
   },
   {
     icon: <IoIosNotificationsOutline />,

@@ -22,13 +22,13 @@ import VehicleType from "./pages/Vehicle/VehicleType";
 import Users from "./pages/Users";
 import OrderListing from "./pages/OrderListing";
 import Riders from "./pages/Riders";
-
 import Deliveries from './components/dashboard/Deliveries';
 import Earnings from './components/dashboard/Earnings';
 import LiveRiders from './components/dashboard/Riders';
 import Notification from "./pages/notification/notification";
 import Coupons from "./pages/coupons/Coupons ";
 import Transactions from "./pages/Transactions";
+import Template from "./pages/Template";
 
 export default function App() {
   return (
@@ -74,6 +74,10 @@ export default function App() {
 
             {/* cod settlement */}
             <Route path="/transaction" element={<Transactions />} />
+
+            {/* Template */}
+            <Route path="/template" element={<Template />} />
+
 
             {/* Tables */}
             <Route path="/basic-tables" element={<BasicTables />} />

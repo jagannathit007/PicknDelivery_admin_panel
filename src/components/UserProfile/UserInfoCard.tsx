@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
-
-// Define the user profile type
+import AuthService from "../../services/AuthService";
+import toastHelper from "../../utils/toastHelper";
+import API_ENDPOINTS from "../../constants/api-endpoints";
 interface UserProfile {
   firstName: string;
   lastName: string;
@@ -12,13 +13,11 @@ interface UserProfile {
   avatar: string;
 }
 
-// Define the component props
 interface UserInfoCardProps {
   userProfile: UserProfile;
   updateProfile: (updates: Partial<UserProfile>) => void;
 }
 
-// Define the InfoField props
 interface InfoFieldProps {
   icon: React.ReactNode;
   label: string;
@@ -31,7 +30,6 @@ interface InfoFieldProps {
   onChange: (field: keyof UserProfile, value: string) => void;
 }
 
-// Move InfoField component outside of UserInfoCard
 const InfoField = ({ 
   icon, 
   label, 
@@ -119,10 +117,38 @@ export default function UserInfoCard({ userProfile, updateProfile }: UserInfoCar
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = () => {
-    updateProfile(formData);
-    console.log("Saving changes...", formData);
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      const token = AuthService.getToken();
+      if (!token) {
+        AuthService.logout();
+        return;
+      }
+      const response = await fetch(`${API_ENDPOINTS.AUTH.PROFILE}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`,
+          emailId: formData.email,
+          phone: formData.phone,
+          bio: formData.bio,
+        }),
+      });
+      const result = await response.json();
+      if (result.status === 200) {
+        updateProfile(formData);
+        toastHelper.showTost('Profile updated successfully!', 'success');
+        setIsEditing(false);
+      } else {
+        toastHelper.showTost(result.message || 'Failed to update profile', 'warning');
+      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || "Error updating profile";
+      toastHelper.showTost(errorMessage, 'error');
+    }
   };
 
   const handleCancel = () => {
