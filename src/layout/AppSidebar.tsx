@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { FaTruck } from "react-icons/fa"; // Import truck icon from react-icons
+import { PiCashRegisterLight } from "react-icons/pi";
 
 // Assume these icons are imported from an icon library
 import {
@@ -18,6 +18,7 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import { MdDirectionsBike } from "react-icons/md";
+import { FaTruck } from "react-icons/fa";
 
 type NavItem = {
   name: string;
@@ -69,10 +70,15 @@ const navItems: NavItem[] = [
     name: "Riders",
     path: "/riders",
   },
-    {
+  {
     icon: <UserCircleIcon />,
     name: "Order Listing",
     path: "/order-listing",
+  },
+  {
+    icon: <PiCashRegisterLight />,
+    name: "COD Settlement",
+    path: "/cod-settlement",
   },
   {
     name: "Tables",

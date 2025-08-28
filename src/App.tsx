@@ -26,6 +26,7 @@ import Riders from "./pages/Riders";
 import Deliveries from './components/dashboard/Deliveries';
 import Earnings from './components/dashboard/Earnings';
 import LiveRiders from './components/dashboard/Riders';
+import CodSettlement from "./pages/CodSettlement";
 
 export default function App() {
   return (
@@ -62,6 +63,9 @@ export default function App() {
 
             {/* order listing */}
             <Route path="/order-listing" element={<OrderListing />} />
+
+            {/* cod settlement */}
+            <Route path="/cod-settlement" element={<CodSettlement />} />
 
             {/* Tables */}
             <Route path="/basic-tables" element={<BasicTables />} />
