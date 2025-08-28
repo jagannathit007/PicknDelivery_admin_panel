@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { PiCashRegisterLight } from "react-icons/pi";
-import { IoCarSharp } from "react-icons/io5";
-
+import { IoCarOutline } from "react-icons/io5";
 
 // Assume these icons are imported from an icon library
 import {
@@ -56,7 +55,7 @@ const navItems: NavItem[] = [
   //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
   // },
   {
-    icon: <IoCarSharp />,
+    icon: <IoCarOutline />,
     name: "Vehical Type",
     path: "/vehicle-type",
     // subItems: [
