@@ -144,7 +144,7 @@ const AuthService: AuthServiceType = {
         }
       );
       const result = response.data;
-      if (result.status === 200) {
+      if (result.status === 200 && result.data) {
         toastHelper.showTost(result.message || 'Password changed successfully!', 'success');
         return true;
       } else {
