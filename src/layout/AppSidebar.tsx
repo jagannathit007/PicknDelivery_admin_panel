@@ -5,6 +5,8 @@ import { IoCarOutline } from "react-icons/io5";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { FaTruck } from "react-icons/fa"; // Import truck icon from react-icons
 import { RiCoupon2Line } from "react-icons/ri";
+import { CiBoxes } from "react-icons/ci";
+import { LuUsers } from "react-icons/lu";
 
 // Assume these icons are imported from an icon library
 import {
@@ -41,11 +43,11 @@ const navItems: NavItem[] = [
     //   { name: "Live Riders", path: "/live-riders", pro: false },
     // ],
   },
-  {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/calendar",
-  },
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Calendar",
+  //   path: "/calendar",
+  // },
   {
     icon: <UserCircleIcon />,
     name: "User Profile",
@@ -65,7 +67,7 @@ const navItems: NavItem[] = [
     // ],
   },
   {
-    icon: <UserCircleIcon />,
+    icon: <LuUsers />,
     name: "Users",
     path: "/users",
   },
@@ -75,7 +77,7 @@ const navItems: NavItem[] = [
     path: "/riders",
   },
   {
-    icon: <UserCircleIcon />,
+    icon: <CiBoxes />,
     name: "Order Listing",
     path: "/order-listing",
   },
