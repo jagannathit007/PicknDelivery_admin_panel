@@ -350,7 +350,7 @@ function Transactions() {
                             {rider.image ? (
                               <img
                                 className="h-8 w-8 rounded-full object-cover"
-                                src={`${imageBaseUrl}/Uploads/riders/${rider.image}`}
+                                src={`${imageBaseUrl}/${rider.image}`}
                                 alt={rider.name}
                               />
                             ) : (

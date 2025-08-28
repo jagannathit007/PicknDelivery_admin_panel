@@ -520,7 +520,7 @@ function OrderListing() {
                             {customer.image ? (
                               <img
                                 className="h-8 w-8 rounded-full object-cover"
-                                src={`${imageBaseUrl}/Uploads/customers/${customer.image}`}
+                                src={`${imageBaseUrl}/${customer.image}`}
                                 alt={customer.name}
                               />
                             ) : (
@@ -712,7 +712,7 @@ function OrderListing() {
                               {order.customer.image ? (
                                 <img
                                   className="h-10 w-10 rounded-full object-cover"
-                                  src={`${imageBaseUrl}/Uploads/customers/${order.customer.image}`}
+                                  src={`${imageBaseUrl}/${order.customer.image}`}
                                   alt={order.customer.name}
                                 />
                               ) : (
