@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { FaTruck } from "react-icons/fa"; // Import truck icon from react-icons
+import { IoIosNotificationsOutline } from "react-icons/io";
 
 // Assume these icons are imported from an icon library
 import {
@@ -18,6 +19,7 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import { MdDirectionsBike } from "react-icons/md";
+import { RiCoupon2Line } from "react-icons/ri";
 
 type NavItem = {
   name: string;
@@ -68,6 +70,16 @@ const navItems: NavItem[] = [
     icon: <MdDirectionsBike />,
     name: "Riders",
     path: "/riders",
+  },
+  {
+    icon: <IoIosNotificationsOutline />,
+    name: "Notification",
+    path: "/notification",
+  },
+  {
+    icon: <RiCoupon2Line />,
+    name: "Coupons",
+    path: "/coupons",
   },
     {
     icon: <UserCircleIcon />,

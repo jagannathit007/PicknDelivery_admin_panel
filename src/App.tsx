@@ -26,6 +26,8 @@ import Riders from "./pages/Riders";
 import Deliveries from './components/dashboard/Deliveries';
 import Earnings from './components/dashboard/Earnings';
 import LiveRiders from './components/dashboard/Riders';
+import Notification from "./pages/notification/notification";
+import Coupons from "./pages/coupons/Coupons ";
 
 export default function App() {
   return (
@@ -59,6 +61,12 @@ export default function App() {
 
             {/* Riders */}
             <Route path="/riders" element={<Riders />} />
+
+            {/* Notification */}
+            <Route path="/notification" element={<Notification />} />
+
+            {/* Coupons */}
+            <Route path="/coupons" element={<Coupons />} />
 
             {/* order listing */}
             <Route path="/order-listing" element={<OrderListing />} />

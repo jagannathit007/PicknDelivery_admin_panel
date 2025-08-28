@@ -28,6 +28,11 @@ interface APIEndpoints {
   VEHICLE_TYPES: {
     GET_ALL_VEHICLE_TYPES: string;
   };
+  COUPON: {
+    GET_ALL_COUPONS: string;
+    SAVE_COUPON: string;
+    DELETE_COUPON: string;
+  };
 }
 
 const API_ENDPOINTS: APIEndpoints = {
@@ -54,6 +59,11 @@ const API_ENDPOINTS: APIEndpoints = {
   VEHICLE_TYPES: {
     GET_ALL_VEHICLE_TYPES: `${ADMIN_API_BASE_URL}/get-vehicle-types`,
   },
+  COUPON: {
+    GET_ALL_COUPONS: `${ADMIN_API_BASE_URL}/get-coupons`,
+    SAVE_COUPON: `${ADMIN_API_BASE_URL}/save-coupon`,
+    DELETE_COUPON: `${ADMIN_API_BASE_URL}/delete-coupon`
+  }
 };
 
 export default API_ENDPOINTS;
