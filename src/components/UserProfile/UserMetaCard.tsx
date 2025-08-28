@@ -25,7 +25,7 @@ export default function UserMetaCard({ userProfile }: UserMetaCardProps) {
             <div className="relative group">
               <div className="w-32 h-32 lg:w-36 lg:h-36 rounded-full overflow-hidden ring-4 ring-white shadow-2xl">
                 <img
-                  src={userProfile.avatar}
+                  src="https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png"
                   alt="Profile"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />

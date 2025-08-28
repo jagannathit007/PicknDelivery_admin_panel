@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { FaTruck } from "react-icons/fa"; // Import truck icon from react-icons
+import { FaTruck } from "react-icons/fa"; 
+import { GrTemplate } from "react-icons/gr";
 
 // Assume these icons are imported from an icon library
 import {
@@ -69,10 +70,15 @@ const navItems: NavItem[] = [
     name: "Riders",
     path: "/riders",
   },
-    {
+  {
     icon: <UserCircleIcon />,
     name: "Order Listing",
     path: "/order-listing",
+  },
+  {
+    icon: <GrTemplate />,
+    name: "Template ",
+    path: "/template",
   },
   {
     name: "Tables",
