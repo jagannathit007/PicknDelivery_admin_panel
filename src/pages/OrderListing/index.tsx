@@ -300,7 +300,7 @@ function OrderListing() {
       });
 
       if (response.status === 200) {
-        toastHelper.success("Rider assigned successfully!");
+        toastHelper.showTost(response.message, "success");
         fetchOrders(currentPage, selectedCustomer?._id || "", statusFilter, riderFilter);
       } else {
         toastHelper.error(response.message || "Failed to assign rider");
@@ -569,7 +569,7 @@ function OrderListing() {
             </div>
 
             {/* Rider Filter */}
-            <div className="flex-1">
+            {/* <div className="flex-1">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Rider
               </label>
@@ -586,10 +586,10 @@ function OrderListing() {
                 </select>
                 <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
-            </div>
+            </div> */}
 
             {/* Sort */}
-            <div className="flex-1">
+            {/* <div className="flex-1">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Sort By
               </label>
@@ -609,7 +609,7 @@ function OrderListing() {
                 </select>
                 <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
-            </div>
+            </div> */}
           </div>
           
           {/* Clear All Filters Button */}
