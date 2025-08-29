@@ -733,6 +733,10 @@ function OrderListing() {
                                 <FaMotorcycle className="w-4 h-4 mr-1" />
                                 {order.vehicleType.name}
                               </div>
+                              <div className="flex items-center text-sm text-gray-500">
+                                <FaMotorcycle className="w-4 h-4 mr-1" />
+                                {order.category ? order.category.name : 'N/A'}
+                              </div>
                             </div>
                           </div>
                         </td>

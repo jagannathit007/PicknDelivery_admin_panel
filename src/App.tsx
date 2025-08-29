@@ -29,6 +29,7 @@ import Notification from "./pages/notification/notification";
 import Coupons from "./pages/coupons/Coupons ";
 import Transactions from "./pages/Transactions";
 import Template from "./pages/Template";
+import Categories from "./pages/Categories/Categories";
 
 export default function App() {
   return (
@@ -78,6 +79,8 @@ export default function App() {
             {/* Template */}
             <Route path="/template" element={<Template />} />
 
+            {/* {category page} */}
+            <Route path="/categories" element={<Categories />} />
 
             {/* Tables */}
             <Route path="/basic-tables" element={<BasicTables />} />

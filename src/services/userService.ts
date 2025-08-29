@@ -46,10 +46,37 @@ interface CustomerPayload {
   image?: File;
 }
 
+
+interface Rider {
+  _id: string;
+  name: string;
+  image: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+}
+interface DashboardData {
+  liveRiders: Rider[];
+  earnings: number;
+  orders: number;
+}
+
+interface DashboardResponse {
+  status: string;
+  message: string;
+  data: DashboardData;
+}
+
+interface DashboardPayload {
+  selectedDate?: string;
+}
+
 interface UserServiceType {
   getCustomers: (payload: CustomerListPayload) => Promise<CustomerListResponse | false>;
   saveCustomer: (payload: CustomerPayload) => Promise<CustomerResponse | false>;
   deleteCustomer: (id: string) => Promise<CustomerResponse | false>;
+  getDashboardData: (payload: DashboardPayload) => Promise<DashboardResponse | false>;
 }
 
 const UserService: UserServiceType = {
@@ -135,7 +162,25 @@ const UserService: UserServiceType = {
       return false;
     }
   },
+  getDashboardData: async (payload: DashboardPayload): Promise<DashboardResponse | false> => {
+    try {
+      const response = await api.post(API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_DATA, payload);
+      const result = response.data;
+      console.log("Dashboard Data:", result);
+      if (result.status === 200 && result.data) {
+        return result;
+      } else {
+        toastHelper.showTost(result.message || 'Failed to fetch dashboard data', 'warning');
+        return false;
+      }
+    } catch (error: any) {
+      console.log(error);
+      const errorMessage = error.response?.data?.message || "Something went wrong";
+      toastHelper.error(errorMessage);
+      return false;
+    }
+  },
 };
 
 export default UserService;
-export type { Customer, CustomerListPayload, CustomerPayload };
+export type { Customer, CustomerListPayload, CustomerPayload ,Rider, DashboardData, DashboardPayload, DashboardResponse};
