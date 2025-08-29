@@ -29,6 +29,7 @@ import Notification from "./pages/notification/Notification";
 import Coupons from "./pages/coupons/Coupons ";
 import Transactions from "./pages/Transactions";
 import Template from "./pages/Template";
+// import SocketStatus from "./components/common/SocketStatus";
 
 export default function App() {
   return (
@@ -102,6 +103,9 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
+      
+      {/* Socket Status Component - Shows connection status and test buttons */}
+      {/* <SocketStatus /> */}
     </>
   );
 }
