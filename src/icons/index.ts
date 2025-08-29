@@ -55,7 +55,6 @@ import { ReactComponent as MoreDotIcon } from "./moredot.svg?react";
 import { ReactComponent as AlertHexaIcon } from "./alert-hexa.svg?react";
 import { ReactComponent as ErrorHexaIcon } from "./info-hexa.svg?react";
 
-
 export {
   ErrorHexaIcon,
   AlertHexaIcon,
@@ -113,5 +112,4 @@ export {
   ChatIcon,
   AngleLeftIcon,
   AngleRightIcon,
-  
 };
