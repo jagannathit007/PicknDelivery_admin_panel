@@ -25,7 +25,7 @@ import Riders from "./pages/Riders";
 import Deliveries from './components/dashboard/Deliveries';
 import Earnings from './components/dashboard/Earnings';
 import LiveRiders from './components/dashboard/Riders';
-import Notification from "./pages/notification/notification";
+import Notification from "./pages/notification/Notification";
 import Coupons from "./pages/coupons/Coupons ";
 import Transactions from "./pages/Transactions";
 import Template from "./pages/Template";
