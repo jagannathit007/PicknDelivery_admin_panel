@@ -4,6 +4,7 @@ import StatisticsChart from "../../components/ecommerce/StatisticsChart";
 import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
 import RecentOrders from "../../components/ecommerce/RecentOrders";
 import DemographicCard from "../../components/ecommerce/DemographicCard";
+// import SocketNotifications from "../../components/dashboard/SocketNotifications";
 import PageMeta from "../../components/common/PageMeta";
 
 export default function Home() {
@@ -35,6 +36,10 @@ export default function Home() {
         <div className="col-span-12 xl:col-span-7">
           <RecentOrders />
         </div>
+        
+        {/* <div className="col-span-12 xl:col-span-5">
+          <SocketNotifications />
+        </div> */}
       </div>
     </>
   );
