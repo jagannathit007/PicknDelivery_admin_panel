@@ -69,6 +69,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
   // Join admin room
   const joinAdminRoom = () => {
+    console.log('Joining admin room');
     socketService.joinAdminRoom();
   };
 

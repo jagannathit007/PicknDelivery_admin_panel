@@ -1,11 +1,12 @@
 import { io, Socket } from 'socket.io-client';
+import AuthService from './AuthService';
 
 class SocketService {
   private socket: Socket | null = null;
   private isConnected: boolean = false;
 
   // Initialize socket connection
-  connect() {
+  connect() {    
     if (this.socket && this.isConnected) {
       console.log('Socket already connected');
       return this.socket;
@@ -73,8 +74,14 @@ class SocketService {
 
   // Join admin room
   joinAdminRoom() {
+    const adminDetails = AuthService.getUser();
+    console.log('adminDetails:', adminDetails);
+    if(!adminDetails) {
+      return;
+    }
+
     if (this.socket && this.isConnected) {
-      this.socket.emit('joinRoom', 'admin');
+      this.socket.emit('joinRoom', {userId: adminDetails.id, userType: 'admin'});
       console.log('✅ Joined admin room');
     }
   }

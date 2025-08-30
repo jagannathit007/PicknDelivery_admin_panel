@@ -56,13 +56,13 @@ const AuthService: AuthServiceType = {
         }
       );
       const result = response.data;
-      console.log(result);
       if (result.status === 200 && result.data) {
         // Store token and user data
         localStorage.setItem('token', result.data.token);
         localStorage.setItem('user', JSON.stringify(result.data.admin));
+        console.log('Login successful, token and user data stored.');
         toastHelper.showTost(result.message || 'Login successful!', 'success');
-        return result;
+        return result.data;
       } else {
         toastHelper.showTost(result.message || 'Login failed', 'warning');
         return result.data;

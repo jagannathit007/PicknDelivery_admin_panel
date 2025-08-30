@@ -6,6 +6,7 @@ import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import AuthService from "../../services/AuthService";
+import { useSocket } from "../../context/SocketContext";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,6 +20,8 @@ export default function SignInForm() {
     email: "",
     password: "",
   });
+  const { isConnected, joinAdminRoom } = useSocket();
+
 
   const navigate = useNavigate();
 
@@ -67,6 +70,10 @@ export default function SignInForm() {
     try {
       const result = await AuthService.signIn(formData);
       if (result) {
+        console.log('isConnected : ', isConnected)
+        if (isConnected) {
+          joinAdminRoom();
+        }
         setTimeout(() => {
           navigate("/");
         }, 1000);
