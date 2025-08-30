@@ -13,6 +13,9 @@ interface APIEndpoints {
     UPDATE_USER: string;
     DELETE_USER: string;
   };
+  DASHBOARD: {
+    GET_DASHBOARD_DATA: string;
+  };
   RIDERS: {
     GET_ALL_RIDERS: string;
     CREATE_RIDER: string;
@@ -48,6 +51,20 @@ interface APIEndpoints {
     SAVE_TEMPLATE: string;
     DELETE_TEMPLATE: string;
   };
+  FARES: {
+    CREATE_FARE: string;
+    GET_FARES: string;
+    GET_FARE: string;
+    UPDATE_FARE: string;
+    DELETE_FARE: string;
+  };
+  CATEGORY: {
+    CREATE_CATEGORY: string;
+    GET_ALL_CATEGORIES: string;
+    GET_CATEGORY: string;
+    UPDATE_CATEGORY: string;
+    DELETE_CATEGORY: string;
+  };
 }
 
 const API_ENDPOINTS: APIEndpoints = {
@@ -58,6 +75,9 @@ const API_ENDPOINTS: APIEndpoints = {
     GET_ALL_USERS: `${ADMIN_API_BASE_URL}/get-customers`,
     UPDATE_USER: `${ADMIN_API_BASE_URL}/save-customer`,
     DELETE_USER: `${ADMIN_API_BASE_URL}/delete-customer`,
+  },
+  DASHBOARD: {
+    GET_DASHBOARD_DATA: `${ADMIN_API_BASE_URL}/get-dashboard-data`,
   },
   VEHICLE: {
     CREATE_VEHICLE: `${ADMIN_API_BASE_URL}/create-vehicle-type`,
@@ -93,6 +113,20 @@ const API_ENDPOINTS: APIEndpoints = {
     GET_ALL_TEMPLATES: `${ADMIN_API_BASE_URL}/get-message-templates`,
     SAVE_TEMPLATE: `${ADMIN_API_BASE_URL}/save-message-template`,
     DELETE_TEMPLATE: `${ADMIN_API_BASE_URL}/delete-message-template`,
+  },
+  FARES: {
+    CREATE_FARE: `${ADMIN_API_BASE_URL}/create-fare`,
+    GET_FARES: `${ADMIN_API_BASE_URL}/get-fares`,
+    GET_FARE: `${ADMIN_API_BASE_URL}/get-fare`,
+    UPDATE_FARE: `${ADMIN_API_BASE_URL}/update-fare`,
+    DELETE_FARE: `${ADMIN_API_BASE_URL}/delete-fare`,
+  },
+  CATEGORY: {
+    CREATE_CATEGORY: `${ADMIN_API_BASE_URL}/create-category`,
+    GET_ALL_CATEGORIES: `${ADMIN_API_BASE_URL}/get-categories`,
+    GET_CATEGORY: `${ADMIN_API_BASE_URL}/get-category`,
+    UPDATE_CATEGORY: `${ADMIN_API_BASE_URL}/update-category`,
+    DELETE_CATEGORY: `${ADMIN_API_BASE_URL}/delete-category`,
   },
 };
 

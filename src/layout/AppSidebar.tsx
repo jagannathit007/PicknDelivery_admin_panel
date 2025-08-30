@@ -24,7 +24,7 @@ import {
   UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
-import { MdDirectionsBike } from "react-icons/md";
+import { MdDirectionsBike, MdOutlineCategory } from "react-icons/md";
 
 type NavItem = {
   name: string;
@@ -49,11 +49,11 @@ const navItems: NavItem[] = [
   //   name: "Calendar",
   //   path: "/calendar",
   // },
-  {
-    icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
-  },
+  // {
+  //   icon: <UserCircleIcon />,
+  //   name: "User Profile",
+  //   path: "/profile",
+  // },
   // {
   //   name: "Forms",
   //   icon: <ListIcon />,
@@ -66,6 +66,11 @@ const navItems: NavItem[] = [
     // subItems: [
     //   { name: "Vehicle type", path: "/vehicle-type", pro: false },
     // ],
+  },
+  {
+    icon: <MdOutlineCategory />,
+    name: "Categories",
+    path: "/categories",
   },
   {
     icon: <LuUsers />,

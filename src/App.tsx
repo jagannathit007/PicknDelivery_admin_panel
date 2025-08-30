@@ -29,6 +29,7 @@ import Notification from "./pages/notification/Notification";
 import Coupons from "./pages/coupons/Coupons ";
 import Transactions from "./pages/Transactions";
 import Template from "./pages/Template";
+import Categories from "./pages/Categories/Categories";
 // import SocketStatus from "./components/common/SocketStatus";
 
 export default function App() {
@@ -79,6 +80,8 @@ export default function App() {
             {/* Template */}
             <Route path="/template" element={<Template />} />
 
+            {/* {category page} */}
+            <Route path="/categories" element={<Categories />} />
 
             {/* Tables */}
             <Route path="/basic-tables" element={<BasicTables />} />

@@ -2,6 +2,10 @@ import api from "./Api";
 import toastHelper from "../utils/toastHelper";
 import API_ENDPOINTS from "../constants/api-endpoints";
 
+interface Category {
+  _id: string;
+  name: string;
+}
 export interface Order {
   _id?: string;
   customer: {
@@ -10,6 +14,7 @@ export interface Order {
     mobile: string;
     image?: string;
   };
+  category?: Category;
   rider?: {
     _id: string;
     name: string;

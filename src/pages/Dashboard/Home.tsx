@@ -1,13 +1,28 @@
 import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
-import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
-import StatisticsChart from "../../components/ecommerce/StatisticsChart";
-import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
-import RecentOrders from "../../components/ecommerce/RecentOrders";
-import DemographicCard from "../../components/ecommerce/DemographicCard";
+import LiveRidersMap from "../../components/ecommerce/LiveRidersMap";
 // import SocketNotifications from "../../components/dashboard/SocketNotifications";
 import PageMeta from "../../components/common/PageMeta";
+import { useEffect, useState } from "react";
+import UserService from "../../services/UserService";
 
 export default function Home() {
+  const [dashboardData, setDashboardData] = useState({
+    liveRiders: [],
+    earnings: 0,
+    orders: 0,
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await UserService.getDashboardData({
+        selectedDate: new Date().toISOString(),
+      });
+      if (response && response.status === 'success') {
+        setDashboardData(response.data);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <>
       <PageMeta
@@ -16,25 +31,8 @@ export default function Home() {
       />
       <div className="grid grid-cols-12 gap-4 md:gap-6">
         <div className="col-span-12 space-y-6 xl:col-span-7">
-          <EcommerceMetrics />
-
-          <MonthlySalesChart />
-        </div>
-
-        <div className="col-span-12 xl:col-span-5">
-          <MonthlyTarget />
-        </div>
-
-        <div className="col-span-12">
-          <StatisticsChart />
-        </div>
-
-        <div className="col-span-12 xl:col-span-5">
-          <DemographicCard />
-        </div>
-
-        <div className="col-span-12 xl:col-span-7">
-          <RecentOrders />
+          <EcommerceMetrics earnings={dashboardData.earnings} orders={dashboardData.orders} />
+          <LiveRidersMap riders={dashboardData.liveRiders}  />
         </div>
         
         {/* <div className="col-span-12 xl:col-span-5">
