@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { FaRegEdit } from "react-icons/fa";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import AuthService from "../../services/AuthService";
 import toastHelper from "../../utils/toastHelper";
 import API_ENDPOINTS from "../../constants/api-endpoints";
+
 interface UserProfile {
   firstName: string;
   lastName: string;
@@ -30,16 +32,16 @@ interface InfoFieldProps {
   onChange: (field: keyof UserProfile, value: string) => void;
 }
 
-const InfoField = ({ 
-  icon, 
-  label, 
-  value, 
-  type = "text", 
-  isTextArea = false, 
-  field, 
+const InfoField = ({
+  icon,
+  label,
+  value,
+  type = "text",
+  isTextArea = false,
+  field,
   placeholder,
   isEditing,
-  onChange 
+  onChange,
 }: InfoFieldProps) => (
   <div className="group relative">
     <div className="flex items-start gap-4 p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-300">
@@ -52,7 +54,7 @@ const InfoField = ({
           {label}
         </label>
 
-        {isEditing ? (
+        {isEditing && field === "firstName" ? (
           isTextArea ? (
             <textarea
               value={value}
@@ -99,22 +101,36 @@ const InfoField = ({
           </div>
         </div>
       )}
+
+      {label === "First Name" && !isEditing && (
+        <div className="flex-shrink-0 flex items-center">
+          <button
+            onClick={() => onChange(field, value)}
+            className="group relative p-2 text-slate-700 rounded-full hover:bg-slate-100 transition-all duration-300"
+          >
+            <FaRegEdit className="w-5 h-5 transition-colors group-hover:text-blue-600" />
+          </button>
+        </div>
+      )}
     </div>
   </div>
 );
 
-export default function UserInfoCard({ userProfile, updateProfile }: UserInfoCardProps) {
+export default function UserInfoCard({
+  userProfile,
+  updateProfile,
+}: UserInfoCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     firstName: userProfile.firstName,
-    lastName: userProfile.lastName,
     email: userProfile.email,
-    phone: userProfile.phone,
-    bio: userProfile.bio,
   });
 
   const handleFieldChange = (field: keyof UserProfile, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === "firstName") {
+      setIsEditing(true);
+    }
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
@@ -125,101 +141,44 @@ export default function UserInfoCard({ userProfile, updateProfile }: UserInfoCar
         return;
       }
       const response = await fetch(`${API_ENDPOINTS.AUTH.PROFILE}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: `${formData.firstName} ${formData.lastName}`,
+          name: `${formData.firstName}`,
           emailId: formData.email,
-          phone: formData.phone,
-          bio: formData.bio,
         }),
       });
       const result = await response.json();
       if (result.status === 200) {
         updateProfile(formData);
-        toastHelper.showTost('Profile updated successfully!', 'success');
+        toastHelper.showTost("Profile updated successfully!", "success");
         setIsEditing(false);
       } else {
-        toastHelper.showTost(result.message || 'Failed to update profile', 'warning');
+        toastHelper.showTost(
+          result.message || "Failed to update profile",
+          "warning"
+        );
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || "Error updating profile";
-      toastHelper.showTost(errorMessage, 'error');
+      const errorMessage =
+        error.response?.data?.message || "Error updating profile";
+      toastHelper.showTost(errorMessage, "error");
     }
   };
 
   const handleCancel = () => {
     setFormData({
       firstName: userProfile.firstName,
-      lastName: userProfile.lastName,
       email: userProfile.email,
-      phone: userProfile.phone,
-      bio: userProfile.bio,
     });
     setIsEditing(false);
   };
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
-      <div className="relative px-8 pt-8 pb-6">
-        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600"></div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl flex items-center justify-center">
-              <svg
-                className="w-8 h-8 text-blue-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-slate-800 mb-1">
-                Personal Information
-              </h2>
-              <p className="text-slate-500">
-                Manage your account details and preferences
-              </p>
-            </div>
-          </div>
-
-          {!isEditing && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="group relative px-5 py-2.5 bg-slate-50 text-slate-700 rounded-xl border border-slate-200 font-medium transition-all duration-300 hover:bg-white hover:border-blue-300 hover:shadow-lg hover:shadow-blue-50"
-            >
-              <div className="flex items-center gap-2">
-                <svg
-                  className="w-4 h-4 transition-colors group-hover:text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                  />
-                </svg>
-                Edit Information
-              </div>
-            </button>
-          )}
-        </div>
-      </div>
-
+    <div className="overflow-hidden">
       <div className="px-8 pb-8">
         <div className="grid gap-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -259,20 +218,21 @@ export default function UserInfoCard({ userProfile, updateProfile }: UserInfoCar
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
               }
-              label="Last Name"
-              value={formData.lastName}
-              field="lastName"
-              placeholder="Enter your last name"
-              isEditing={isEditing}
+              label="Email Address"
+              value={formData.email}
+              field="email"
+              type="email"
+              placeholder="your.email@company.com"
+              isEditing={false}
               onChange={handleFieldChange}
             />
           </div>
 
-          <InfoField
+          {/* <InfoField
             icon={
               <svg
                 className="w-6 h-6 text-slate-600"
@@ -284,20 +244,19 @@ export default function UserInfoCard({ userProfile, updateProfile }: UserInfoCar
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth="2"
-                  d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                 />
               </svg>
             }
-            label="Email Address"
-            value={formData.email}
-            field="email"
-            type="email"
-            placeholder="your.email@company.com"
+            label="Last Name"
+            value={formData.lastName}
+            field="lastName"
+            placeholder="Enter your last name"
             isEditing={isEditing}
             onChange={handleFieldChange}
-          />
+          /> */}
 
-          <InfoField
+          {/* <InfoField
             icon={
               <svg
                 className="w-6 h-6 text-slate-600"
@@ -320,9 +279,9 @@ export default function UserInfoCard({ userProfile, updateProfile }: UserInfoCar
             placeholder="+1 (555) 000-0000"
             isEditing={isEditing}
             onChange={handleFieldChange}
-          />
+          /> */}
 
-          <InfoField
+          {/* <InfoField
             icon={
               <svg
                 className="w-6 h-6 text-slate-600"
@@ -345,7 +304,7 @@ export default function UserInfoCard({ userProfile, updateProfile }: UserInfoCar
             placeholder="Tell us about your professional background, expertise, and goals..."
             isEditing={isEditing}
             onChange={handleFieldChange}
-          />
+          /> */}
         </div>
 
         {isEditing && (

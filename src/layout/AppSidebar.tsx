@@ -1,30 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { PiCashRegisterLight } from "react-icons/pi";
-import { IoCarOutline } from "react-icons/io5";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { FaTruck } from "react-icons/fa"; // Import truck icon from react-icons
-import { RiCoupon2Line } from "react-icons/ri";
-import { CiBoxes } from "react-icons/ci";
-import { LuUsers } from "react-icons/lu";
-import { GrTemplate } from "react-icons/gr";
-
-// Assume these icons are imported from an icon library
 import {
   BoxCubeIcon,
-  CalenderIcon,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
-  ListIcon,
-  PageIcon,
   PieChartIcon,
   PlugInIcon,
-  TableIcon,
-  UserCircleIcon,
+  UserIcon,
+  BoxIconLine,
+  CloseLineIcon,
+  LogoutIcon
 } from "../icons";
+
 import { useSidebar } from "../context/SidebarContext";
-import { MdDirectionsBike, MdOutlineCategory } from "react-icons/md";
 
 type NavItem = {
   name: string;
@@ -35,7 +26,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    icon: <GridIcon />,
+    icon: <i className="fa-solid fa-house"></i>,
     name: "Dashboard",
     path: "/",
     // subItems: [
@@ -59,53 +50,66 @@ const navItems: NavItem[] = [
   //   icon: <ListIcon />,
   //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
   // },
+  // {
+  //   icon: <IoCarOutline />,
+  //   name: "Vehical Type",
+  //   path: "/vehicle-type",
+  // },
+  // {
+  //   icon: <i className="fa-solid fa-user"></i>,
+  //   name: "Users",
+  //   path: "/users",
+  // },
+  // {
+  //   icon: <MdDirectionsBike />,
+  //   name: "Riders",
+  //   path: "/riders",
+  // },
   {
-    icon: <IoCarOutline />,
-    name: "Vehical Type",
-    path: "/vehicle-type",
-    // subItems: [
-    //   { name: "Vehicle type", path: "/vehicle-type", pro: false },
-    // ],
-  },
-  {
-    icon: <MdOutlineCategory />,
-    name: "Categories",
-    path: "/categories",
-  },
-  {
-    icon: <LuUsers />,
-    name: "Users",
-    path: "/users",
-  },
-  {
-    icon: <MdDirectionsBike />,
-    name: "Riders",
-    path: "/riders",
-  },
-  {
-    icon: <CiBoxes />,
+    icon: <i className="fa-solid fa-list"></i>,
     name: "Order Listing",
     path: "/order-listing",
   },
   {
-    icon: <PiCashRegisterLight />,
+    icon: <i className="fa-solid fa-compass"></i>,
+    name: "Categories",
+    path: "/categories",
+  },
+  {
+    icon: <i className="fa-solid fa-border-all"></i>,
+    name: "Masters",
+    subItems: [
+      { name: "Vehicle Type", path: "/vehicle-type", pro: false },
+      { name: "Riders", path: "/riders", pro: false },
+      { name: "Users", path: "/users", pro: false },
+      { name: "Templates", path: "/template", pro: false },
+      { name: "Coupons", path: "/coupons", pro: false },
+    ],
+  },
+  {
+    icon: <i className="fa-solid fa-dollar-sign"></i>,
     name: "Transaction",
     path: "/transaction",
   },
+  // {
+  //   icon: <GrTemplate />,
+  //   name: "Templates",
+  //   path: "/template",
+  // },
   {
-    icon: <GrTemplate />,
-    name: "Template ",
-    path: "/template",
-  },
-  {
-    icon: <IoIosNotificationsOutline />,
+    icon: <i className="fa-solid fa-bell"></i>,
     name: "Notification",
     path: "/notification",
   },
+  // {
+  //   icon: <RiCoupon2Line />,
+  //   name: "Coupons",
+  //   path: "/coupons",
+  // },
   {
-    icon: <RiCoupon2Line />,
-    name: "Coupons",
-    path: "/coupons",
+    icon: <i className="fa-solid fa-arrow-right-from-bracket"></i>,
+    name: "Sign out",
+    path: "/signin",
   },
   // {
   //   name: "Tables",

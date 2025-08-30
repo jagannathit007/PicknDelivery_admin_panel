@@ -1,10 +1,12 @@
+import { useState, useEffect, ChangeEvent } from "react";
+
 interface UserProfile {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
   bio: string;
-  avatar: string;
+  avatar?: string; // Made optional to handle undefined cases explicitly
 }
 
 interface UserMetaCardProps {
@@ -12,6 +14,35 @@ interface UserMetaCardProps {
 }
 
 export default function UserMetaCard({ userProfile }: UserMetaCardProps) {
+  const defaultAvatar =
+    "https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png";
+
+  // Initialize avatar state with userProfile.avatar or defaultAvatar
+  const [avatar, setAvatar] = useState(userProfile.avatar || defaultAvatar);
+
+  // Update avatar when userProfile.avatar changes
+  useEffect(() => {
+    // Use defaultAvatar if userProfile.avatar is falsy (null, undefined, empty string)
+    setAvatar(userProfile.avatar || defaultAvatar);
+  }, [userProfile.avatar]);
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setAvatar(imageUrl);
+    }
+  };
+
+  // Clean up object URLs to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (avatar !== defaultAvatar && avatar !== userProfile.avatar) {
+        URL.revokeObjectURL(avatar);
+      }
+    };
+  }, [avatar, userProfile.avatar]);
+
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-50 via-white to-blue-50/30 shadow-xl border border-slate-100">
       <div className="absolute inset-0 opacity-5">
@@ -21,17 +52,29 @@ export default function UserMetaCard({ userProfile }: UserMetaCardProps) {
 
       <div className="relative p-8 lg:p-10">
         <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-8">
-          <div className="flex flex-col items-center  xl:flex-row gap-8 xl:gap-10">
+          <div className="flex flex-col items-center xl:flex-row gap-8 xl:gap-10">
             <div className="relative group">
-              <div className="w-32 h-32 lg:w-36 lg:h-36 rounded-full overflow-hidden ring-4 ring-white shadow-2xl">
-                <img
-                  src="https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png"
-                  alt="Profile"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-              <div className="absolute bottom-2 -right-1 w-8 h-8 bg-green-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
-              </div>
+              <input
+                type="file"
+                accept="image/*"
+                id="avatarUpload"
+                className="hidden"
+                onChange={handleImageChange}
+              />
+              <label htmlFor="avatarUpload" className="cursor-pointer">
+                <div className="w-32 h-32 lg:w-36 lg:h-36 rounded-full overflow-hidden ring-4 ring-white shadow-2xl">
+                  <img
+                    src={avatar}
+                    alt="Profile"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    onError={(e) => {
+                      // Fallback to defaultAvatar if the image fails to load
+                      e.currentTarget.src = defaultAvatar;
+                    }}
+                  />
+                </div>
+              </label>
+              <div className="absolute bottom-2 -right-1 w-8 h-8 bg-green-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center"></div>
             </div>
 
             <div className="text-center xl:text-left flex-1">
