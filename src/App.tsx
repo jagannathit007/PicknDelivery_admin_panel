@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { Routes, Route, HashRouter } from "react-router";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
@@ -35,7 +35,7 @@ import Categories from "./pages/Categories/Categories";
 export default function App() {
   return (
     <>
-      <Router>
+      <HashRouter>
         <ScrollToTop />
         <Routes>
           {/* Dashboard Layout */}
@@ -105,7 +105,7 @@ export default function App() {
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </Router>
+      </HashRouter>
       
       {/* Socket Status Component - Shows connection status and test buttons */}
       {/* <SocketStatus /> */}
