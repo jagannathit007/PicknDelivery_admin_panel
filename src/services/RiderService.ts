@@ -9,35 +9,24 @@ export interface Rider {
   emailId?: string;
   dateOfBirth?: string;
   address?: string;
-  
-  // Document Details
   aadharCard?: string;
   panCard?: string;
   licenceNumber?: string;
   rcBookNumber?: string;
-
-  // Profile Images
   image?: string;
-
-  // Documents Images
   rcBookImage?: string;
   aadharCardFrontImage?: string;
   aadharCardBackImage?: string;
   licenceImage?: string;
   panCardImage?: string;
   vehicleImage?: string;
-  
-  // Vehicle Details
   vehicleName?: string;
   vehicleNumber?: string;
   vehicleType?: any;
-
-  // Bank Details
   upiId?: string;
   bankName?: string;
   bankAccountNumber?: string;
   ifscCode?: string;
-
   isDuty: boolean;
   isActive: boolean;
   isVerified: boolean;
@@ -84,7 +73,7 @@ interface RiderPayload {
   rcBookNumber?: string;
   vehicleName?: string;
   vehicleNumber?: string;
-  vehicleType?: string; // This will be the ObjectId of the vehicle type
+  vehicleType?: string;
   upiId?: string;
   bankName?: string;
   bankAccountNumber?: string;
@@ -110,20 +99,21 @@ interface RiderServiceType {
 const RiderService: RiderServiceType = {
   getRiders: async (payload: RiderListPayload): Promise<RiderListResponse | false> => {
     try {
-      const response = await api.post(
+      const response = await api.post<RiderListResponse>(
         API_ENDPOINTS.RIDERS.GET_ALL_RIDERS,
         payload
       );
-      const result = response.data;
+      const result: RiderListResponse = response.data;
       if (result.status === 200) {
         return result;
       } else {
-        toastHelper.showTost(result.message || 'Failed to fetch riders', 'warning');
+        toastHelper.showTost(result.message || "Failed to fetch riders", "warning");
         return false;
       }
     } catch (error: any) {
       console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
     }
@@ -132,60 +122,78 @@ const RiderService: RiderServiceType = {
   saveRider: async (payload: RiderPayload): Promise<RiderResponse | false> => {
     try {
       const formData = new FormData();
-      
-      if (payload._id) {
-        formData.append('_id', payload._id);
-      }
-      formData.append('name', payload.name);
-      formData.append('mobile', payload.mobile);
-      formData.append('isActive', payload.isActive.toString());
-      formData.append('isVerified', payload.isVerified.toString());
-      
-      // Optional fields
-      if (payload.emailId) formData.append('emailId', payload.emailId);
-      if (payload.dateOfBirth) formData.append('dateOfBirth', payload.dateOfBirth);
-      if (payload.address) formData.append('address', payload.address);
-      if (payload.aadharCard) formData.append('aadharCard', payload.aadharCard);
-      if (payload.panCard) formData.append('panCard', payload.panCard);
-      if (payload.licenceNumber) formData.append('licenceNumber', payload.licenceNumber);
-      if (payload.rcBookNumber) formData.append('rcBookNumber', payload.rcBookNumber);
-      if (payload.vehicleName) formData.append('vehicleName', payload.vehicleName);
-      if (payload.vehicleNumber) formData.append('vehicleNumber', payload.vehicleNumber);
-      if (payload.vehicleType) formData.append('vehicleType', payload.vehicleType);
-      if (payload.upiId) formData.append('upiId', payload.upiId);
-      if (payload.bankName) formData.append('bankName', payload.bankName);
-      if (payload.bankAccountNumber) formData.append('bankAccountNumber', payload.bankAccountNumber);
-      if (payload.ifscCode) formData.append('ifscCode', payload.ifscCode);
-      
-      // Files
-      if (payload.image) formData.append('image', payload.image);
-      if (payload.rcBookImage) formData.append('rcBookImage', payload.rcBookImage);
-      if (payload.aadharCardFrontImage) formData.append('aadharCardFrontImage', payload.aadharCardFrontImage);
-      if (payload.aadharCardBackImage) formData.append('aadharCardBackImage', payload.aadharCardBackImage);
-      if (payload.licenceImage) formData.append('licenceImage', payload.licenceImage);
-      if (payload.panCardImage) formData.append('panCardImage', payload.panCardImage);
-      if (payload.vehicleImage) formData.append('vehicleImage', payload.vehicleImage);
 
-      const response = await api.post(
+      if (payload._id) {
+        formData.append("_id", payload._id);
+      }
+      formData.append("name", payload.name);
+      formData.append("mobile", payload.mobile);
+      formData.append("isActive", payload.isActive.toString());
+      formData.append("isVerified", payload.isVerified.toString());
+
+      if (payload.emailId) formData.append("emailId", payload.emailId);
+      if (payload.dateOfBirth)
+        formData.append("dateOfBirth", payload.dateOfBirth);
+      if (payload.address) formData.append("address", payload.address);
+      if (payload.aadharCard) formData.append("aadharCard", payload.aadharCard);
+      if (payload.panCard) formData.append("panCard", payload.panCard);
+      if (payload.licenceNumber)
+        formData.append("licenceNumber", payload.licenceNumber);
+      if (payload.rcBookNumber)
+        formData.append("rcBookNumber", payload.rcBookNumber);
+      if (payload.vehicleName)
+        formData.append("vehicleName", payload.vehicleName);
+      if (payload.vehicleNumber)
+        formData.append("vehicleNumber", payload.vehicleNumber);
+      if (payload.vehicleType)
+        formData.append("vehicleType", payload.vehicleType);
+      if (payload.upiId) formData.append("upiId", payload.upiId);
+      if (payload.bankName) formData.append("bankName", payload.bankName);
+      if (payload.bankAccountNumber)
+        formData.append("bankAccountNumber", payload.bankAccountNumber);
+      if (payload.ifscCode) formData.append("ifscCode", payload.ifscCode);
+
+      if (payload.image) formData.append("image", payload.image);
+      if (payload.rcBookImage)
+        formData.append("rcBookImage", payload.rcBookImage);
+      if (payload.aadharCardFrontImage)
+        formData.append("aadharCardFrontImage", payload.aadharCardFrontImage);
+      if (payload.aadharCardBackImage)
+        formData.append("aadharCardBackImage", payload.aadharCardBackImage);
+      if (payload.licenceImage)
+        formData.append("licenceImage", payload.licenceImage);
+      if (payload.panCardImage)
+        formData.append("panCardImage", payload.panCardImage);
+      if (payload.vehicleImage)
+        formData.append("vehicleImage", payload.vehicleImage);
+
+      const response = await api.post<RiderResponse>(
         API_ENDPOINTS.RIDERS.CREATE_RIDER,
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         }
       );
-      const result = response.data;
+      const result: RiderResponse = response.data;
       if (result.status === 200 && result.data) {
-        toastHelper.showTost(result.message || 'Rider saved successfully!', 'success');
+        toastHelper.showTost(
+          result.message || "Rider saved successfully!",
+          "success"
+        );
         return result;
       } else {
-        toastHelper.showTost(result.message || 'Failed to save rider', 'warning');
+        toastHelper.showTost(
+          result.message || "Failed to save rider",
+          "warning"
+        );
         return false;
       }
     } catch (error: any) {
       console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
     }
@@ -193,21 +201,28 @@ const RiderService: RiderServiceType = {
 
   deleteRider: async (id: string): Promise<RiderResponse | false> => {
     try {
-      const response = await api.post(
+      const response = await api.post<RiderResponse>(
         API_ENDPOINTS.RIDERS.DELETE_RIDER,
         { _id: id }
       );
-      const result = response.data;
+      const result: RiderResponse = response.data;
       if (result.status === 200 && result.data) {
-        toastHelper.showTost(result.message || 'Rider deleted successfully!', 'success');
+        toastHelper.showTost(
+          result.message || "Rider deleted successfully!",
+          "success"
+        );
         return result;
       } else {
-        toastHelper.showTost(result.message || 'Failed to delete rider', 'warning');
+        toastHelper.showTost(
+          result.message || "Failed to delete rider",
+          "warning"
+        );
         return false;
       }
     } catch (error: any) {
       console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
     }
@@ -215,20 +230,24 @@ const RiderService: RiderServiceType = {
 
   getRiderById: async (id: string): Promise<RiderResponse | false> => {
     try {
-      const response = await api.post(
+      const response = await api.post<RiderResponse>(
         API_ENDPOINTS.RIDERS.GET_RIDER,
         { _id: id }
       );
-      const result = response.data;
+      const result: RiderResponse = response.data;
       if (result.status === 200 && result.data) {
         return result;
       } else {
-        toastHelper.showTost(result.message || 'Failed to fetch rider', 'warning');
+        toastHelper.showTost(
+          result.message || "Failed to fetch rider",
+          "warning"
+        );
         return false;
       }
     } catch (error: any) {
       console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
     }

@@ -5,16 +5,14 @@ import {
   FaSortUp,
   FaSortDown,
   FaUsers,
-  FaFilter,
   FaPlus,
   FaEdit,
-  FaTrash,
   FaCheckCircle,
   FaTimesCircle,
 } from "react-icons/fa";
 import UserService, { Customer, CustomerPayload } from "../../services/UserService";
 import CustomerModal from "../../components/common/CustomerModal";
-import Swal from "sweetalert2";
+
 
 interface SortConfig {
   key: keyof Customer | null;
@@ -37,7 +35,7 @@ function UserTable() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+
   const [totalPages, setTotalPages] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
   const itemsPerPage = 10;
@@ -168,33 +166,7 @@ function UserTable() {
     }
   };
 
-  // Handle customer delete
-  const handleDeleteCustomer = async (customerId: string) => {
-    const confirmed = await Swal.fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          cancelButtonText: "No, cancel!",
-    
-          confirmButtonText: 'Yes, delete it!'
-        })
-    
-        if (!confirmed.isConfirmed) return;
 
-
-    setIsDeleting(true);
-    try {
-      const response = await UserService.deleteCustomer(customerId);
-      if (response) {
-        fetchCustomers(currentPage, searchTerm);
-      }
-    } catch (error) {
-      console.error("Error deleting customer:", error);
-    } finally {
-      setIsDeleting(false);
-    }
-  };
 
   // Handle edit customer
   const handleEditCustomer = (customer: Customer) => {
@@ -479,14 +451,7 @@ function UserTable() {
                         >
                           <FaEdit className="w-3 h-3" />
                         </button>
-                        {/* <button
-                          onClick={() => handleDeleteCustomer(customer._id!)}
-                          disabled={isDeleting}
-                          className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded disabled:opacity-50"
-                          title="Delete"
-                        >
-                          <FaTrash className="w-3 h-3" />
-                        </button> */}
+
                       </div>
                     </td>
                   </tr>

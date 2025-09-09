@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
-import Label from "../form/Label";
-import Input from "../form/input/InputField";
-import Button from "../ui/button/Button";
-import { Customer, CustomerPayload } from "../../services/UserService";
-
-const imageBaseUrl = import.meta.env.VITE_BASE_URL;
+import type { Customer, CustomerPayload } from "../../services/UserService";
 
 interface CustomerModalProps {
   isOpen: boolean;
@@ -14,13 +9,95 @@ interface CustomerModalProps {
   isLoading?: boolean;
 }
 
-export default function CustomerModal({
+// Button component with proper TypeScript typing
+interface ButtonProps {
+  children: React.ReactNode;
+  type?: "button" | "submit" | "reset";
+  variant?: "primary" | "outline";
+  className?: string;
+  disabled?: boolean;
+  onClick?: () => void;
+}
+
+const Button = ({
+  children,
+  type = "button",
+  variant = "primary",
+  className = "",
+  disabled = false,
+  onClick,
+}: ButtonProps) => {
+  const baseClasses = "py-2 px-4 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2";
+  
+  const variantClasses = {
+    primary: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
+    outline: "border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-blue-500"
+  };
+  
+  return (
+    <button
+      type={type}
+      className={`${baseClasses} ${variantClasses[variant]} ${className}`}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
+
+// Input component
+interface InputProps {
+  placeholder?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: boolean;
+  type?: string;
+}
+
+const Input = ({
+  placeholder,
+  value,
+  onChange,
+  error = false,
+  type = "text"
+}: InputProps) => {
+  return (
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+        error 
+          ? "border-red-500 focus:ring-red-300" 
+          : "border-gray-300 focus:ring-blue-300"
+      }`}
+    />
+  );
+};
+
+// Label component
+interface LabelProps {
+  children: React.ReactNode;
+}
+
+const Label = ({ children }: LabelProps) => {
+  return (
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      {children}
+    </label>
+  );
+};
+
+// Main CustomerModal component
+const CustomerModal = ({
   isOpen,
   onClose,
   onSave,
   customer,
   isLoading = false,
-}: CustomerModalProps) {
+}: CustomerModalProps) => {
   const [formData, setFormData] = useState<CustomerPayload>({
     name: "",
     mobile: "",
@@ -42,7 +119,7 @@ export default function CustomerModal({
         isActive: customer.isActive,
       });
       if (customer.image) {
-        setImagePreview( imageBaseUrl + '/' + customer.image);
+        setImagePreview(customer.image);
       }
     } else {
       setFormData({
@@ -116,17 +193,11 @@ export default function CustomerModal({
     onSave(payload);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSubmit(e);
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200 w-full max-w-md mx-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200 w-full max-w-md">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-800">
@@ -149,7 +220,7 @@ export default function CustomerModal({
               <div className="mt-2 flex items-center space-x-4">
                 <div className="relative">
                   <img
-                    src={imagePreview ? imagePreview : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu2XUjKXh-LnMkWDgqaXlVXJ6dJTfLBxIbnQ&s"}
+                    src={imagePreview || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80"}
                     alt="Profile"
                     className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
                   />
@@ -176,7 +247,7 @@ export default function CustomerModal({
             {/* Name Field */}
             <div>
               <Label>
-                Name <span className="text-error-500">*</span>
+                Name <span className="text-red-500">*</span>
               </Label>
               <Input
                 placeholder="Enter customer name"
@@ -185,14 +256,14 @@ export default function CustomerModal({
                 error={!!errors.name}
               />
               {errors.name && (
-                <p className="mt-1 text-sm text-error-500">{errors.name}</p>
+                <p className="mt-1 text-sm text-red-500">{errors.name}</p>
               )}
             </div>
 
             {/* Mobile Field */}
             <div>
               <Label>
-                Mobile Number <span className="text-error-500">*</span>
+                Mobile Number <span className="text-red-500">*</span>
               </Label>
               <Input
                 placeholder="Enter 10-digit mobile number"
@@ -201,7 +272,7 @@ export default function CustomerModal({
                 error={!!errors.mobile}
               />
               {errors.mobile && (
-                <p className="mt-1 text-sm text-error-500">{errors.mobile}</p>
+                <p className="mt-1 text-sm text-red-500">{errors.mobile}</p>
               )}
             </div>
 
@@ -245,4 +316,6 @@ export default function CustomerModal({
       </div>
     </div>
   );
-}
+};
+
+export default CustomerModal;

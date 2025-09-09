@@ -22,7 +22,7 @@ import VehicleType from "./pages/Vehicle/VehicleType";
 import Users from "./pages/Users";
 import OrderListing from "./pages/OrderListing";
 import Riders from "./pages/Riders";
-import Deliveries from './components/dashboard/Deliveries';
+// import Deliveries from './components/dashboard/Deliveries';
 import Earnings from './components/dashboard/Earnings';
 import LiveRiders from './components/dashboard/Riders';
 import Notification from "./pages/notification/Notification";
@@ -42,7 +42,7 @@ export default function App() {
           <Route element={<AppLayout />}>
             <Route index path="/" element={<Home />} />
 
-            <Route path="/deliveries" element={<Deliveries />} />
+            {/* <Route path="/deliveries" element={<Deliveries />} /> */}
             <Route path="/earnings" element={<Earnings />} />
             <Route path="/live-riders" element={<LiveRiders />} />
 

@@ -1,5 +1,4 @@
 import api from "./Api";
-import toastHelper from "../utils/toastHelper";
 import API_ENDPOINTS from "../constants/api-endpoints";
 
 interface Category {
@@ -99,7 +98,7 @@ class OrderService {
   static async getOrders(payload: OrderListPayload = {}): Promise<OrderListResponse> {
     try {
       const response = await api.post(API_ENDPOINTS.ORDERS.GET_ORDERS, payload);
-      return response.data;
+      return response.data as OrderListResponse;
     } catch (error: any) {
       console.error("Error fetching orders:", error);
       throw error;
@@ -110,7 +109,7 @@ class OrderService {
   static async assignOrder(payload: AssignOrderPayload): Promise<OrderResponse> {
     try {
       const response = await api.post(API_ENDPOINTS.ORDERS.ASSIGN_ORDER, payload);
-      return response.data;
+      return response.data as OrderResponse;
     } catch (error: any) {
       console.error("Error assigning order:", error);
       throw error;
@@ -121,7 +120,7 @@ class OrderService {
   static async cancelOrder(payload: CancelOrderPayload): Promise<OrderResponse> {
     try {
       const response = await api.post(API_ENDPOINTS.ORDERS.CANCEL_ORDER, payload);
-      return response.data;
+      return response.data as OrderResponse;
     } catch (error: any) {
       console.error("Error cancelling order:", error);
       throw error;

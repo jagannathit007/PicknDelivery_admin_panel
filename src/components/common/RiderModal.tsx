@@ -4,7 +4,7 @@ import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
 import { Rider, RiderPayload } from "../../services/RiderService";
 import VehicleTypeService, { VehicleType } from "../../services/VehicleTypeService";
-import { FaMotorcycle, FaIdCard, FaCreditCard, FaCar } from "react-icons/fa";
+import { FaMotorcycle, FaIdCard, FaCreditCard } from "react-icons/fa";
 
 const imageBaseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -255,11 +255,11 @@ export default function RiderModal({
     onSave(payload);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSubmit(e);
-    }
-  };
+  // const handleKeyPress = (e: React.KeyboardEvent) => {
+  //   if (e.key === 'Enter') {
+  //     handleSubmit(e);
+  //   }
+  // };
 
   if (!isOpen) return null;
 

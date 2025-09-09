@@ -2,6 +2,12 @@ import api from './Api';
 import toastHelper from '../utils/toastHelper';
 import API_ENDPOINTS from '../constants/api-endpoints';
 
+// Define the structure of the API response
+interface ApiResponse<T> {
+  data: T;
+}
+
+// Define the Transaction interface
 export interface Transaction {
   _id?: string;
   userId: string;
@@ -14,6 +20,7 @@ export interface Transaction {
   updatedAt: string;
 }
 
+// Define the TransactionPayload interface
 export interface TransactionPayload {
   userId: string;
   userType: 'customer' | 'admin' | 'rider';
@@ -23,6 +30,7 @@ export interface TransactionPayload {
   extraFields?: any;
 }
 
+// Define the TransactionFilters interface
 export interface TransactionFilters {
   page?: number;
   limit?: number;
@@ -33,6 +41,7 @@ export interface TransactionFilters {
   endDate?: string;
 }
 
+// Define the TransactionListResponse interface
 interface TransactionListResponse {
   status: number;
   message: string;
@@ -47,34 +56,38 @@ interface TransactionListResponse {
   };
 }
 
+// Define the TransactionResponse interface
 interface TransactionResponse {
   status: number;
   message: string;
   data: Transaction | boolean;
 }
 
+// Define the TransactionServiceType interface
 interface TransactionServiceType {
   getTransactions: (payload: TransactionFilters) => Promise<TransactionListResponse | false>;
   getTransactionById: (id: string) => Promise<TransactionResponse | false>;
 }
 
+// Define the TransactionService
 const TransactionService: TransactionServiceType = {
   getTransactions: async (payload: TransactionFilters): Promise<TransactionListResponse | false> => {
     try {
-      const response = await api.post(
+      // Specify the expected response type for api.post
+      const response = await api.post<ApiResponse<TransactionListResponse>>(
         API_ENDPOINTS.TRANSACTIONS.GET_ALL_TRANSACTIONS,
         payload
       );
-      const result = response.data;
-      if (result.status === 200) {
-        return result;
+      const result = response.data; // Type is now ApiResponse<TransactionListResponse>
+      if (result.data.status === 200) {
+        return result.data; // Return the TransactionListResponse
       } else {
-        toastHelper.showTost(result.message || 'Failed to fetch transactions', 'warning');
+        toastHelper.showTost(result.data.message || 'Failed to fetch transactions', 'warning');
         return false;
       }
     } catch (error: any) {
       console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
+      const errorMessage = error.response?.data?.message || 'Something went wrong';
       toastHelper.error(errorMessage);
       return false;
     }
@@ -82,20 +95,21 @@ const TransactionService: TransactionServiceType = {
 
   getTransactionById: async (id: string): Promise<TransactionResponse | false> => {
     try {
-      const response = await api.post(
+      // Specify the expected response type for api.post
+      const response = await api.post<ApiResponse<TransactionResponse>>(
         API_ENDPOINTS.TRANSACTIONS.GET_TRANSACTION,
         { _id: id }
       );
-      const result = response.data;
-      if (result.status === 200) {
-        return result;
+      const result = response.data; // Type is now ApiResponse<TransactionResponse>
+      if (result.data.status === 200) {
+        return result.data; // Return the TransactionResponse
       } else {
-        toastHelper.showTost(result.message || 'Failed to fetch transaction', 'warning');
+        toastHelper.showTost(result.data.message || 'Failed to fetch transaction', 'warning');
         return false;
       }
     } catch (error: any) {
       console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
+      const errorMessage = error.response?.data?.message || 'Something went wrong';
       toastHelper.error(errorMessage);
       return false;
     }

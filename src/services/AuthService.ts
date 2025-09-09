@@ -1,17 +1,20 @@
 import api from "./Api";
-import toastHelper from "../utils/toastHelper"
+import toastHelper from "../utils/toastHelper";
 import API_ENDPOINTS from "../constants/api-endpoints";
 
+// Define the LoginPayload interface
 interface LoginPayload {
   email: string;
   password: string;
 }
 
+// Define the ChangePasswordPayload interface
 interface ChangePasswordPayload {
   oldPassword: string;
   newPassword: string;
 }
 
+// Define the LoginResponse interface
 interface LoginResponse {
   status: number;
   message: string;
@@ -25,6 +28,7 @@ interface LoginResponse {
   } | null;
 }
 
+// Define the ProfileResponse interface
 interface ProfileResponse {
   status: number;
   message: string;
@@ -35,6 +39,14 @@ interface ProfileResponse {
   } | null;
 }
 
+// Define the ChangePasswordResponse interface
+interface ChangePasswordResponse {
+  status: number;
+  message: string;
+  data: boolean;
+}
+
+// Define the AuthServiceType interface
 interface AuthServiceType {
   signIn: (payload: LoginPayload) => Promise<LoginResponse | false>;
   logout: () => void;
@@ -45,16 +57,15 @@ interface AuthServiceType {
   changePassword: (payload: ChangePasswordPayload) => Promise<boolean>;
 }
 
+// AuthService implementation
 const AuthService: AuthServiceType = {
   signIn: async (payload: LoginPayload): Promise<LoginResponse | false> => {
     try {
-      const response = await api.post(
-        `${API_ENDPOINTS.AUTH.LOGIN}`,
-        {
-          emailId: payload.email,
-          password: payload.password
-        }
-      );
+      // Type the response as LoginResponse
+      const response = await api.post<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, {
+        emailId: payload.email,
+        password: payload.password,
+      });
       const result = response.data;
       if (result.status === 200 && result.data) {
         // Store token and user data
@@ -62,13 +73,13 @@ const AuthService: AuthServiceType = {
         localStorage.setItem('user', JSON.stringify(result.data.admin));
         console.log('Login successful, token and user data stored.');
         toastHelper.showTost(result.message || 'Login successful!', 'success');
-        return result.data;
+        return result; // Return the full LoginResponse
       } else {
         toastHelper.showTost(result.message || 'Login failed', 'warning');
-        return result.data;
+        return false;
       }
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       const errorMessage = error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
@@ -101,14 +112,12 @@ const AuthService: AuthServiceType = {
         toastHelper.error('No authentication token found');
         return false;
       }
-      const response = await api.post(
-        `${API_ENDPOINTS.AUTH.PROFILE}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      // Type the response as ProfileResponse
+      const response = await api.post<ProfileResponse>(API_ENDPOINTS.AUTH.PROFILE, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const result = response.data;
       if (result.status === 200 && result.data) {
         return result;
@@ -117,6 +126,7 @@ const AuthService: AuthServiceType = {
         return false;
       }
     } catch (error: any) {
+      console.error(error);
       const errorMessage = error.response?.data?.message || "Error fetching profile";
       toastHelper.error(errorMessage);
       return false;
@@ -130,16 +140,17 @@ const AuthService: AuthServiceType = {
         toastHelper.error('No authentication token found');
         return false;
       }
-      const response = await api.post(
-        `${API_ENDPOINTS.AUTH.CHANGE_PASSWORD}`,
+      // Type the response as ChangePasswordResponse
+      const response = await api.post<ChangePasswordResponse>(
+        API_ENDPOINTS.AUTH.CHANGE_PASSWORD,
         {
           oldPassword: payload.oldPassword,
-          newPassword: payload.newPassword
+          newPassword: payload.newPassword,
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const result = response.data;
@@ -151,6 +162,7 @@ const AuthService: AuthServiceType = {
         return false;
       }
     } catch (error: any) {
+      console.error(error);
       const errorMessage = error.response?.data?.message || "Error changing password";
       toastHelper.error(errorMessage);
       return false;
@@ -159,3 +171,4 @@ const AuthService: AuthServiceType = {
 };
 
 export default AuthService;
+export type { LoginPayload, ChangePasswordPayload, LoginResponse, ProfileResponse };

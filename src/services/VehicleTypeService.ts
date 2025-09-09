@@ -13,7 +13,7 @@ export interface VehicleType {
   updatedAt: string;
 }
 
-interface VehicleTypeListResponse {
+export interface VehicleTypeListResponse {
   status: number;
   message: string;
   data: {
@@ -27,33 +27,42 @@ interface VehicleTypeListResponse {
   };
 }
 
-interface VehicleTypeListPayload {
+export interface VehicleTypeListPayload {
   search?: string;
   page?: number;
   limit?: number;
 }
 
 interface VehicleTypeServiceType {
-  getVehicleTypes: (payload?: VehicleTypeListPayload) => Promise<VehicleTypeListResponse | false>;
+  getVehicleTypes: (
+    payload?: VehicleTypeListPayload
+  ) => Promise<VehicleTypeListResponse | false>;
 }
 
 const VehicleTypeService: VehicleTypeServiceType = {
-  getVehicleTypes: async (payload: VehicleTypeListPayload = {}): Promise<VehicleTypeListResponse | false> => {
+  getVehicleTypes: async (
+    payload: VehicleTypeListPayload = {}
+  ): Promise<VehicleTypeListResponse | false> => {
     try {
-      const response = await api.post(
+      const response = await api.post<VehicleTypeListResponse>(
         API_ENDPOINTS.VEHICLE_TYPES.GET_ALL_VEHICLE_TYPES,
         payload
       );
       const result = response.data;
+
       if (result.status === 200) {
         return result;
       } else {
-        toastHelper.showTost(result.message || 'Failed to fetch vehicle types', 'warning');
+        toastHelper.showTost(
+          result.message || "Failed to fetch vehicle types",
+          "warning"
+        );
         return false;
       }
     } catch (error: any) {
-      console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
+      console.error(error);
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
     }
@@ -61,4 +70,3 @@ const VehicleTypeService: VehicleTypeServiceType = {
 };
 
 export default VehicleTypeService;
-export type { VehicleTypeListPayload };

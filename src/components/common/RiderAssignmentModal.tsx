@@ -15,7 +15,7 @@ const RiderAssignmentModal: React.FC<RiderAssignmentModalProps> = ({
   isOpen,
   onClose,
   onAssign,
-  orderId,
+  // orderId,
   currentRiderId,
 }) => {
   const [riders, setRiders] = useState<Rider[]>([]);

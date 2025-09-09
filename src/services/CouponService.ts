@@ -2,6 +2,7 @@ import api from "./Api";
 import toastHelper from "../utils/toastHelper";
 import API_ENDPOINTS from "../constants/api-endpoints";
 
+// Define the Coupon interface
 interface Coupon {
   _id?: string;
   code: string;
@@ -13,6 +14,7 @@ interface Coupon {
   isActive: boolean;
 }
 
+// Define the CouponListResponse interface
 interface CouponListResponse {
   docs: Coupon[];
   totalDocs: number;
@@ -23,18 +25,21 @@ interface CouponListResponse {
   hasPrevPage: boolean;
 }
 
+// Define the CouponResponse interface
 interface CouponResponse {
   status: number;
   message: string;
   data: Coupon | boolean;
 }
 
+// Define the CouponListPayload interface
 interface CouponListPayload {
   search?: string;
   page?: number;
   limit?: number;
 }
 
+// Define the CouponPayload interface
 interface CouponPayload {
   _id?: string;
   code: string;
@@ -46,25 +51,37 @@ interface CouponPayload {
   isActive: boolean;
 }
 
+// Define the CouponServiceType interface
 interface CouponServiceType {
   getCoupons: (payload: CouponListPayload) => Promise<CouponListResponse | false>;
   saveCoupon: (payload: CouponPayload) => Promise<CouponResponse | false>;
   deleteCoupon: (id: string) => Promise<CouponResponse | false>;
 }
 
+// Define the API response type for api.post
+interface ApiResponse<T> {
+  data: T;
+}
+
+// CouponService implementation
 const CouponService: CouponServiceType = {
   getCoupons: async (payload: CouponListPayload): Promise<CouponListResponse | false> => {
     try {
-      const response = await api.post(API_ENDPOINTS.COUPON.GET_ALL_COUPONS, payload);
+      // Type the response as ApiResponse<CouponListResponse>
+      const response = await api.post<ApiResponse<CouponListResponse>>(
+        API_ENDPOINTS.COUPON.GET_ALL_COUPONS,
+        payload
+      );
       const result = response.data;
-      if (result.status === 200 && result.data) {
+      if (result.data && 'docs' in result.data) {
+        // Ensure result.data is a CouponListResponse
         return result.data;
       } else {
-        toastHelper.showTost(result.message || 'Failed to fetch coupons', 'warning');
+        toastHelper.showTost('Failed to fetch coupons', 'warning');
         return false;
       }
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       const errorMessage = error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
@@ -73,17 +90,21 @@ const CouponService: CouponServiceType = {
 
   saveCoupon: async (payload: CouponPayload): Promise<CouponResponse | false> => {
     try {
-      const response = await api.post(API_ENDPOINTS.COUPON.SAVE_COUPON, payload);
+      // Type the response as ApiResponse<CouponResponse>
+      const response = await api.post<ApiResponse<CouponResponse>>(
+        API_ENDPOINTS.COUPON.SAVE_COUPON,
+        payload
+      );
       const result = response.data;
-      if (result.status === 200) {
-        toastHelper.showTost(result.message || 'Coupon saved successfully!', 'success');
-        return result;
+      if (result.data.status === 200) {
+        toastHelper.showTost(result.data.message || 'Coupon saved successfully!', 'success');
+        return result.data;
       } else {
-        toastHelper.showTost(result.message || 'Failed to save coupon', 'warning');
+        toastHelper.showTost(result.data.message || 'Failed to save coupon', 'warning');
         return false;
       }
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       const errorMessage = error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
@@ -92,17 +113,21 @@ const CouponService: CouponServiceType = {
 
   deleteCoupon: async (id: string): Promise<CouponResponse | false> => {
     try {
-      const response = await api.post(API_ENDPOINTS.COUPON.DELETE_COUPON, { _id: id });
+      // Type the response as ApiResponse<CouponResponse>
+      const response = await api.post<ApiResponse<CouponResponse>>(
+        API_ENDPOINTS.COUPON.DELETE_COUPON,
+        { _id: id }
+      );
       const result = response.data;
-      if (result.status === 200) {
-        toastHelper.showTost(result.message || 'Coupon deleted successfully!', 'success');
-        return result;
+      if (result.data.status === 200) {
+        toastHelper.showTost(result.data.message || 'Coupon deleted successfully!', 'success');
+        return result.data;
       } else {
-        toastHelper.showTost(result.message || 'Failed to delete coupon', 'warning');
+        toastHelper.showTost(result.data.message || 'Failed to delete coupon', 'warning');
         return false;
       }
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       const errorMessage = error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
@@ -111,4 +136,4 @@ const CouponService: CouponServiceType = {
 };
 
 export default CouponService;
-export type { Coupon, CouponListPayload, CouponPayload };
+export type { Coupon, CouponListPayload, CouponPayload, CouponListResponse, CouponResponse };

@@ -5,11 +5,9 @@ import {
   FaSortUp,
   FaSortDown,
   FaMotorcycle,
-  FaFilter,
   FaPlus,
   FaEdit,
   FaTrash,
-  FaEye,
   FaCheckCircle,
   FaTimesCircle,
   FaClock,
@@ -17,7 +15,6 @@ import {
   FaPhone,
   FaEnvelope,
   FaIdCard,
-  FaCreditCard,
 } from "react-icons/fa";
 import RiderService, { Rider, RiderPayload } from "../../services/RiderService";
 import RiderModal from "../../components/common/RiderModal";

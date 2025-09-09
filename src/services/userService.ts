@@ -1,10 +1,9 @@
-
 import api from "./Api";
 import toastHelper from "../utils/toastHelper";
 import API_ENDPOINTS from "../constants/api-endpoints";
 
 interface Customer {
-  _id?: string;
+  _id: string;
   name: string;
   mobile: string;
   image?: string;
@@ -15,16 +14,14 @@ interface Customer {
 }
 
 interface CustomerListResponse {
-
-    docs: Customer[];
-    totalDocs: number;
-    limit: number;
-    page: number;
-    totalPages: number;
-    hasNextPage: boolean;
-    hasPrevPage: boolean;
-  };
-
+  docs: Customer[];
+  totalDocs: number;
+  limit: number;
+  page: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
 
 interface CustomerResponse {
   status: number;
@@ -46,7 +43,6 @@ interface CustomerPayload {
   image?: File;
 }
 
-
 interface Rider {
   _id: string;
   name: string;
@@ -56,6 +52,7 @@ interface Rider {
     lng: number;
   };
 }
+
 interface DashboardData {
   liveRiders: Rider[];
   earnings: number;
@@ -63,9 +60,16 @@ interface DashboardData {
 }
 
 interface DashboardResponse {
-  status: string;
+  status: string; // Changed from number to string to match 'success'
   message: string;
   data: DashboardData;
+}
+
+// New interface for the API response wrapper for getCustomers
+interface CustomerListApiResponse {
+  status: number;
+  message: string;
+  data: CustomerListResponse;
 }
 
 interface DashboardPayload {
@@ -82,15 +86,15 @@ interface UserServiceType {
 const UserService: UserServiceType = {
   getCustomers: async (payload: CustomerListPayload): Promise<CustomerListResponse | false> => {
     try {
-      const response = await api.post(
+      const response = await api.post<CustomerListApiResponse>(
         API_ENDPOINTS.AUTH.GET_ALL_USERS,
         payload
       );
       const result = response.data;
       if (result.status === 200 && result.data) {
-        return result.data;
+        return result.data; // Return the nested CustomerListResponse
       } else {
-        toastHelper.showTost(result.message || 'Failed to fetch customers', 'warning');
+        toastHelper.showTost(result.message || "Failed to fetch customers", "warning");
         return false;
       }
     } catch (error: any) {
@@ -104,33 +108,31 @@ const UserService: UserServiceType = {
   saveCustomer: async (payload: CustomerPayload): Promise<CustomerResponse | false> => {
     try {
       const formData = new FormData();
-      
       if (payload._id) {
-        formData.append('_id', payload._id);
+        formData.append("_id", payload._id);
       }
-      formData.append('name', payload.name);
-      formData.append('mobile', payload.mobile);
-      formData.append('isActive', payload.isActive.toString());
-      
+      formData.append("name", payload.name);
+      formData.append("mobile", payload.mobile);
+      formData.append("isActive", payload.isActive.toString());
       if (payload.image) {
-        formData.append('image', payload.image);
+        formData.append("image", payload.image);
       }
 
-      const response = await api.post(
+      const response = await api.post<CustomerResponse>(
         API_ENDPOINTS.AUTH.UPDATE_USER,
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         }
       );
       const result = response.data;
       if (result.status === 200) {
-        toastHelper.showTost(result.message || 'Customer saved successfully!', 'success');
+        toastHelper.showTost(result.message || "Customer saved successfully!", "success");
         return result;
       } else {
-        toastHelper.showTost(result.message || 'Failed to save customer', 'warning');
+        toastHelper.showTost(result.message || "Failed to save customer", "warning");
         return false;
       }
     } catch (error: any) {
@@ -143,16 +145,16 @@ const UserService: UserServiceType = {
 
   deleteCustomer: async (id: string): Promise<CustomerResponse | false> => {
     try {
-      const response = await api.post(
+      const response = await api.post<CustomerResponse>(
         API_ENDPOINTS.AUTH.DELETE_USER,
         { _id: id }
       );
       const result = response.data;
       if (result.status === 200) {
-        toastHelper.showTost(result.message || 'Customer deleted successfully!', 'success');
+        toastHelper.showTost(result.message || "Customer deleted successfully!", "success");
         return result;
       } else {
-        toastHelper.showTost(result.message || 'Failed to delete customer', 'warning');
+        toastHelper.showTost(result.message || "Failed to delete customer", "warning");
         return false;
       }
     } catch (error: any) {
@@ -162,15 +164,19 @@ const UserService: UserServiceType = {
       return false;
     }
   },
+
   getDashboardData: async (payload: DashboardPayload): Promise<DashboardResponse | false> => {
     try {
-      const response = await api.post(API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_DATA, payload);
+      const response = await api.post<DashboardResponse>(
+        API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_DATA,
+        payload
+      );
       const result = response.data;
       console.log("Dashboard Data:", result);
-      if (result.status === 200 && result.data) {
+      if (result.status === "success" && result.data) {
         return result;
       } else {
-        toastHelper.showTost(result.message || 'Failed to fetch dashboard data', 'warning');
+        toastHelper.showTost(result.message || "Failed to fetch dashboard data", "warning");
         return false;
       }
     } catch (error: any) {
@@ -183,4 +189,14 @@ const UserService: UserServiceType = {
 };
 
 export default UserService;
-export type { Customer, CustomerListPayload, CustomerPayload ,Rider, DashboardData, DashboardPayload, DashboardResponse};
+export type {
+  Customer,
+  CustomerListPayload,
+  CustomerPayload,
+  Rider,
+  DashboardData,
+  DashboardPayload,
+  DashboardResponse,
+  CustomerListResponse,
+  CustomerResponse,
+};

@@ -5,23 +5,23 @@ import {
   FaEdit,
   FaTrash,
 } from "react-icons/fa";
-import CategoryService, { Category, CategoryPayload } from "../../services/CategoryService";
+import CategoryService, { Category } from "../../services/CategoryService";
 import toastHelper from "../../utils/toastHelper";
 
-interface CategoryListPayload {
-  docs: Category[];
-  totalDocs: number;
-  limit: number;
-  page: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-}
+// interface CategoryListPayload {
+//   docs: Category[];
+//   totalDocs: number;
+//   limit: number;
+//   page: number;
+//   totalPages: number;
+//   hasNextPage: boolean;
+//   hasPrevPage: boolean;
+// }
 
 function Categories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-  const [formData, setFormData] = useState<Category>({
+  const [formData, setFormData] = useState<Omit<Category, 'createdAt'>>({
     _id: "",
     name: "",
   });
@@ -78,7 +78,7 @@ function Categories() {
         toastHelper.showTost(response.message || 'Category saved successfully!', 'success');
         setFormData({
           _id: "",
-          name: "",
+          name: ""
         });
         setSelectedCategory(null);
         fetchCategories(currentPage, searchTerm);
@@ -94,7 +94,7 @@ function Categories() {
     setSelectedCategory(category);
     setFormData({
       _id: category._id || "",
-      name: category.name,
+      name: category.name
     });
   };
 

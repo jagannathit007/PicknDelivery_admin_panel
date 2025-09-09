@@ -2,12 +2,14 @@ import api from "./Api";
 import toastHelper from "../utils/toastHelper";
 import API_ENDPOINTS from "../constants/api-endpoints";
 
+// Define the Category interface
 interface Category {
   _id?: string;
   name: string;
   createdAt: string;
 }
 
+// Define the CategoryListResponse interface
 interface CategoryListResponse {
   docs: Category[];
   totalDocs: number;
@@ -18,42 +20,57 @@ interface CategoryListResponse {
   hasPrevPage: boolean;
 }
 
+// Define the CategoryResponse interface
 interface CategoryResponse {
   status: number;
   message: string;
   data: Category | null;
 }
 
+// Define the CategoryListPayload interface
 interface CategoryListPayload {
   search?: string;
   page?: number;
   limit?: number;
 }
 
+// Define the CategoryPayload interface
 interface CategoryPayload {
   _id?: string;
   name: string;
 }
 
+// Define the CategoryServiceType interface
 interface CategoryServiceType {
   getCategories: (payload: CategoryListPayload) => Promise<CategoryListResponse | false>;
   saveCategory: (payload: CategoryPayload) => Promise<CategoryResponse | false>;
   deleteCategory: (id: string) => Promise<CategoryResponse | false>;
 }
 
+// Define the API response type for api.post
+interface ApiResponse<T> {
+  data: T;
+}
+
+// CategoryService implementation
 const CategoryService: CategoryServiceType = {
   getCategories: async (payload: CategoryListPayload): Promise<CategoryListResponse | false> => {
     try {
-      const response = await api.post(API_ENDPOINTS.CATEGORY.GET_ALL_CATEGORIES, payload);
+      // Type the response as ApiResponse<CategoryListResponse>
+      const response = await api.post<ApiResponse<CategoryListResponse>>(
+        API_ENDPOINTS.CATEGORY.GET_ALL_CATEGORIES,
+        payload
+      );
       const result = response.data;
-      if (result.status === 200 && result.data) {
+      if (result.data && 'docs' in result.data) {
+        // Ensure result.data is a CategoryListResponse
         return result.data;
       } else {
-        toastHelper.showTost(result.message || 'Failed to fetch categories', 'warning');
+        toastHelper.showTost('Failed to fetch categories', 'warning');
         return false;
       }
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       const errorMessage = error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
@@ -62,12 +79,11 @@ const CategoryService: CategoryServiceType = {
 
   saveCategory: async (payload: CategoryPayload): Promise<CategoryResponse | false> => {
     try {
-      let response;
-      if (payload._id) {
-        response = await api.post(API_ENDPOINTS.CATEGORY.UPDATE_CATEGORY, payload);
-      } else {
-        response = await api.post(API_ENDPOINTS.CATEGORY.CREATE_CATEGORY, payload);
-      }
+      // Type the response as CategoryResponse (no nested data property)
+      const response = await api.post<CategoryResponse>(
+        payload._id ? API_ENDPOINTS.CATEGORY.UPDATE_CATEGORY : API_ENDPOINTS.CATEGORY.CREATE_CATEGORY,
+        payload
+      );
       const result = response.data;
       if (result.status === 200) {
         toastHelper.showTost(result.message || 'Category saved successfully!', 'success');
@@ -77,7 +93,7 @@ const CategoryService: CategoryServiceType = {
         return false;
       }
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       const errorMessage = error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
@@ -86,7 +102,11 @@ const CategoryService: CategoryServiceType = {
 
   deleteCategory: async (id: string): Promise<CategoryResponse | false> => {
     try {
-      const response = await api.post(API_ENDPOINTS.CATEGORY.DELETE_CATEGORY, { id });
+      // Type the response as CategoryResponse (no nested data property)
+      const response = await api.post<CategoryResponse>(
+        API_ENDPOINTS.CATEGORY.DELETE_CATEGORY,
+        { id }
+      );
       const result = response.data;
       if (result.status === 200) {
         toastHelper.showTost(result.message || 'Category deleted successfully!', 'success');
@@ -96,7 +116,7 @@ const CategoryService: CategoryServiceType = {
         return false;
       }
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       const errorMessage = error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
@@ -105,4 +125,4 @@ const CategoryService: CategoryServiceType = {
 };
 
 export default CategoryService;
-export type { Category, CategoryListPayload, CategoryPayload };
+export type { Category, CategoryListPayload, CategoryPayload, CategoryListResponse, CategoryResponse };

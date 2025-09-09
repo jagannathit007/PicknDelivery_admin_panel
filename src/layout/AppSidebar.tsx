@@ -1,18 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { IoIosNotificationsOutline } from "react-icons/io";
 import { FaTruck } from "react-icons/fa"; // Import truck icon from react-icons
 import {
   BoxCubeIcon,
   ChevronDownIcon,
-  GridIcon,
   HorizontaLDots,
   PieChartIcon,
   PlugInIcon,
-  UserIcon,
-  BoxIconLine,
-  CloseLineIcon,
-  LogoutIcon
 } from "../icons";
 
 import { useSidebar } from "../context/SidebarContext";

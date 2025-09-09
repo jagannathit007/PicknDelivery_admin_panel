@@ -85,11 +85,11 @@ export default function SignInForm() {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSignIn();
-    }
-  };
+  // const handleKeyPress = (e: React.KeyboardEvent) => {
+  //   if (e.key === 'Enter') {
+  //     handleSignIn();
+  //   }
+  // };
 
   return (
     <div className="flex flex-col flex-1">

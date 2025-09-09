@@ -1,6 +1,5 @@
 import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
 import LiveRidersMap from "../../components/ecommerce/LiveRidersMap";
-// import SocketNotifications from "../../components/dashboard/SocketNotifications";
 import PageMeta from "../../components/common/PageMeta";
 import { useEffect, useState } from "react";
 import UserService from "../../services/UserService";

@@ -1,9 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
+import  { useState, useEffect, useMemo } from "react";
 import {
   FaSearch,
-  FaSort,
-  FaSortUp,
-  FaSortDown,
   FaFilter,
   FaMapMarkerAlt,
   FaUser,
@@ -12,9 +9,7 @@ import {
   FaCalendar,
   FaClock,
   FaDollarSign,
-  FaEye,
   FaCheckCircle,
-  FaTimesCircle,
   FaExclamationTriangle,
   FaTruck,
   FaCheck,
@@ -35,12 +30,7 @@ interface SortConfig {
   direction: "ascending" | "descending";
 }
 
-interface Customer {
-  _id?: string;
-  name: string;
-  mobile: string;
-  image?: string;
-}
+import type { Customer } from "../../services/UserService";
 
 const imageBaseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -199,22 +189,22 @@ function OrderListing() {
   }, []);
 
   // Handle sorting
-  const handleSort = (key: keyof Order | "fare.payableAmount") => {
-    let direction: "ascending" | "descending" = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
-    setSortConfig({ key, direction });
-  };
+  // const handleSort = (key: keyof Order | "fare.payableAmount") => {
+  //   let direction: "ascending" | "descending" = "ascending";
+  //   if (sortConfig.key === key && sortConfig.direction === "ascending") {
+  //     direction = "descending";
+  //   }
+  //   setSortConfig({ key, direction });
+  // };
 
   // Get sort icon based on current sort state
-  const getSortIcon = (key: keyof Order) => {
-    if (sortConfig.key !== key)
-      return <FaSort className="ml-1 text-gray-400" />;
-    if (sortConfig.direction === "ascending")
-      return <FaSortUp className="ml-1 text-gray-600" />;
-    return <FaSortDown className="ml-1 text-gray-600" />;
-  };
+  // const getSortIcon = (key: keyof Order) => {
+  //   if (sortConfig.key !== key)
+  //     return <FaSort className="ml-1 text-gray-400" />;
+  //   if (sortConfig.direction === "ascending")
+  //     return <FaSortUp className="ml-1 text-gray-600" />;
+  //   return <FaSortDown className="ml-1 text-gray-600" />;
+  // };
 
   // Format date for display
   const formatDate = (dateString: string) => {

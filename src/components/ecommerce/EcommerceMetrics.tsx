@@ -6,7 +6,12 @@ import {
 } from "../../icons";
 import Badge from "../ui/badge/Badge";
 
-export default function EcommerceMetrics({ earnings, orders }) {
+interface EcommerceMetricsProps {
+  earnings: number;
+  orders: number;
+}
+
+export default function EcommerceMetrics({ earnings, orders }: EcommerceMetricsProps) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
       {/* <!-- Metric Item Start --> */}
@@ -21,7 +26,7 @@ export default function EcommerceMetrics({ earnings, orders }) {
               Earnings
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              ${parseFloat(earnings).toLocaleString()}
+              ${earnings.toLocaleString()}
             </h4>
           </div>
           <Badge color="success">
@@ -43,7 +48,7 @@ export default function EcommerceMetrics({ earnings, orders }) {
               Orders
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {parseInt(orders).toLocaleString()}
+              {orders.toLocaleString()}
             </h4>
           </div>
 

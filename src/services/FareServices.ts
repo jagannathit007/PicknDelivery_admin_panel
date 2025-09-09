@@ -64,8 +64,8 @@ interface FareServiceType {
 const FareService: FareServiceType = {
   getFares: async (payload: FareListPayload): Promise<FareListResponse | boolean> => {
     try {
-      const response = await api.post(API_ENDPOINTS.FARE.GET_FARES, payload, {});
-      const result = response.data;
+      const response = await api.post(API_ENDPOINTS.FARES.GET_FARES, payload, {});
+      const result = response.data as FareListResponse; // Type assertion
       if (result.status === 200) {
         return result;
       } else {
@@ -83,11 +83,11 @@ const FareService: FareServiceType = {
   getFare: async (id: string): Promise<FareResponse | boolean> => {
     try {
       const response = await api.post(
-        API_ENDPOINTS.FARE.GET_FARE,
+        API_ENDPOINTS.FARES.GET_FARE,
         { _id: id },
         {}
       );
-      const result = response.data;
+      const result = response.data as FareResponse; // Type assertion
       if (result.status === 200) {
         return result;
       } else {
@@ -105,7 +105,7 @@ const FareService: FareServiceType = {
   createFare: async (payload: FarePayload): Promise<FareResponse | boolean> => {
     try {
       const response = await api.post(
-        API_ENDPOINTS.FARE.CREATE_FARE,
+        API_ENDPOINTS.FARES.CREATE_FARE,
         {
           vehicleType: payload.vehicleType,
           kmRanges: payload.kmRanges,
@@ -117,8 +117,7 @@ const FareService: FareServiceType = {
         }
       );
 
-      const result = response.data;
-
+      const result = response.data as FareResponse; // Type assertion
       if (result.status === 200) {
         toastHelper.showTost(result.message || "Fare created successfully!", "success");
         return result;
@@ -137,9 +136,9 @@ const FareService: FareServiceType = {
   updateFare: async (payload: FarePayload): Promise<FareResponse | boolean> => {
     try {
       const response = await api.post(
-        API_ENDPOINTS.FARE.UPDATE_FARE,
+        API_ENDPOINTS.FARES.UPDATE_FARE,
         {
-          id: payload._id, // id required for backend
+          id: payload._id,
           vehicleType: payload.vehicleType,
           kmRanges: payload.kmRanges,
           vulnerabilityCharge: payload.vulnerabilityCharge,
@@ -150,8 +149,7 @@ const FareService: FareServiceType = {
         }
       );
 
-      const result = response.data;
-
+      const result = response.data as FareResponse; // Type assertion
       if (result.status === 200) {
         toastHelper.showTost(result.message || "Fare updated successfully!", "success");
         return result;
@@ -170,11 +168,11 @@ const FareService: FareServiceType = {
   deleteFare: async (id: string): Promise<FareResponse | boolean> => {
     try {
       const response = await api.post(
-        API_ENDPOINTS.FARE.DELETE_FARE,
+        API_ENDPOINTS.FARES.DELETE_FARE,
         { id: id },
         {}
       );
-      const result = response.data;
+      const result = response.data as FareResponse; // Type assertion
       if (result.status === 200) {
         toastHelper.showTost(result.message || "Fare deleted successfully!", "success");
         return result;

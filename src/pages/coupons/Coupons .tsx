@@ -5,18 +5,18 @@ import {
   FaEdit,
   FaTrash,
 } from "react-icons/fa";
-import CouponService, { Coupon, CouponPayload } from "../../services/CouponService";
+import CouponService, { Coupon } from "../../services/CouponService";
 import toastHelper from "../../utils/toastHelper";
 
-interface CouponListPayload {
-  docs: Coupon[];
-  totalDocs: number;
-  limit: number;
-  page: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-}
+// interface CouponListPayload {
+//   docs: Coupon[];
+//   totalDocs: number;
+//   limit: number;
+//   page: number;
+//   totalPages: number;
+//   hasNextPage: boolean;
+//   hasPrevPage: boolean;
+// }
 
 function Coupons() {
   const [coupons, setCoupons] = useState<Coupon[]>([]);

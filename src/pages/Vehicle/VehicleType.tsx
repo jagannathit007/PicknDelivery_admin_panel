@@ -4,7 +4,6 @@ import {
   FaSort,
   FaSortUp,
   FaSortDown,
-  FaFilter,
   FaPlus,
   FaEdit,
   FaTrash,
@@ -19,6 +18,30 @@ import VehicleService, { Vehicle, VehiclePayload } from "../../services/VehicleS
 import toastHelper from "../../utils/toastHelper";
 import api from "../../services/Api";
 import API_ENDPOINTS from "../../constants/api-endpoints";
+
+// Interface for a generic API response
+interface ApiResponse<T> {
+  status: number;
+  data: T | null;
+  message?: string;
+}
+
+// Interface for the Vehicle list response
+interface VehicleListResponse {
+  docs: Vehicle[];
+  totalPages: number;
+  totalDocs: number;
+}
+
+// Interface for the Fare list response
+interface FareListResponse {
+  data: Fare[];
+}
+
+// Interface for fare creation/update response
+interface FareResponse {
+  fare: Fare;
+}
 
 interface SortConfig {
   key: keyof Vehicle | null;
@@ -49,7 +72,6 @@ interface FareManagementModalProps {
 const FareManagementModal: React.FC<FareManagementModalProps> = ({ isOpen, onClose, vehicle }) => {
   const [fares, setFares] = useState<Fare[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
   const [newFare, setNewFare] = useState({
     minKm: "",
     maxKm: "",
@@ -63,11 +85,13 @@ const FareManagementModal: React.FC<FareManagementModalProps> = ({ isOpen, onClo
     if (!vehicle?._id) return;
     setLoading(true);
     try {
-      const response = await api.post(API_ENDPOINTS.FARES.GET_FARES, { type: vehicle._id });
-      if (response.data.status === 200) {
+      const response = (await api.post(API_ENDPOINTS.FARES.GET_FARES, {
+        type: vehicle._id,
+      })) as ApiResponse<FareListResponse>;
+      if (response.status === 200 && response.data) {
         setFares(response.data.data);
       } else {
-        toastHelper.error(response.data.message || "Failed to fetch fares");
+        toastHelper.error(response.message || "Failed to fetch fares");
       }
     } catch (error) {
       console.error("Error fetching fares:", error);
@@ -90,9 +114,7 @@ const FareManagementModal: React.FC<FareManagementModalProps> = ({ isOpen, onClo
       setEditingFare({
         ...editingFare,
         kmRanges: editingFare.kmRanges.map((range, index) =>
-          index === 0
-            ? { ...range, [name]: Number(value) }
-            : range
+          index === 0 ? { ...range, [name]: Number(value) } : range
         ),
         vulnerabilityCharge: name === "vulnerabilityCharge" ? Number(value) : editingFare.vulnerabilityCharge,
       });
@@ -118,13 +140,13 @@ const FareManagementModal: React.FC<FareManagementModalProps> = ({ isOpen, onClo
         ],
         vulnerabilityCharge: Number(newFare.vulnerabilityCharge),
       };
-      const response = await api.post(API_ENDPOINTS.FARES.CREATE_FARE, payload);
-      if (response.data.status === 200) {
+      const response = (await api.post(API_ENDPOINTS.FARES.CREATE_FARE, payload)) as ApiResponse<FareResponse>;
+      if (response.status === 200) {
         toastHelper.success("Fare added successfully");
         setNewFare({ minKm: "", maxKm: "", ratePerKm: "", vulnerabilityCharge: "" });
         fetchFares();
       } else {
-        toastHelper.error(response.data.message || "Failed to add fare");
+        toastHelper.error(response.message || "Failed to add fare");
       }
     } catch (error) {
       console.error("Error adding fare:", error);
@@ -146,13 +168,13 @@ const FareManagementModal: React.FC<FareManagementModalProps> = ({ isOpen, onClo
         kmRanges: editingFare.kmRanges,
         vulnerabilityCharge: editingFare.vulnerabilityCharge,
       };
-      const response = await api.post(API_ENDPOINTS.FARES.UPDATE_FARE, payload);
-      if (response.data.status === 200) {
+      const response = (await api.post(API_ENDPOINTS.FARES.UPDATE_FARE, payload)) as ApiResponse<FareResponse>;
+      if (response.status === 200) {
         toastHelper.success("Fare updated successfully");
         setEditingFare(null);
         fetchFares();
       } else {
-        toastHelper.error(response.data.message || "Failed to update fare");
+        toastHelper.error(response.message || "Failed to update fare");
       }
     } catch (error) {
       console.error("Error updating fare:", error);
@@ -166,12 +188,12 @@ const FareManagementModal: React.FC<FareManagementModalProps> = ({ isOpen, onClo
   const handleDeleteFare = async (fareId: string) => {
     setLoading(true);
     try {
-      const response = await api.post(API_ENDPOINTS.FARES.DELETE_FARE, { _id: fareId });
-      if (response.data.status === 200) {
+      const response = (await api.post(API_ENDPOINTS.FARES.DELETE_FARE, { _id: fareId })) as ApiResponse<null>;
+      if (response.status === 200) {
         toastHelper.success("Fare deleted successfully");
         fetchFares();
       } else {
-        toastHelper.error(response.data.message || "Failed to delete fare");
+        toastHelper.error(response.message || "Failed to delete fare");
       }
     } catch (error) {
       console.error("Error deleting fare:", error);
@@ -689,12 +711,13 @@ const VehicleTypeComponent = () => {
         page,
         limit: itemsPerPage,
         search,
-      });
-
-      if (response && response.data) {
+      }) as ApiResponse<VehicleListResponse>;
+      if (response.status === 200 && response.data) {
         setVehicles(response.data.docs);
         setTotalPages(response.data.totalPages);
         setTotalDocs(response.data.totalDocs);
+      } else {
+        toastHelper.error(response.message || "Failed to fetch vehicles");
       }
     } catch (error) {
       console.error("Error fetching vehicles:", error);
@@ -719,8 +742,7 @@ const VehicleTypeComponent = () => {
 
   // Get sort icon based on current sort state
   const getSortIcon = (key: keyof Vehicle) => {
-    if (sortConfig.key !== key)
-      return <FaSort className="ml-1 text-gray-400" />;
+    if (sortConfig.key !== key) return <FaSort className="ml-1 text-gray-400" />;
     if (sortConfig.direction === "ascending")
       return <FaSortUp className="ml-1 text-gray-600" />;
     return <FaSortDown className="ml-1 text-gray-600" />;
@@ -786,14 +808,18 @@ const VehicleTypeComponent = () => {
   const handleSaveVehicle = async (vehicleData: VehiclePayload) => {
     setIsSaving(true);
     try {
-      const response = await VehicleService[vehicleData._id ? "updateVehicle" : "createVehicle"](vehicleData);
-      if (response) {
+      const response = await VehicleService[vehicleData._id ? "updateVehicle" : "createVehicle"](
+        vehicleData
+      ) as ApiResponse<Vehicle>;
+      if (response.status === 200) {
         setIsAddingModalOpen(false);
         setSelectedVehicle(null);
         fetchVehicles(currentPage, searchTerm);
         toastHelper.success(
           vehicleData._id ? "Vehicle updated successfully" : "Vehicle added successfully"
         );
+      } else {
+        toastHelper.error(response.message || "Failed to save vehicle");
       }
     } catch (error) {
       console.error("Error saving vehicle:", error);
@@ -809,12 +835,14 @@ const VehicleTypeComponent = () => {
 
     setIsDeleting(true);
     try {
-      const response = await VehicleService.deleteVehicle(vehicleToDelete);
-      if (response) {
+      const response = (await VehicleService.deleteVehicle(vehicleToDelete)) as ApiResponse<null>;
+      if (response.status === 200) {
         fetchVehicles(currentPage, searchTerm);
         setShowConfirmModal(false);
         setVehicleToDelete(null);
         toastHelper.success("Vehicle deleted successfully");
+      } else {
+        toastHelper.error(response.message || "Failed to delete vehicle");
       }
     } catch (error) {
       console.error("Error deleting vehicle:", error);

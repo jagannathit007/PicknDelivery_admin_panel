@@ -4,12 +4,11 @@ import {
   FaMotorcycle,
   FaUser,
   FaCheckSquare,
-  FaSquare,
   FaPaperPlane,
   FaRegSquare,
 } from "react-icons/fa";
-import RiderService, { Rider, RiderListPayload } from "../../services/RiderService";
-import UserService, { Customer, CustomerListPayload } from "../../services/UserService";
+import RiderService, { Rider } from "../../services/RiderService";
+import UserService, { Customer } from "../../services/UserService";
 import toastHelper from "../../utils/toastHelper";
 
 function Notification() {
@@ -119,15 +118,15 @@ function Notification() {
   };
 
   // Format date for display
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
+  // const formatDate = (dateString?: string) => {
+  //   if (!dateString) return "N/A";
+  //   const date = new Date(dateString);
+  //   return date.toLocaleDateString("en-US", {
+  //     year: "numeric",
+  //     month: "short",
+  //     day: "numeric",
+  //   });
+  // };
 
   return (
     <div className="p-6 flex flex-col lg:flex-row gap-6">
