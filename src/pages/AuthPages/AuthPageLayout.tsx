@@ -18,7 +18,7 @@ export default function AuthLayout({
             {/* <!-- ===== Common Grid Shape Start ===== --> */}
             <GridShape />
             <div className="flex flex-col items-center max-w-xs">
-              <Link to="/" className=" mb-4 flex items-center gap-4">
+              <Link to="/home" className=" mb-4 flex items-center gap-4">
                 <FaTruck className="text-4xl text-white dark:text-gray-300" />
                 <span className="text-2xl font-bold text-white dark:text-gray-300">
                   PicknDeliver
