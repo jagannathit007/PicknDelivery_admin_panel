@@ -1,23 +1,12 @@
-<<<<<<< HEAD
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-=======
 import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
 
 /** @type {import('tailwindcss').Config} */
 export default {
->>>>>>> 124458bb147c6203b1189dd2f18c65f980428749
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-<<<<<<< HEAD
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-=======
   darkMode: 'class',
   theme: {
     extend: {
@@ -71,5 +60,4 @@ export default {
     },
   },
   plugins: [forms, typography],
->>>>>>> 124458bb147c6203b1189dd2f18c65f980428749
 }
