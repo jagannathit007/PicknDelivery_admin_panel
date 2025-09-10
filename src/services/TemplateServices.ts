@@ -4,9 +4,7 @@ import toastHelper from "../utils/toastHelper";
 import API_ENDPOINTS from "../constants/api-endpoints";
 
 // Define the structure of the API response
-interface ApiResponse<T> {
-  data: T;
-}
+// Removed ApiResponse wrapper; axios.post will be typed with the final response body directly
 
 // Define the MessageTemplate interface
 export interface MessageTemplate {
@@ -74,9 +72,10 @@ const MessageTemplateService: MessageTemplateServiceType = {
     payload: MessageTemplateListPayload
   ): Promise<MessageTemplateListResponse | false> => {
     try {
-      const response: any = await api.post<
-        ApiResponse<MessageTemplateListResponse>
-      >(API_ENDPOINTS.MESSAGE_TEMPLATES.GET_ALL_TEMPLATES, payload);
+      const response = await api.post<MessageTemplateListResponse>(
+        API_ENDPOINTS.MESSAGE_TEMPLATES.GET_ALL_TEMPLATES,
+        payload
+      );
 
       // Check if the response structure matches what we expect
       if (response.data && response.data.status === 200) {
@@ -101,9 +100,10 @@ const MessageTemplateService: MessageTemplateServiceType = {
   ): Promise<MessageTemplateResponse | false> => {
     try {
       console.log("Saving template with payload:", payload);
-      const response: any = await api.post<
-        ApiResponse<MessageTemplateResponse>
-      >(API_ENDPOINTS.MESSAGE_TEMPLATES.SAVE_TEMPLATE, payload);
+      const response = await api.post<MessageTemplateResponse>(
+        API_ENDPOINTS.MESSAGE_TEMPLATES.SAVE_TEMPLATE,
+        payload
+      );
 
       if (response.data && response.data.status === 200) {
         toastHelper.showTost(
@@ -130,9 +130,10 @@ const MessageTemplateService: MessageTemplateServiceType = {
     id: string
   ): Promise<MessageTemplateResponse | false> => {
     try {
-      const response: any = await api.post<
-        ApiResponse<MessageTemplateResponse>
-      >(API_ENDPOINTS.MESSAGE_TEMPLATES.DELETE_TEMPLATE, { _id: id });
+      const response = await api.post<MessageTemplateResponse>(
+        API_ENDPOINTS.MESSAGE_TEMPLATES.DELETE_TEMPLATE,
+        { _id: id }
+      );
 
       if (response.data && response.data.status === 200) {
         toastHelper.showTost(
