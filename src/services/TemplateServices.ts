@@ -3,9 +3,7 @@ import toastHelper from '../utils/toastHelper';
 import API_ENDPOINTS from '../constants/api-endpoints';
 
 // Define the structure of the API response
-interface ApiResponse<T> {
-  data: T;
-}
+// Removed ApiResponse wrapper; axios.post will be typed with the final response body directly
 
 // Define the MessageTemplate interface
 export interface MessageTemplate {
@@ -65,7 +63,7 @@ interface MessageTemplateServiceType {
 const MessageTemplateService: MessageTemplateServiceType = {
   getMessageTemplates: async (payload: MessageTemplateListPayload): Promise<MessageTemplateListResponse | false> => {
     try {
-      const response = await api.post<ApiResponse<MessageTemplateListResponse>>(
+      const response = await api.post<MessageTemplateListResponse>(
         API_ENDPOINTS.MESSAGE_TEMPLATES.GET_ALL_TEMPLATES,
         payload
       );
@@ -89,7 +87,7 @@ const MessageTemplateService: MessageTemplateServiceType = {
   saveMessageTemplate: async (payload: MessageTemplatePayload): Promise<MessageTemplateResponse | false> => {
     try {
       console.log('Saving template with payload:', payload);
-      const response = await api.post<ApiResponse<MessageTemplateResponse>>(
+      const response = await api.post<MessageTemplateResponse>(
         API_ENDPOINTS.MESSAGE_TEMPLATES.SAVE_TEMPLATE,
         payload
       );
@@ -112,7 +110,7 @@ const MessageTemplateService: MessageTemplateServiceType = {
 
   deleteMessageTemplate: async (id: string): Promise<MessageTemplateResponse | false> => {
     try {
-      const response = await api.post<ApiResponse<MessageTemplateResponse>>(
+      const response = await api.post<MessageTemplateResponse>(
         API_ENDPOINTS.MESSAGE_TEMPLATES.DELETE_TEMPLATE,
         { _id: id }
       );

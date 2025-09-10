@@ -51,12 +51,14 @@ const Template = () => {
       );
       
       // Check the response structure
-      if (response && response.status === 200) {
+      if (!response) {
+        toastHelper.showTost("Unable to retrieve template list. Please try again.", "error");
+      } else if (response.status === 200) {
         setTemplates(response.data.docs);
         setTotalDocs(response.data.totalDocs);
         setTotalPages(response.data.totalPages);
       } else {
-        const errorMessage = response?.message || "Unable to retrieve template list. Please try again.";
+        const errorMessage = response.message || "Unable to retrieve template list. Please try again.";
         toastHelper.showTost(errorMessage, "error");
       }
     } catch (error) {
@@ -108,12 +110,11 @@ const Template = () => {
             ? aValue.localeCompare(bValue)
             : bValue.localeCompare(aValue);
         }
-
-        if (aValue < bValue) {
-          return sortConfig.direction === "ascending" ? -1 : 1;
-        }
-        if (aValue > bValue) {
-          return sortConfig.direction === "ascending" ? 1 : -1;
+        if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
+          if (aValue === bValue) return 0;
+          return sortConfig.direction === "ascending" 
+            ? (aValue ? 1 : -1)
+            : (aValue ? -1 : 1);
         }
         return 0;
       });
@@ -135,12 +136,14 @@ const Template = () => {
         payload
       );
       
-      if (response && response.status === 200) {
+      if (!response) {
+        toastHelper.showTost("Failed to save template. Please try again.", "error");
+      } else if (response.status === 200) {
         await fetchTemplates();
         setSelectedTemplate(null);
         toastHelper.showTost(response.message || "Template saved successfully!", "success");
       } else {
-        const errorMessage = response?.message || "Failed to save template. Please try again.";
+        const errorMessage = response.message || "Failed to save template. Please try again.";
         toastHelper.showTost(errorMessage, "error");
       }
     } catch (error) {
@@ -171,12 +174,14 @@ const Template = () => {
         templateId
       );
       
-      if (response && response.status === 200) {
+      if (!response) {
+        toastHelper.showTost("Failed to delete template. Please try again.", "error");
+      } else if (response.status === 200) {
         await fetchTemplates();
         setSelectedTemplate(null);
         toastHelper.showTost(response.message || "Template deleted successfully!", "success");
       } else {
-        const errorMessage = response?.message || "Failed to delete template. Please try again.";
+        const errorMessage = response.message || "Failed to delete template. Please try again.";
         toastHelper.showTost(errorMessage, "error");
       }
     } catch (error) {
