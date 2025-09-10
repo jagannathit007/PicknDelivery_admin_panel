@@ -15,6 +15,7 @@ import {
   FaCheck,
   FaTimes,
   FaChevronDown,
+  FaCompass,
 } from "react-icons/fa";
 import OrderService, { Order } from "../../services/OrderService";
 import RiderService from "../../services/RiderService";
@@ -275,17 +276,29 @@ function OrderListing() {
   };
 
   // Handle rider assignment
-  const handleAssignRider = async (riderId: string) => {
-    if (!selectedOrderForRider) return;
+const handleAssignRider = async (riderId: string) => {
+  if (!selectedOrderForRider) return;
 
-    if (
-      selectedOrderForRider.status === "delivered" ||
-      selectedOrderForRider.status === "cancelled"
-    ) {
-      toastHelper.error("Cannot assign rider to completed or cancelled order!");
-      return;
-    }
+  if (
+    selectedOrderForRider.status === "delivered" ||
+    selectedOrderForRider.status === "cancelled"
+  ) {
+    toastHelper.error("Cannot assign rider to completed or cancelled order!");
+    return;
+  }
 
+  const result = await Swal.fire({
+    title: "Assign Rider?",
+    text: `Are you sure you want to assign this order to the selected rider?`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, assign it!",
+    cancelButtonText: "No, cancel",
+  });
+
+  if (result.isConfirmed) {
     try {
       const response = await OrderService.assignOrder({
         orderId: selectedOrderForRider._id!,
@@ -295,6 +308,8 @@ function OrderListing() {
       if (response.status === 200) {
         toastHelper.showTost(response.message, "success");
         fetchOrders(currentPage, selectedCustomer?._id || "", statusFilter, riderFilter);
+        // Close the rider assignment modal after successful assignment
+        setIsRiderAssignmentModalOpen(false);
       } else {
         toastHelper.error(response.message || "Failed to assign rider");
       }
@@ -302,7 +317,8 @@ function OrderListing() {
       console.error("Error assigning rider:", error);
       toastHelper.error("Failed to assign rider");
     }
-  };
+  }
+};
 
   // Handle order cancellation
   const handleCancelOrder = async (orderId: string) => {
@@ -731,7 +747,7 @@ function OrderListing() {
                                 {order.vehicleType.name}
                               </div>
                               <div className="flex items-center text-sm text-gray-500">
-                                <FaMotorcycle className="w-4 h-4 mr-1" />
+                                <FaCompass className="w-4 h-4 mr-1" />
                                 {order.category ? order.category.name : 'N/A'}
                               </div>
                             </div>
