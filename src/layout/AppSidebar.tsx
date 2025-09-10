@@ -22,7 +22,7 @@ const navItems: NavItem[] = [
   {
     icon: <i className="fa-solid fa-house"></i>,
     name: "Dashboard",
-    path: "/",
+    path: "/home",
     // subItems: [
     //   { name: "Deliveries", path: "/deliveries", pro: false },
     //   { name: "Earnings", path: "/earnings", pro: false },
@@ -360,7 +360,7 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link to="/" className="flex items-center">
+        <Link to="/home" className="flex items-center">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <FaTruck className="w-8 h-8 mr-2 text-brand-500" />
