@@ -202,6 +202,9 @@ const AppSidebar: React.FC = () => {
 
   const handleLogout = () => {
     AuthService.logout();
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "/#/signin";
   };
 
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
@@ -324,7 +327,7 @@ const AppSidebar: React.FC = () => {
           )}
         </li>
       ))}
-      
+
       {/* Logout Button */}
       {menuType === "main" && (
         <li>

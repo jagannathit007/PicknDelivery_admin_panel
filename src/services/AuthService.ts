@@ -89,7 +89,7 @@ const AuthService: AuthServiceType = {
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    window.location.href = '/signin';
+    window.location.href = '/#/signin';
   },
 
   isAuthenticated: () => {
