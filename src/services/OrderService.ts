@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from "./Api";
 import API_ENDPOINTS from "../constants/api-endpoints";
 
@@ -47,8 +48,13 @@ export interface Order {
     careCharge: number;
     payableAmount: number;
   };
-  status: 'not-assigned' | 'accepted' | 'in_transit' | 'delivered' | 'cancelled';
-  paymentMethod: 'cash' | 'online';
+  status:
+    | "not-assigned"
+    | "accepted"
+    | "in_transit"
+    | "delivered"
+    | "cancelled";
+  paymentMethod: "cash" | "online";
   extraDetails?: any;
   isPaid: boolean;
   isDeleted: boolean;
@@ -95,7 +101,9 @@ interface CancelOrderPayload {
 
 class OrderService {
   // Get all orders with pagination and filters
-  static async getOrders(payload: OrderListPayload = {}): Promise<OrderListResponse> {
+  static async getOrders(
+    payload: OrderListPayload = {}
+  ): Promise<OrderListResponse> {
     try {
       const response = await api.post(API_ENDPOINTS.ORDERS.GET_ORDERS, payload);
       return response.data as OrderListResponse;
@@ -106,9 +114,14 @@ class OrderService {
   }
 
   // Assign order to rider
-  static async assignOrder(payload: AssignOrderPayload): Promise<OrderResponse> {
+  static async assignOrder(
+    payload: AssignOrderPayload
+  ): Promise<OrderResponse> {
     try {
-      const response = await api.post(API_ENDPOINTS.ORDERS.ASSIGN_ORDER, payload);
+      const response = await api.post(
+        API_ENDPOINTS.ORDERS.ASSIGN_ORDER,
+        payload
+      );
       return response.data as OrderResponse;
     } catch (error: any) {
       console.error("Error assigning order:", error);
@@ -117,9 +130,14 @@ class OrderService {
   }
 
   // Cancel order
-  static async cancelOrder(payload: CancelOrderPayload): Promise<OrderResponse> {
+  static async cancelOrder(
+    payload: CancelOrderPayload
+  ): Promise<OrderResponse> {
     try {
-      const response = await api.post(API_ENDPOINTS.ORDERS.CANCEL_ORDER, payload);
+      const response = await api.post(
+        API_ENDPOINTS.ORDERS.CANCEL_ORDER,
+        payload
+      );
       return response.data as OrderResponse;
     } catch (error: any) {
       console.error("Error cancelling order:", error);

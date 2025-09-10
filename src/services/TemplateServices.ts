@@ -1,6 +1,7 @@
-import api from './Api';
-import toastHelper from '../utils/toastHelper';
-import API_ENDPOINTS from '../constants/api-endpoints';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import api from "./Api";
+import toastHelper from "../utils/toastHelper";
+import API_ENDPOINTS from "../constants/api-endpoints";
 
 // Define the structure of the API response
 interface ApiResponse<T> {
@@ -56,78 +57,99 @@ export interface MessageTemplatePayload {
 
 // Define the MessageTemplateServiceType interface
 interface MessageTemplateServiceType {
-  getMessageTemplates: (payload: MessageTemplateListPayload) => Promise<MessageTemplateListResponse | false>;
-  saveMessageTemplate: (payload: MessageTemplatePayload) => Promise<MessageTemplateResponse | false>;
-  deleteMessageTemplate: (id: string) => Promise<MessageTemplateResponse | false>;
+  getMessageTemplates: (
+    payload: MessageTemplateListPayload
+  ) => Promise<MessageTemplateListResponse | false>;
+  saveMessageTemplate: (
+    payload: MessageTemplatePayload
+  ) => Promise<MessageTemplateResponse | false>;
+  deleteMessageTemplate: (
+    id: string
+  ) => Promise<MessageTemplateResponse | false>;
 }
 
 // Define the MessageTemplateService
 const MessageTemplateService: MessageTemplateServiceType = {
-  getMessageTemplates: async (payload: MessageTemplateListPayload): Promise<MessageTemplateListResponse | false> => {
+  getMessageTemplates: async (
+    payload: MessageTemplateListPayload
+  ): Promise<MessageTemplateListResponse | false> => {
     try {
-      const response = await api.post<ApiResponse<MessageTemplateListResponse>>(
-        API_ENDPOINTS.MESSAGE_TEMPLATES.GET_ALL_TEMPLATES,
-        payload
-      );
-      
+      const response: any = await api.post<
+        ApiResponse<MessageTemplateListResponse>
+      >(API_ENDPOINTS.MESSAGE_TEMPLATES.GET_ALL_TEMPLATES, payload);
+
       // Check if the response structure matches what we expect
       if (response.data && response.data.status === 200) {
         return response.data;
       } else {
-        const errorMessage = response.data?.message || 'Failed to fetch message templates';
-        toastHelper.showTost(errorMessage, 'warning');
+        const errorMessage =
+          response.data?.message || "Failed to fetch message templates";
+        toastHelper.showTost(errorMessage, "warning");
         return false;
       }
     } catch (error: any) {
-      console.error('Error fetching templates:', error);
-      const errorMessage = error.response?.data?.message || 'Something went wrong';
+      console.error("Error fetching templates:", error);
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
     }
   },
 
-  saveMessageTemplate: async (payload: MessageTemplatePayload): Promise<MessageTemplateResponse | false> => {
+  saveMessageTemplate: async (
+    payload: MessageTemplatePayload
+  ): Promise<MessageTemplateResponse | false> => {
     try {
-      console.log('Saving template with payload:', payload);
-      const response = await api.post<ApiResponse<MessageTemplateResponse>>(
-        API_ENDPOINTS.MESSAGE_TEMPLATES.SAVE_TEMPLATE,
-        payload
-      );
-      
+      console.log("Saving template with payload:", payload);
+      const response: any = await api.post<
+        ApiResponse<MessageTemplateResponse>
+      >(API_ENDPOINTS.MESSAGE_TEMPLATES.SAVE_TEMPLATE, payload);
+
       if (response.data && response.data.status === 200) {
-        toastHelper.showTost(response.data.message || 'Message template saved successfully!', 'success');
+        toastHelper.showTost(
+          response.data.message || "Message template saved successfully!",
+          "success"
+        );
         return response.data;
       } else {
-        const errorMessage = response.data?.message || 'Failed to save message template';
-        toastHelper.showTost(errorMessage, 'warning');
+        const errorMessage =
+          response.data?.message || "Failed to save message template";
+        toastHelper.showTost(errorMessage, "warning");
         return false;
       }
     } catch (error: any) {
-      console.error('Error saving template:', error);
-      const errorMessage = error.response?.data?.message || 'Something went wrong';
+      console.error("Error saving template:", error);
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
     }
   },
 
-  deleteMessageTemplate: async (id: string): Promise<MessageTemplateResponse | false> => {
+  deleteMessageTemplate: async (
+    id: string
+  ): Promise<MessageTemplateResponse | false> => {
     try {
-      const response = await api.post<ApiResponse<MessageTemplateResponse>>(
-        API_ENDPOINTS.MESSAGE_TEMPLATES.DELETE_TEMPLATE,
-        { _id: id }
-      );
-      
+      const response: any = await api.post<
+        ApiResponse<MessageTemplateResponse>
+      >(API_ENDPOINTS.MESSAGE_TEMPLATES.DELETE_TEMPLATE, { _id: id });
+
       if (response.data && response.data.status === 200) {
-        toastHelper.showTost(response.data.message || 'Message template deleted successfully!', 'success');
+        toastHelper.showTost(
+          response.data.message || "Message template deleted successfully!",
+          "success"
+        );
         return response.data;
       } else {
-        const errorMessage = response.data?.message || 'Failed to delete message template';
-        toastHelper.showTost(errorMessage, 'warning');
+        const errorMessage =
+          response.data?.message || "Failed to delete message template";
+        toastHelper.showTost(errorMessage, "warning");
         return false;
       }
     } catch (error: any) {
-      console.error('Error deleting template:', error);
-      const errorMessage = error.response?.data?.message || 'Something went wrong';
+      console.error("Error deleting template:", error);
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
     }
