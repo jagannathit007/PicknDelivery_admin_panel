@@ -10,6 +10,7 @@ import {
 } from "../icons";
 
 import { useSidebar } from "../context/SidebarContext";
+import AuthService from "../services/AuthService"; // Import your AuthService
 
 type NavItem = {
   name: string;
@@ -99,24 +100,6 @@ const navItems: NavItem[] = [
   //   icon: <RiCoupon2Line />,
   //   name: "Coupons",
   //   path: "/coupons",
-  // },
-  {
-    icon: <i className="fa-solid fa-arrow-right-from-bracket"></i>,
-    name: "Sign out",
-    path: "/signin",
-  },
-  // {
-  //   name: "Tables",
-  //   icon: <TableIcon />,
-  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  // },
-  // {
-  //   name: "Pages",
-  //   icon: <PageIcon />,
-  //   subItems: [
-  //     { name: "Blank Page", path: "/blank", pro: false },
-  //     { name: "404 Error", path: "/error-404", pro: false },
-  //   ],
   // },
 ];
 
@@ -215,6 +198,10 @@ const AppSidebar: React.FC = () => {
       }
       return { type: menuType, index };
     });
+  };
+
+  const handleLogout = () => {
+    AuthService.logout();
   };
 
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
@@ -337,6 +324,27 @@ const AppSidebar: React.FC = () => {
           )}
         </li>
       ))}
+      
+      {/* Logout Button */}
+      {menuType === "main" && (
+        <li>
+          <button
+            onClick={handleLogout}
+            className={`menu-item group menu-item-inactive ${
+              !isExpanded && !isHovered
+                ? "lg:justify-center"
+                : "lg:justify-start"
+            }`}
+          >
+            <span className="menu-item-icon-size menu-item-icon-inactive">
+              <i className="fa-solid fa-arrow-right-from-bracket"></i>
+            </span>
+            {(isExpanded || isHovered || isMobileOpen) && (
+              <span className="menu-item-text">Sign out</span>
+            )}
+          </button>
+        </li>
+      )}
     </ul>
   );
 

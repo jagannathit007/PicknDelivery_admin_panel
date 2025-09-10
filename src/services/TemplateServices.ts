@@ -18,7 +18,7 @@ export interface MessageTemplate {
 }
 
 // Define the MessageTemplateListResponse interface
-interface MessageTemplateListResponse {
+export interface MessageTemplateListResponse {
   status: number;
   message: string;
   data: {
@@ -33,7 +33,7 @@ interface MessageTemplateListResponse {
 }
 
 // Define the MessageTemplateResponse interface
-interface MessageTemplateResponse {
+export interface MessageTemplateResponse {
   status: number;
   message: string;
   data: MessageTemplate | boolean | null;
@@ -69,15 +69,17 @@ const MessageTemplateService: MessageTemplateServiceType = {
         API_ENDPOINTS.MESSAGE_TEMPLATES.GET_ALL_TEMPLATES,
         payload
       );
-      const result = response.data;
-      if (result.data.status === 200) {
-        return result.data;
+      
+      // Check if the response structure matches what we expect
+      if (response.data && response.data.status === 200) {
+        return response.data;
       } else {
-        toastHelper.showTost(result.data.message || 'Failed to fetch message templates', 'warning');
+        const errorMessage = response.data?.message || 'Failed to fetch message templates';
+        toastHelper.showTost(errorMessage, 'warning');
         return false;
       }
     } catch (error: any) {
-      console.log(error);
+      console.error('Error fetching templates:', error);
       const errorMessage = error.response?.data?.message || 'Something went wrong';
       toastHelper.error(errorMessage);
       return false;
@@ -91,17 +93,17 @@ const MessageTemplateService: MessageTemplateServiceType = {
         API_ENDPOINTS.MESSAGE_TEMPLATES.SAVE_TEMPLATE,
         payload
       );
-      const result = response.data;
-      console.log('Backend response:', result);
-      if (result.data.status === 200 && result.data.data) {
-        toastHelper.showTost(result.data.message || 'Message template saved successfully!', 'success');
-        return result.data;
+      
+      if (response.data && response.data.status === 200) {
+        toastHelper.showTost(response.data.message || 'Message template saved successfully!', 'success');
+        return response.data;
       } else {
-        toastHelper.showTost(result.data.message || 'Failed to save message template', 'warning');
+        const errorMessage = response.data?.message || 'Failed to save message template';
+        toastHelper.showTost(errorMessage, 'warning');
         return false;
       }
     } catch (error: any) {
-      console.log(error);
+      console.error('Error saving template:', error);
       const errorMessage = error.response?.data?.message || 'Something went wrong';
       toastHelper.error(errorMessage);
       return false;
@@ -114,16 +116,17 @@ const MessageTemplateService: MessageTemplateServiceType = {
         API_ENDPOINTS.MESSAGE_TEMPLATES.DELETE_TEMPLATE,
         { _id: id }
       );
-      const result = response.data;
-      if (result.data.status === 200 && result.data.data) {
-        toastHelper.showTost(result.data.message || 'Message template deleted successfully!', 'success');
-        return result.data;
+      
+      if (response.data && response.data.status === 200) {
+        toastHelper.showTost(response.data.message || 'Message template deleted successfully!', 'success');
+        return response.data;
       } else {
-        toastHelper.showTost(result.data.message || 'Failed to delete message template', 'warning');
+        const errorMessage = response.data?.message || 'Failed to delete message template';
+        toastHelper.showTost(errorMessage, 'warning');
         return false;
       }
     } catch (error: any) {
-      console.log(error);
+      console.error('Error deleting template:', error);
       const errorMessage = error.response?.data?.message || 'Something went wrong';
       toastHelper.error(errorMessage);
       return false;
@@ -132,4 +135,3 @@ const MessageTemplateService: MessageTemplateServiceType = {
 };
 
 export default MessageTemplateService;
-// export type { MessageTemplateListPayload, MessageTemplatePayload };

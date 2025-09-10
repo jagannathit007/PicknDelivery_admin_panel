@@ -49,17 +49,18 @@ const Template = () => {
       const response = await MessageTemplateService.getMessageTemplates(
         payload
       );
-      if (response !== false) {
+      
+      // Check the response structure
+      if (response && response.status === 200) {
         setTemplates(response.data.docs);
         setTotalDocs(response.data.totalDocs);
         setTotalPages(response.data.totalPages);
       } else {
-        toastHelper.showTost(
-          "Unable to retrieve template list. Please try again.",
-          "error"
-        );
+        const errorMessage = response?.message || "Unable to retrieve template list. Please try again.";
+        toastHelper.showTost(errorMessage, "error");
       }
     } catch (error) {
+      console.error("Error fetching templates:", error);
       toastHelper.showTost(
         "An error occurred while fetching templates. Please try again later.",
         "error"
@@ -102,6 +103,12 @@ const Template = () => {
         if (bValue === undefined)
           return sortConfig.direction === "ascending" ? -1 : 1;
 
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return sortConfig.direction === "ascending" 
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        }
+
         if (aValue < bValue) {
           return sortConfig.direction === "ascending" ? -1 : 1;
         }
@@ -123,21 +130,21 @@ const Template = () => {
         message: templateData.message,
         isActive: templateData.isActive,
       };
-      console.log("Payload being sent:", payload);
+      
       const response = await MessageTemplateService.saveMessageTemplate(
         payload
       );
-      if (response !== false) {
+      
+      if (response && response.status === 200) {
         await fetchTemplates();
         setSelectedTemplate(null);
-        toastHelper.showTost("Template saved successfully!", "success");
+        toastHelper.showTost(response.message || "Template saved successfully!", "success");
       } else {
-        toastHelper.showTost(
-          "Failed to save template. Please try again.",
-          "error"
-        );
+        const errorMessage = response?.message || "Failed to save template. Please try again.";
+        toastHelper.showTost(errorMessage, "error");
       }
     } catch (error) {
+      console.error("Error saving template:", error);
       toastHelper.showTost(
         "An error occurred while saving the template. Please try again later.",
         "error"
@@ -163,17 +170,17 @@ const Template = () => {
       const response = await MessageTemplateService.deleteMessageTemplate(
         templateId
       );
-      if (response !== false) {
+      
+      if (response && response.status === 200) {
         await fetchTemplates();
         setSelectedTemplate(null);
-        toastHelper.showTost("Template deleted successfully!", "success");
+        toastHelper.showTost(response.message || "Template deleted successfully!", "success");
       } else {
-        toastHelper.showTost(
-          "Failed to delete template. Please try again.",
-          "error"
-        );
+        const errorMessage = response?.message || "Failed to delete template. Please try again.";
+        toastHelper.showTost(errorMessage, "error");
       }
     } catch (error) {
+      console.error("Error deleting template:", error);
       toastHelper.showTost(
         "An error occurred while deleting the template. Please try again later.",
         "error"
@@ -186,14 +193,18 @@ const Template = () => {
   };
 
   const handleAddTemplate = () => {
-    setSelectedTemplate(null);
+    setSelectedTemplate({
+      name: "",
+      message: "",
+      isActive: true
+    });
   };
 
   const truncateMessage = (message: string, limit: number = 50) => {
     if (!message) return "";
 
     if (message.length > limit) {
-      return message.substring(0, limit) + " ..."; // sirf limit letters + ellipsis
+      return message.substring(0, limit) + " ...";
     }
 
     return message;
@@ -263,6 +274,9 @@ const Template = () => {
                       Message
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+                      Status
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
                       Actions
                     </th>
                   </tr>
@@ -270,7 +284,7 @@ const Template = () => {
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   {loading ? (
                     <tr>
-                      <td colSpan={3} className="p-12 text-center">
+                      <td colSpan={4} className="p-12 text-center">
                         <div className="text-gray-400 text-lg">
                           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
                           Loading templates...
@@ -279,7 +293,7 @@ const Template = () => {
                     </tr>
                   ) : sortedTemplates.length === 0 ? (
                     <tr>
-                      <td colSpan={3} className="p-12 text-center">
+                      <td colSpan={4} className="p-12 text-center">
                         <div className="text-gray-400 text-lg">
                           <FaPaperPlane className="mx-auto text-4xl mb-4" />
                           No templates found matching your criteria
@@ -304,9 +318,17 @@ const Template = () => {
                           className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 max-w-xs overflow-hidden"
                           title={template.message}
                         >
-                          {truncateMessage(template.message, 12)}
+                          {truncateMessage(template.message, 50)}
                         </td>
-
+                        <td className="px-4 py-3 text-sm">
+                          <span className={`px-2 py-1 rounded-full text-xs ${
+                            template.isActive 
+                              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" 
+                              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                          }`}>
+                            {template.isActive ? "Active" : "Inactive"}
+                          </span>
+                        </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1">
                             <button
@@ -441,6 +463,7 @@ const TemplateForm = ({
       Swal.fire("Error", "Name and message are required", "error");
       return;
     }
+    
     try {
       await onSave({
         _id: template?._id,
@@ -448,9 +471,13 @@ const TemplateForm = ({
         message,
         isActive,
       });
-      setName("");
-      setMessage("");
-      setIsActive(true);
+      
+      // Only clear the form if we're creating a new template
+      if (!template?._id) {
+        setName("");
+        setMessage("");
+        setIsActive(true);
+      }
     } catch (error) {
       // Error handling is managed in the parent component
     }
@@ -459,7 +486,7 @@ const TemplateForm = ({
   return (
     <div className="space-y-6 h-full flex flex-col">
       <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">
-        {template ? "Edit Template" : "Create Template"}
+        {template?._id ? "Edit Template" : "Create Template"}
       </h2>
       <div className="space-y-4 flex-grow">
         <div>
@@ -492,6 +519,18 @@ const TemplateForm = ({
             className="mt-1 w-full border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={5}
           />
+        </div>
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="isActive"
+            checked={isActive}
+            onChange={(e) => setIsActive(e.target.checked)}
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          />
+          <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+            Active
+          </label>
         </div>
       </div>
       <div className="flex justify-end gap-2">
