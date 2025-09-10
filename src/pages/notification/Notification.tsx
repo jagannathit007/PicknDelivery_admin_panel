@@ -60,7 +60,7 @@ function Notification() {
     fetchData(currentPage, searchTerm);
     setSelectedIds([]);
     setSelectAll(false);
-  }, [recipientType, currentPage, searchTerm, fetchData]);
+  }, [recipientType, currentPage, searchTerm]);
 
   // Handle select all toggle
   const handleSelectAll = () => {

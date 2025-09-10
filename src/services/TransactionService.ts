@@ -4,6 +4,8 @@ import API_ENDPOINTS from '../constants/api-endpoints';
 
 // Define the structure of the API response
 interface ApiResponse<T> {
+  status: number;
+  message: string;
   data: T;
 }
 
@@ -79,10 +81,11 @@ const TransactionService: TransactionServiceType = {
         payload
       );
       const result = response.data; // Type is now ApiResponse<TransactionListResponse>
-      if (result.data.status === 200) {
+      if (result.status === 200) {
         return result.data; // Return the TransactionListResponse
       } else {
-        toastHelper.showTost(result.data.message || 'Failed to fetch transactions', 'warning');
+        
+        toastHelper.showTost(result.message || 'Failed to fetch transactions', 'warning');
         return false;
       }
     } catch (error: any) {
