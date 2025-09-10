@@ -10,7 +10,7 @@ import {
   FaCheckCircle,
   FaTimesCircle,
 } from "react-icons/fa";
-import UserService, { Customer, CustomerPayload } from "../../services/UserService";
+import UserService, { Customer, CustomerPayload } from "../../services/userService";
 import CustomerModal from "../../components/common/CustomerModal";
 
 
