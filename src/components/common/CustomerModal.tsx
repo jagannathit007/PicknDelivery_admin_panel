@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { Customer, CustomerPayload } from "../../services/UserService";
+import type { Customer, CustomerPayload } from "../../services/userService";
 
 interface CustomerModalProps {
   isOpen: boolean;

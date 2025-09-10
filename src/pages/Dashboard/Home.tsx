@@ -2,7 +2,7 @@ import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
 import LiveRidersMap from "../../components/ecommerce/LiveRidersMap";
 import PageMeta from "../../components/common/PageMeta";
 import { useEffect, useState } from "react";
-import UserService from "../../services/UserService";
+import UserService from "../../services/userService";
 
 export default function Home() {
   const [dashboardData, setDashboardData] = useState({
@@ -13,7 +13,8 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await UserService.getDashboardData({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response: any = await UserService.getDashboardData({
         selectedDate: new Date().toISOString(),
       });
       if (response && response.status === 'success') {

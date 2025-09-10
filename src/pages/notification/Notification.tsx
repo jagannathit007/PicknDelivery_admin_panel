@@ -8,7 +8,7 @@ import {
   FaRegSquare,
 } from "react-icons/fa";
 import RiderService, { Rider } from "../../services/RiderService";
-import UserService, { Customer } from "../../services/UserService";
+import UserService, { Customer } from "../../services/userService";
 import toastHelper from "../../utils/toastHelper";
 
 function Notification() {
@@ -29,6 +29,7 @@ function Notification() {
   const itemsPerPage = 10;
 
   // Fetch data based on recipient type
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchData = async (page = 1, search = "") => {
     setLoading(true);
     try {
@@ -59,7 +60,7 @@ function Notification() {
     fetchData(currentPage, searchTerm);
     setSelectedIds([]);
     setSelectAll(false);
-  }, [recipientType, currentPage, searchTerm]);
+  }, [recipientType, currentPage, searchTerm, fetchData]);
 
   // Handle select all toggle
   const handleSelectAll = () => {

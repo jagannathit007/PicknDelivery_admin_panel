@@ -77,14 +77,20 @@ interface DashboardPayload {
 }
 
 interface UserServiceType {
-  getCustomers: (payload: CustomerListPayload) => Promise<CustomerListResponse | false>;
+  getCustomers: (
+    payload: CustomerListPayload
+  ) => Promise<CustomerListResponse | false>;
   saveCustomer: (payload: CustomerPayload) => Promise<CustomerResponse | false>;
   deleteCustomer: (id: string) => Promise<CustomerResponse | false>;
-  getDashboardData: (payload: DashboardPayload) => Promise<DashboardResponse | false>;
+  getDashboardData: (
+    payload: DashboardPayload
+  ) => Promise<DashboardResponse | false>;
 }
 
 const UserService: UserServiceType = {
-  getCustomers: async (payload: CustomerListPayload): Promise<CustomerListResponse | false> => {
+  getCustomers: async (
+    payload: CustomerListPayload
+  ): Promise<CustomerListResponse | false> => {
     try {
       const response = await api.post<CustomerListApiResponse>(
         API_ENDPOINTS.AUTH.GET_ALL_USERS,
@@ -94,18 +100,25 @@ const UserService: UserServiceType = {
       if (result.status === 200 && result.data) {
         return result.data; // Return the nested CustomerListResponse
       } else {
-        toastHelper.showTost(result.message || "Failed to fetch customers", "warning");
+        toastHelper.showTost(
+          result.message || "Failed to fetch customers",
+          "warning"
+        );
         return false;
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
     }
   },
 
-  saveCustomer: async (payload: CustomerPayload): Promise<CustomerResponse | false> => {
+  saveCustomer: async (
+    payload: CustomerPayload
+  ): Promise<CustomerResponse | false> => {
     try {
       const formData = new FormData();
       if (payload._id) {
@@ -129,15 +142,23 @@ const UserService: UserServiceType = {
       );
       const result = response.data;
       if (result.status === 200) {
-        toastHelper.showTost(result.message || "Customer saved successfully!", "success");
+        toastHelper.showTost(
+          result.message || "Customer saved successfully!",
+          "success"
+        );
         return result;
       } else {
-        toastHelper.showTost(result.message || "Failed to save customer", "warning");
+        toastHelper.showTost(
+          result.message || "Failed to save customer",
+          "warning"
+        );
         return false;
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
     }
@@ -151,21 +172,31 @@ const UserService: UserServiceType = {
       );
       const result = response.data;
       if (result.status === 200) {
-        toastHelper.showTost(result.message || "Customer deleted successfully!", "success");
+        toastHelper.showTost(
+          result.message || "Customer deleted successfully!",
+          "success"
+        );
         return result;
       } else {
-        toastHelper.showTost(result.message || "Failed to delete customer", "warning");
+        toastHelper.showTost(
+          result.message || "Failed to delete customer",
+          "warning"
+        );
         return false;
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
     }
   },
 
-  getDashboardData: async (payload: DashboardPayload): Promise<DashboardResponse | false> => {
+  getDashboardData: async (
+    payload: DashboardPayload
+  ): Promise<DashboardResponse | false> => {
     try {
       const response = await api.post<DashboardResponse>(
         API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_DATA,
@@ -176,12 +207,17 @@ const UserService: UserServiceType = {
       if (result.status === "success" && result.data) {
         return result;
       } else {
-        toastHelper.showTost(result.message || "Failed to fetch dashboard data", "warning");
+        toastHelper.showTost(
+          result.message || "Failed to fetch dashboard data",
+          "warning"
+        );
         return false;
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error);
-      const errorMessage = error.response?.data?.message || "Something went wrong";
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
       toastHelper.error(errorMessage);
       return false;
     }

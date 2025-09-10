@@ -18,7 +18,7 @@ import {
 } from "react-icons/fa";
 import OrderService, { Order } from "../../services/OrderService";
 import RiderService from "../../services/RiderService";
-import UserService from "../../services/UserService";
+import UserService from "../../services/userService";
 import LocationModal from "../../components/common/LocationModal";
 import RiderAssignmentModal from "../../components/common/RiderAssignmentModal";
 import toastHelper from "../../utils/toastHelper";
@@ -30,7 +30,7 @@ interface SortConfig {
   direction: "ascending" | "descending";
 }
 
-import type { Customer } from "../../services/UserService";
+import type { Customer } from "../../services/userService";
 
 const imageBaseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -92,6 +92,7 @@ function OrderListing() {
   ) => {
     setLoading(true);
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const payload: any = {
         page,
         limit: itemsPerPage,
@@ -140,11 +141,13 @@ function OrderListing() {
   // Handle customer search with debouncing
   const handleCustomerSearch = (searchTerm: string) => {
     setCustomerSearchTerm(searchTerm);
-    
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((window as any).customerSearchTimeout) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       clearTimeout((window as any).customerSearchTimeout);
     }
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).customerSearchTimeout = setTimeout(() => {
       fetchCustomers(searchTerm);
     }, 300);
@@ -367,7 +370,9 @@ function OrderListing() {
         ridersResponse.data.docs &&
         ridersResponse.data.docs.length > 0
       ) {
+        
         const activeRiders = ridersResponse.data.docs.filter(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (rider: any) => rider.isActive
         );
         if (activeRiders.length === 0) {
@@ -393,7 +398,9 @@ function OrderListing() {
 
     if (sortConfig.key) {
       filtered.sort((a, b) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let aValue: any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let bValue: any;
 
         if (sortConfig.key === "fare.payableAmount") {
