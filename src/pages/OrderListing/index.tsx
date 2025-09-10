@@ -452,7 +452,7 @@ const handleAssignRider = async (riderId: string) => {
   }, [orders, sortConfig]);
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-gray-50 min-h-screen max-w-[calc(100vw-350px)] mx-auto">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
