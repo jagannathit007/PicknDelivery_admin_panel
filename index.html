@@ -8,6 +8,14 @@
   </head>
   <body class="dark:bg-gray-900">
     <div id="root"></div>
+    <script>
+      (function () {
+        if (!location.hash && location.pathname !== "/") {
+          var newUrl = location.origin + "/#" + location.pathname + location.search + location.hash;
+          location.replace(newUrl);
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
