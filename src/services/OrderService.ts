@@ -8,6 +8,7 @@ interface Category {
 }
 export interface Order {
   _id?: string;
+  orderNo?: string;
   customer: {
     _id: string;
     name: string;
@@ -33,6 +34,13 @@ export interface Order {
       name: string;
       mobile: string;
     };
+    isPickedUp?: boolean;
+    productDetails: [{
+      name: string;
+      weight: number;
+      isVulnerable: boolean;
+      category?: Category;
+    }];
   };
   dropLocation: [{
     block: string;
@@ -42,19 +50,36 @@ export interface Order {
       name: string;
       mobile: string;
     };
+    productDetails: [{
+      name: string;
+      weight: number;
+      isVulnerable: boolean;
+      category?: Category;
+    }];
+    isDelivered?: boolean;
+    deliveryTime?: string;
   }];
   fare: {
     distance: number;
-    careCharge: number;
+    distanceCharge: number;
+    vehicleCharge: number;
+    vulnerabilityCharge: number;
+    discountCoupons: number;
     payableAmount: number;
   };
   status:
-    | "not-assigned"
-    | "accepted"
-    | "in_transit"
+    | "created"
+    | "pending"
+    | "assigned"
+    | "reassigned"
+    | "running"
     | "delivered"
+    | "returned"
     | "cancelled";
   paymentMethod: "cash" | "online";
+  appliedCoupon?: string;
+  orderTracking?: string[];
+  paymentId?: string;
   extraDetails?: any;
   isPaid: boolean;
   isDeleted: boolean;

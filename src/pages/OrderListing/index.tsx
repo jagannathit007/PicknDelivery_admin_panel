@@ -59,6 +59,7 @@ function OrderListing() {
     useState(false);
   const [selectedOrderForRider, setSelectedOrderForRider] =
     useState<Order | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 10;
 
   // Fetch customers for the dropdown
@@ -89,7 +90,8 @@ function OrderListing() {
     page = 1,
     customerId = "",
     status = "All",
-    rider = "All"
+    rider = "All",
+    search = ""
   ) => {
     setLoading(true);
     try {
@@ -115,6 +117,10 @@ function OrderListing() {
         }
       }
 
+      if (search) {
+        payload.search = search;
+      }
+
       const response = await OrderService.getOrders(payload);
 
       if (response && response.data) {
@@ -136,8 +142,8 @@ function OrderListing() {
 
   useEffect(() => {
     const customerId = selectedCustomer?._id || "";
-    fetchOrders(currentPage, customerId, statusFilter, riderFilter);
-  }, [currentPage, selectedCustomer, statusFilter, riderFilter]);
+    fetchOrders(currentPage, customerId, statusFilter, riderFilter, searchTerm);
+  }, [currentPage, selectedCustomer, statusFilter, riderFilter, searchTerm]);
 
   // Handle customer search with debouncing
   const handleCustomerSearch = (searchTerm: string) => {
@@ -230,21 +236,35 @@ function OrderListing() {
   // Get status configuration
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case "not-assigned":
+      case "created":
+        return {
+          bg: "bg-gray-100",
+          text: "text-gray-800",
+          border: "border-gray-200",
+          icon: <FaExclamationTriangle className="w-4 h-4" />,
+        };
+      case "pending":
         return {
           bg: "bg-orange-100",
           text: "text-orange-800",
           border: "border-orange-200",
           icon: <FaExclamationTriangle className="w-4 h-4" />,
         };
-      case "accepted":
+      case "assigned":
         return {
           bg: "bg-blue-100",
           text: "text-blue-800",
           border: "border-blue-200",
           icon: <FaCheckCircle className="w-4 h-4" />,
         };
-      case "in_transit":
+      case "reassigned":
+        return {
+          bg: "bg-indigo-100",
+          text: "text-indigo-800",
+          border: "border-indigo-200",
+          icon: <FaCheckCircle className="w-4 h-4" />,
+        };
+      case "running":
         return {
           bg: "bg-yellow-100",
           text: "text-yellow-800",
@@ -257,6 +277,13 @@ function OrderListing() {
           text: "text-green-800",
           border: "border-green-200",
           icon: <FaCheck className="w-4 h-4" />,
+        };
+      case "returned":
+        return {
+          bg: "bg-purple-100",
+          text: "text-purple-800",
+          border: "border-purple-200",
+          icon: <FaTimes className="w-4 h-4" />,
         };
       case "cancelled":
         return {
@@ -307,7 +334,7 @@ const handleAssignRider = async (riderId: string) => {
 
       if (response.status === 200) {
         toastHelper.showTost(response.message, "success");
-        fetchOrders(currentPage, selectedCustomer?._id || "", statusFilter, riderFilter);
+        fetchOrders(currentPage, selectedCustomer?._id || "", statusFilter, riderFilter, searchTerm);
         // Close the rider assignment modal after successful assignment
         setIsRiderAssignmentModalOpen(false);
       } else {
@@ -349,7 +376,7 @@ const handleAssignRider = async (riderId: string) => {
 
         if (response.status === 200) {
           toastHelper.success("Order cancelled successfully!");
-          fetchOrders(currentPage, selectedCustomer?._id || "", statusFilter, riderFilter);
+          fetchOrders(currentPage, selectedCustomer?._id || "", statusFilter, riderFilter, searchTerm);
         } else {
           toastHelper.error(response.message || "Failed to cancel order");
         }
@@ -477,6 +504,22 @@ const handleAssignRider = async (riderId: string) => {
         {/* Filters and Search */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+            {/* Search Input */}
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Search Orders
+              </label>
+              <div className="relative">
+                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search by order number, customer name, mobile..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out text-sm"
+                />
+              </div>
+            </div>
             {/* Customer Searchable Select */}
             <div className="relative customer-dropdown-container flex-1">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -571,10 +614,13 @@ const handleAssignRider = async (riderId: string) => {
                   className="w-full pl-10 pr-8 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-all duration-200 ease-in-out text-sm"
                 >
                   <option value="All">All Statuses</option>
-                  <option value="not-assigned">Not Assigned</option>
-                  <option value="accepted">Accepted</option>
-                  <option value="in_transit">In Transit</option>
+                  <option value="created">Created</option>
+                  <option value="pending">Pending</option>
+                  <option value="assigned">Assigned</option>
+                  <option value="reassigned">Reassigned</option>
+                  <option value="running">Running</option>
                   <option value="delivered">Delivered</option>
+                  <option value="returned">Returned</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
                 <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
@@ -626,7 +672,7 @@ const handleAssignRider = async (riderId: string) => {
           </div>
           
           {/* Clear All Filters Button */}
-          {(selectedCustomer || statusFilter !== "All" || riderFilter !== "All" || sortConfig.key) && (
+          {(selectedCustomer || statusFilter !== "All" || riderFilter !== "All" || sortConfig.key || searchTerm) && (
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => {
@@ -635,6 +681,7 @@ const handleAssignRider = async (riderId: string) => {
                   setStatusFilter("All");
                   setRiderFilter("All");
                   setSortConfig({ key: null, direction: "ascending" });
+                  setSearchTerm("");
                 }}
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200 ease-in-out hover:shadow-sm"
               >
@@ -703,7 +750,7 @@ const handleAssignRider = async (riderId: string) => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm">
                             <p className="text-gray-900 font-medium">
-                              #{order._id?.slice(-8)}
+                              {order.orderNo || `#${order._id?.slice(-8)}`}
                             </p>
                             <div className="flex items-center text-gray-500 mt-1">
                               <FaCalendar className="w-3 h-3 mr-1" />
@@ -748,7 +795,7 @@ const handleAssignRider = async (riderId: string) => {
                               </div>
                               <div className="flex items-center text-sm text-gray-500">
                                 <FaCompass className="w-4 h-4 mr-1" />
-                                {order.category ? order.category.name : 'N/A'}
+                                {order.pickupLocation?.productDetails?.[0]?.category?.name || 'N/A'}
                               </div>
                             </div>
                           </div>
@@ -806,6 +853,9 @@ const handleAssignRider = async (riderId: string) => {
                             </div>
                             <div className="text-xs text-gray-500 mt-1">
                               {parseFloat(order.fare.distance.toString())} km
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              Vehicle: ${parseFloat(order.fare.vehicleCharge.toString()).toFixed(2)}
                             </div>
                             <div className="text-xs text-gray-500">
                               {order.paymentMethod === "online"
