@@ -30,6 +30,7 @@ import Coupons from "./pages/coupons/Coupons ";
 import Transactions from "./pages/Transactions";
 import Template from "./pages/Template";
 import Categories from "./pages/Categories/Categories";
+import Faq from "./pages/Faq/Faq";
 // import SocketStatus from "./components/common/SocketStatus";
 
 export default function App() {
@@ -70,6 +71,9 @@ export default function App() {
 
             {/* Notification */}
             <Route path="/notification" element={<Notification />} />
+
+            {/* FAQ */}
+            <Route path="/faq" element={<Faq />} />
 
             {/* Coupons */}
             <Route path="/coupons" element={<Coupons />} />

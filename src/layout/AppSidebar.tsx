@@ -96,6 +96,11 @@ const navItems: NavItem[] = [
     name: "Notification",
     path: "/notification",
   },
+  {
+    icon: <i className="fa-solid fa-circle-question"></i>,
+    name: "FAQ",
+    path: "/faq",
+  },
   // {
   //   icon: <RiCoupon2Line />,
   //   name: "Coupons",

@@ -207,10 +207,10 @@ const UserService: UserServiceType = {
       if (result.status === "success" && result.data) {
         return result;
       } else {
-        toastHelper.showTost(
-          result.message || "Failed to fetch dashboard data",
-          "warning"
-        );
+        // toastHelper.showTost(
+        //   result.message || "Failed to fetch dashboard data",
+        //   "warning"
+        // );
         return false;
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
