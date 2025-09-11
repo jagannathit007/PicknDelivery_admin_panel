@@ -16,6 +16,9 @@ interface APIEndpoints {
   DASHBOARD: {
     GET_DASHBOARD_DATA: string;
   };
+  NOTIFICATIONS: {
+    GET_ADMIN_NOTIFICATIONS: string;
+  };
   RIDERS: {
     GET_ALL_RIDERS: string;
     CREATE_RIDER: string;
@@ -85,6 +88,9 @@ const API_ENDPOINTS: APIEndpoints = {
   },
   DASHBOARD: {
     GET_DASHBOARD_DATA: `${ADMIN_API_BASE_URL}/get-dashboard-data`,
+  },
+  NOTIFICATIONS: {
+    GET_ADMIN_NOTIFICATIONS: `${ADMIN_API_BASE_URL}/get-admin-notifications`,
   },
   VEHICLE: {
     CREATE_VEHICLE: `${ADMIN_API_BASE_URL}/create-vehicle-type`,

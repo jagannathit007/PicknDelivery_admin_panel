@@ -2,6 +2,9 @@ import api from "./Api";
 import toastHelper from "../utils/toastHelper";
 import API_ENDPOINTS from "../constants/api-endpoints";
 
+const ADMIN_API_BASE_URL = `${import.meta.env.VITE_BASE_URL || 'http://localhost:3000'}/api/${import.meta.env.VITE_ADMIN_ROUTE || 'admin'}`;
+
+// Interface for Customer
 interface Customer {
   _id: string;
   name: string;
@@ -13,6 +16,7 @@ interface Customer {
   updatedAt?: string;
 }
 
+// Interface for Customer List Response
 interface CustomerListResponse {
   docs: Customer[];
   totalDocs: number;
@@ -23,18 +27,21 @@ interface CustomerListResponse {
   hasPrevPage: boolean;
 }
 
+// Interface for Customer Response
 interface CustomerResponse {
   status: number;
   message: string;
   data: Customer | boolean;
 }
 
+// Interface for Customer List Payload
 interface CustomerListPayload {
   search?: string;
   page?: number;
   limit?: number;
 }
 
+// Interface for Customer Payload
 interface CustomerPayload {
   _id?: string;
   name: string;
@@ -43,6 +50,7 @@ interface CustomerPayload {
   image?: File;
 }
 
+// Interface for Rider
 interface Rider {
   _id: string;
   name: string;
@@ -53,29 +61,72 @@ interface Rider {
   };
 }
 
+// Interface for Dashboard Data
 interface DashboardData {
   liveRiders: Rider[];
   earnings: number;
   orders: number;
 }
 
+// Interface for Dashboard Response
 interface DashboardResponse {
-  status: string; // Changed from number to string to match 'success'
+  status: number;
   message: string;
   data: DashboardData;
 }
 
-// New interface for the API response wrapper for getCustomers
+// Interface for Dashboard Payload
+interface DashboardPayload {
+  selectedDate?: string;
+}
+
+// Interface for Customer List API Response
 interface CustomerListApiResponse {
   status: number;
   message: string;
   data: CustomerListResponse;
 }
 
-interface DashboardPayload {
-  selectedDate?: string;
+// Interface for Notification
+interface Notification {
+  _id: string;
+  title: string;
+  description: string;
+  notificationType: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
+// Interface for Notification List Response
+interface NotificationListResponse {
+  notifications: Notification[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalNotifications: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+    limit: number;
+  };
+}
+
+// Interface for Notification List Payload
+interface NotificationListPayload {
+  page?: number;
+  limit?: number;
+  notificationType?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
+
+// Interface for Notification List API Response
+interface NotificationListApiResponse {
+  status: number;
+  message: string;
+  data: NotificationListResponse;
+}
+
+// UserService Type Definition
 interface UserServiceType {
   getCustomers: (
     payload: CustomerListPayload
@@ -85,8 +136,12 @@ interface UserServiceType {
   getDashboardData: (
     payload: DashboardPayload
   ) => Promise<DashboardResponse | false>;
+  getNotifications: (
+    payload: NotificationListPayload
+  ) => Promise<NotificationListResponse | false>;
 }
 
+// UserService Implementation
 const UserService: UserServiceType = {
   getCustomers: async (
     payload: CustomerListPayload
@@ -98,7 +153,7 @@ const UserService: UserServiceType = {
       );
       const result = response.data;
       if (result.status === 200 && result.data) {
-        return result.data; // Return the nested CustomerListResponse
+        return result.data;
       } else {
         toastHelper.showTost(
           result.message || "Failed to fetch customers",
@@ -106,7 +161,6 @@ const UserService: UserServiceType = {
         );
         return false;
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error);
       const errorMessage =
@@ -154,7 +208,6 @@ const UserService: UserServiceType = {
         );
         return false;
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error);
       const errorMessage =
@@ -184,7 +237,6 @@ const UserService: UserServiceType = {
         );
         return false;
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error);
       const errorMessage =
@@ -203,17 +255,42 @@ const UserService: UserServiceType = {
         payload
       );
       const result = response.data;
-      console.log("Dashboard Data:", result);
-      if (result.status === "success" && result.data) {
+      if (result.status === 200 && result.data) {
         return result;
       } else {
-        // toastHelper.showTost(
-        //   result.message || "Failed to fetch dashboard data",
-        //   "warning"
-        // );
+        toastHelper.showTost(
+          result.message || "Failed to fetch dashboard data",
+          "warning"
+        );
         return false;
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log(error);
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong";
+      toastHelper.error(errorMessage);
+      return false;
+    }
+  },
+
+  getNotifications: async (
+    payload: NotificationListPayload
+  ): Promise<NotificationListResponse | false> => {
+    try {
+      const response = await api.post<NotificationListApiResponse>(
+        API_ENDPOINTS.NOTIFICATIONS.GET_ADMIN_NOTIFICATIONS,
+        { params: payload }
+      );
+      const result = response.data;
+      if (result.status === 200 && result.data) {
+        return result.data;
+      } else {
+        toastHelper.showTost(
+          result.message || "Failed to fetch notifications",
+          "warning"
+        );
+        return false;
+      }
     } catch (error: any) {
       console.log(error);
       const errorMessage =
@@ -225,6 +302,7 @@ const UserService: UserServiceType = {
 };
 
 export default UserService;
+
 export type {
   Customer,
   CustomerListPayload,
@@ -235,4 +313,7 @@ export type {
   DashboardResponse,
   CustomerListResponse,
   CustomerResponse,
+  Notification,
+  NotificationListResponse,
+  NotificationListPayload,
 };
