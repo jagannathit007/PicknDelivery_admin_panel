@@ -64,7 +64,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
 
   // Get transaction type color and icon
   const getTransactionTypeInfo = (transactionType: string) => {
-    if (transactionType === "credit") {
+    if (transactionType === "cash") {
       return {
         color: "bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400",
         icon: <FaArrowUp className="w-4 h-4" />,
@@ -77,8 +77,9 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
     }
   };
 
-  const userTypeInfo = getUserTypeInfo(transaction.userType);
-  const transactionTypeInfo = getTransactionTypeInfo(transaction.transactionType);
+  const fromUserTypeInfo = getUserTypeInfo(transaction.fromUserType);
+  const toUserTypeInfo = getUserTypeInfo(transaction.toUserType);
+  const transactionTypeInfo = getTransactionTypeInfo(transaction.paymentMethod);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -131,17 +132,31 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
 
             {/* Basic Information Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* User Type */}
+              {/* Paid User Type */}
               <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <FaUser className="text-gray-500 dark:text-gray-400" />
                   <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    User Type
+                    Paid User Type
                   </span>
                 </div>
-                <span className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${userTypeInfo.color}`}>
-                  {userTypeInfo.icon}
-                  {transaction.userType.charAt(0).toUpperCase() + transaction.userType.slice(1)}
+                <span className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${fromUserTypeInfo.color}`}>
+                  {fromUserTypeInfo.icon}
+                  {transaction.fromUserType.charAt(0).toUpperCase() + transaction.fromUserType.slice(1)}
+                </span>
+              </div>
+
+              {/* Received User Type */}
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <FaUser className="text-gray-500 dark:text-gray-400" />
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Received User Type
+                  </span>
+                </div>
+                <span className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${toUserTypeInfo.color}`}>
+                  {toUserTypeInfo.icon}
+                  {transaction.toUserType.charAt(0).toUpperCase() + transaction.toUserType.slice(1)}
                 </span>
               </div>
 
@@ -154,8 +169,8 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                   </span>
                 </div>
                 <span className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${transactionTypeInfo.color}`}>
-                  {transactionTypeInfo.icon}
-                  {transaction.transactionType.charAt(0).toUpperCase() + transaction.transactionType.slice(1)}
+                  {/* {transactionTypeInfo.icon} */}
+                  {transaction.paymentMethod.charAt(0).toUpperCase() + transaction.paymentMethod.slice(1)}
                 </span>
               </div>
 

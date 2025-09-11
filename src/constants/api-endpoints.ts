@@ -41,6 +41,10 @@ interface APIEndpoints {
     GET_ALL_TRANSACTIONS: string;
     GET_TRANSACTION: string;
   };
+  SETTLEMENT: {
+    GET_PENDING_BALANCE_REQUESTS: string;
+    APPROVE_PENDING_BALANCE_REQUEST: string;
+  };
   COUPON: {
     GET_ALL_COUPONS: string;
     SAVE_COUPON: string;
@@ -103,6 +107,10 @@ const API_ENDPOINTS: APIEndpoints = {
   TRANSACTIONS: {
     GET_ALL_TRANSACTIONS: `${ADMIN_API_BASE_URL}/get-transactions`,
     GET_TRANSACTION: `${ADMIN_API_BASE_URL}/get-transaction`,
+  },
+  SETTLEMENT: {
+    GET_PENDING_BALANCE_REQUESTS: `${ADMIN_API_BASE_URL}/pending-balance-requests`,
+    APPROVE_PENDING_BALANCE_REQUEST: `${ADMIN_API_BASE_URL}/approve-pending-balance-request`,
   },
   COUPON: {
     GET_ALL_COUPONS: `${ADMIN_API_BASE_URL}/get-coupons`,

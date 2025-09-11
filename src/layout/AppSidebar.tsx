@@ -86,6 +86,11 @@ const navItems: NavItem[] = [
     name: "Transaction",
     path: "/transaction",
   },
+  {
+    icon: <i className="fa-solid fa-hand-holding-dollar"></i>,
+    name: "Settlement",
+    path: "/settlement",
+  },
   // {
   //   icon: <GrTemplate />,
   //   name: "Templates",

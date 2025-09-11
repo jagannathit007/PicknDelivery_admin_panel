@@ -28,6 +28,7 @@ import LiveRiders from './components/dashboard/Riders';
 import Notification from "./pages/notification/Notification";
 import Coupons from "./pages/coupons/Coupons ";
 import Transactions from "./pages/Transactions";
+import Settlement from "./pages/Settlement";
 import Template from "./pages/Template";
 import Categories from "./pages/Categories/Categories";
 // import SocketStatus from "./components/common/SocketStatus";
@@ -79,6 +80,7 @@ export default function App() {
 
             {/* cod settlement */}
             <Route path="/transaction" element={<Transactions />} />
+            <Route path="/settlement" element={<Settlement />} />
 
             {/* Template */}
             <Route path="/template" element={<Template />} />

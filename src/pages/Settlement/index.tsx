@@ -12,15 +12,19 @@ import {
   FaCalendarAlt,
   FaChevronDown,
   FaMotorcycle,
+  FaCheck,
+  FaTimes,
+  FaClock,
 } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
-import TransactionService, { Transaction, TransactionFilters } from "../../services/TransactionService";
+import SettlementService, { BalanceRequest, SettlementFilters } from "../../services/SettlementService";
 import RiderService from "../../services/RiderService";
-import TransactionModal from "../../components/common/TransactionModal";
+import SettlementModal from "../../components/common/SettlementModal";
+import ApprovalConfirmationModal from "../../components/common/ApprovalConfirmationModal";
 import toastHelper from "../../utils/toastHelper";
 
 interface SortConfig {
-  key: keyof Transaction | null;
+  key: keyof BalanceRequest | null;
   direction: "ascending" | "descending";
 }
 
@@ -33,8 +37,8 @@ interface Rider {
 
 const imageBaseUrl = import.meta.env.VITE_BASE_URL;
 
-function Transactions() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+function Settlement() {
+  const [balanceRequests, setBalanceRequests] = useState<BalanceRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,8 +53,11 @@ function Transactions() {
   });
   const [totalPages, setTotalPages] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
+  const [approvingId, setApprovingId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [selectedBalanceRequest, setSelectedBalanceRequest] = useState<BalanceRequest | null>(null);
+  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
+  const [balanceRequestToApprove, setBalanceRequestToApprove] = useState<BalanceRequest | null>(null);
   const itemsPerPage = 10;
 
   // Fetch riders for the dropdown
@@ -76,24 +83,24 @@ function Transactions() {
     }
   };
 
-  // Fetch transactions from API
-  const fetchTransactions = async (page = 1, filters: Partial<TransactionFilters> = {}) => {
+  // Fetch balance requests from API
+  const fetchBalanceRequests = async (page = 1, filters: Partial<SettlementFilters> = {}) => {
     setLoading(true);
     try {
-      const response = await TransactionService.getTransactions({
+      const response = await SettlementService.getPendingBalanceRequests({
         page,
         limit: itemsPerPage,
         ...filters,
       });
 
       if (response && response.docs) {
-        setTransactions(response.docs);
+        setBalanceRequests(response.docs);
         setTotalPages(response.totalPages);
         setTotalDocs(response.totalDocs);
       }
     } catch (error) {
-      console.error("Error fetching transactions:", error);
-      toastHelper.error("Failed to fetch transactions");
+      console.error("Error fetching balance requests:", error);
+      toastHelper.error("Failed to fetch balance requests");
     } finally {
       setLoading(false);
     }
@@ -104,10 +111,10 @@ function Transactions() {
   }, []);
 
   useEffect(() => {
-    const filters: Partial<TransactionFilters> = {};
-    if (selectedRider?._id) filters.rider = selectedRider._id;
+    const filters: Partial<SettlementFilters> = {};
+    if (selectedRider?._id) filters.riderId = selectedRider._id;
     
-    fetchTransactions(currentPage, filters);
+    fetchBalanceRequests(currentPage, filters);
   }, [currentPage, selectedRider]);
 
   // Handle rider search with debouncing
@@ -162,7 +169,7 @@ function Transactions() {
   }, []);
 
   // Handle sorting
-  const handleSort = (key: keyof Transaction) => {
+  const handleSort = (key: keyof BalanceRequest) => {
     let direction: "ascending" | "descending" = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
       direction = "descending";
@@ -171,7 +178,7 @@ function Transactions() {
   };
 
   // Get sort icon based on current sort state
-  const getSortIcon = (key: keyof Transaction) => {
+  const getSortIcon = (key: keyof BalanceRequest) => {
     if (sortConfig.key !== key)
       return <FaSort className="ml-1 text-gray-400" />;
     if (sortConfig.direction === "ascending")
@@ -199,26 +206,62 @@ function Transactions() {
     }).format(amount);
   };
 
-  // Handle view transaction details
-  const handleViewTransaction = (transaction: Transaction) => {
-    setSelectedTransaction(transaction);
+  // Handle view balance request details
+  const handleViewBalanceRequest = (balanceRequest: BalanceRequest) => {
+    setSelectedBalanceRequest(balanceRequest);
     setIsModalOpen(true);
   };
 
   // Handle close modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedTransaction(null);
+    setSelectedBalanceRequest(null);
   };
 
-  // Filter and sort transactions
-  const filteredTransactions = useMemo(() => {
-    const filtered = transactions.filter((transaction) => {
+  // Handle approve balance request - show confirmation modal
+  const handleApproveRequest = (balanceRequest: BalanceRequest) => {
+    setBalanceRequestToApprove(balanceRequest);
+    setIsApprovalModalOpen(true);
+  };
+
+  // Handle confirm approval
+  const handleConfirmApproval = async () => {
+    if (!balanceRequestToApprove) return;
+
+    setApprovingId(balanceRequestToApprove.rider._id);
+    try {
+      const response = await SettlementService.approvePendingBalanceRequest(balanceRequestToApprove.rider._id);
+      if (response) {
+        toastHelper.success("Balance request approved successfully");
+        // Refresh the list
+        const filters: Partial<SettlementFilters> = {};
+        if (selectedRider?._id) filters.riderId = selectedRider._id;
+        fetchBalanceRequests(currentPage, filters);
+        // Close modals
+        setIsApprovalModalOpen(false);
+        setBalanceRequestToApprove(null);
+      }
+    } catch (error) {
+      console.error("Error approving balance request:", error);
+      toastHelper.error("Failed to approve balance request");
+    } finally {
+      setApprovingId(null);
+    }
+  };
+
+  // Handle close approval modal
+  const handleCloseApprovalModal = () => {
+    setIsApprovalModalOpen(false);
+    setBalanceRequestToApprove(null);
+  };
+
+  // Filter and sort balance requests
+  const filteredBalanceRequests = useMemo(() => {
+    const filtered = balanceRequests.filter((request) => {
       const matchesSearch = searchTerm === "" || 
-        transaction._id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.amount.toString().includes(searchTerm) ||
-        transaction.fromUserType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.paymentMethod.toLowerCase().includes(searchTerm.toLowerCase());
+        request.rider.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        request.rider.mobile.includes(searchTerm) ||
+        request.totalBalance.toString().includes(searchTerm);
 
       return matchesSearch;
     });
@@ -226,8 +269,8 @@ function Transactions() {
     // Apply sorting if a sort key is selected
     if (sortConfig.key) {
       filtered.sort((a, b) => {
-        const aValue = a[sortConfig.key as keyof Transaction];
-        const bValue = b[sortConfig.key as keyof Transaction];
+        const aValue = a[sortConfig.key as keyof BalanceRequest];
+        const bValue = b[sortConfig.key as keyof BalanceRequest];
 
         // Handle undefined values
         if (aValue === undefined && bValue === undefined) return 0;
@@ -261,17 +304,17 @@ function Transactions() {
     }
 
     return filtered;
-  }, [transactions, searchTerm, sortConfig]);
+  }, [balanceRequests, searchTerm, sortConfig]);
 
   return (
     <div className="p-6">
       {/* Page Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-gray-800 dark:text-white/90">
-          Transactions Management
+          Balance Settlement
         </h1>
         <p className="text-gray-500 text-sm dark:text-gray-400 mt-1">
-          Monitor and manage all financial transactions across the platform
+          Manage and approve pending balance requests from riders
         </p>
       </div>
 
@@ -285,7 +328,7 @@ function Transactions() {
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search transactions by ID, amount, or type..."
+                placeholder="Search by rider name, mobile, or amount..."
                 className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 value={searchTerm}
                 onChange={(e) => {
@@ -382,35 +425,29 @@ function Transactions() {
             <thead className="border-b border-gray-100 dark:border-gray-800">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Transaction ID
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Paid User Type
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Received User Type
+                  Rider Details
                 </th>
                 <th
                   className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
-                  onClick={() => handleSort("amount")}
+                  onClick={() => handleSort("totalBalance")}
                 >
                   <div className="flex items-center">
-                    Amount
-                    {getSortIcon("amount")}
+                    Total Balance
+                    {getSortIcon("totalBalance")}
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Type
+                  Status
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Order ID
+                  Balance Records
                 </th>
                 <th
                   className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
                   onClick={() => handleSort("createdAt")}
                 >
                   <div className="flex items-center">
-                    Date
+                    Last Submitted
                     {getSortIcon("createdAt")}
                   </div>
                 </th>
@@ -424,114 +461,112 @@ function Transactions() {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="p-12 text-center">
+                  <td colSpan={6} className="p-12 text-center">
                     <div className="text-gray-400 text-lg">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                      Loading transactions...
+                      Loading balance requests...
                     </div>
                   </td>
                 </tr>
-              ) : filteredTransactions.length === 0 ? (
+              ) : filteredBalanceRequests.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-12 text-center">
+                  <td colSpan={6} className="p-12 text-center">
                     <div className="text-gray-400 text-lg">
                       <FaCreditCard className="mx-auto text-4xl mb-4" />
-                      No transactions found matching your criteria
+                      No balance requests found matching your criteria
                     </div>
                   </td>
                 </tr>
               ) : (
-                filteredTransactions.map((transaction) => (
+                filteredBalanceRequests.map((request) => (
                   <tr
-                    key={transaction._id}
+                    key={request._id}
                     className="hover:bg-gray-50 dark:hover:bg-white/[0.02]"
                   >
                     <td className="px-4 py-3">
-                      <div className="font-mono text-sm text-gray-800 dark:text-white/90">
-                        {transaction._id?.substring(0, 8)}...
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10 mr-3">
+                          {request.rider.image ? (
+                            <img
+                              className="h-10 w-10 rounded-full object-cover"
+                              src={`${imageBaseUrl}/${request.rider.image}`}
+                              alt={request.rider.name}
+                            />
+                          ) : (
+                            <div className="h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                              <FaMotorcycle className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-medium text-gray-900 dark:text-white/90 text-sm">
+                            {request.rider.name}
+                          </div>
+                          <div className="text-gray-500 dark:text-gray-400 text-xs">
+                            {request.rider.mobile}
+                          </div>
+                        </div>
                       </div>
-                    </td>
-
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          transaction.fromUserType === "customer"
-                            ? "bg-blue-100 text-blue-800 dark:bg-blue-500/10 dark:text-blue-400"
-                            : transaction.fromUserType === "rider"
-                            ? "bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400"
-                            : "bg-purple-100 text-purple-800 dark:bg-purple-500/10 dark:text-purple-400"
-                        }`}
-                      >
-                        <FaUser className="w-2 h-2 mr-1" />
-                        {transaction.fromUserType.charAt(0).toUpperCase() + transaction.fromUserType.slice(1)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          transaction.toUserType === "customer"
-                            ? "bg-blue-100 text-blue-800 dark:bg-blue-500/10 dark:text-blue-400"
-                            : transaction.toUserType === "rider"
-                            ? "bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400"
-                            : "bg-purple-100 text-purple-800 dark:bg-purple-500/10 dark:text-purple-400"
-                        }`}
-                      >
-                        <FaUser className="w-2 h-2 mr-1" />
-                        {transaction.toUserType.charAt(0).toUpperCase() + transaction.toUserType.slice(1)}
-                      </span>
                     </td>
 
                     <td className="px-4 py-3">
                       <div className="font-semibold text-gray-800 dark:text-white/90 text-sm">
-                        {formatAmount(transaction.amount)}
+                        {formatAmount(request.totalBalance)}
                       </div>
                     </td>
 
                     <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          transaction.paymentMethod === "cash"
-                            ? "bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400"
-                            : "bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-400"
-                        }`}
-                      >
-                        {/* {transaction.paymentMethod === "online" ? (
-                          <FaArrowUp className="w-2 h-2 mr-1" />
+                      <div className="flex flex-col gap-1">
+                        {request.balances.some(b => b.isSubbmitted) ? (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-500/10 dark:text-yellow-400">
+                            <FaClock className="w-2 h-2 mr-1" />
+                            Pending Approval
+                          </span>
                         ) : (
-                          <FaArrowDown className="w-2 h-2 mr-1" />
-                        )} */}
-                        {transaction.paymentMethod.charAt(0).toUpperCase() + transaction.paymentMethod.slice(1)}
-                      </span>
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-500/10 dark:text-gray-400">
+                            <FaTimes className="w-2 h-2 mr-1" />
+                            Not Submitted
+                          </span>
+                        )}
+                      </div>
                     </td>
 
                     <td className="px-4 py-3">
                       <div className="text-gray-600 dark:text-gray-400 text-sm">
-                        {transaction.orderId ? (
-                          <span className="font-mono text-xs">
-                            {transaction.orderId.substring(0, 8)}...
-                          </span>
-                        ) : (
-                          <span className="text-gray-400 text-xs">N/A</span>
-                        )}
+                        {request.balances.length} record(s)
                       </div>
                     </td>
 
                     <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-sm">
                       <div className="flex items-center">
                         <FaCalendarAlt className="w-3 h-3 mr-1" />
-                        {transaction.createdAt ? formatDate(transaction.createdAt) : "N/A"}
+                        {request.latestSubmittedAt ? formatDate(request.latestSubmittedAt) : "N/A"}
                       </div>
                     </td>
 
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1">
                         <button
-                          onClick={() => handleViewTransaction(transaction)}
+                          onClick={() => handleViewBalanceRequest(request)}
                           className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded"
                           title="View Details"
                         >
                           <FaEye className="w-3 h-3" />
                         </button>
+                        {request.balances.some(b => b.isSubbmitted) && (
+                          <button
+                            onClick={() => handleApproveRequest(request)}
+                            disabled={approvingId === request.rider._id}
+                            className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-500/10 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Approve Request"
+                          >
+                            {approvingId === request.rider._id ? (
+                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-green-600"></div>
+                            ) : (
+                              <FaCheck className="w-3 h-3" />
+                            )}
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -544,7 +579,7 @@ function Transactions() {
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-gray-800">
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-4 sm:mb-0">
-            Showing {transactions.length} of {totalDocs} transactions
+            Showing {balanceRequests.length} of {totalDocs} balance requests
           </div>
           <div className="flex items-center space-x-3">
             <button
@@ -588,14 +623,25 @@ function Transactions() {
         </div>
       </div>
 
-      {/* Transaction Modal */}
-      <TransactionModal
+      {/* Settlement Modal */}
+      <SettlementModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        transaction={selectedTransaction}
+        balanceRequest={selectedBalanceRequest}
+        onApprove={handleApproveRequest}
+        isApproving={approvingId !== null}
+      />
+
+      {/* Approval Confirmation Modal */}
+      <ApprovalConfirmationModal
+        isOpen={isApprovalModalOpen}
+        onClose={handleCloseApprovalModal}
+        onConfirm={handleConfirmApproval}
+        balanceRequest={balanceRequestToApprove}
+        isApproving={approvingId !== null}
       />
     </div>
   );
 }
 
-export default Transactions;
+export default Settlement;

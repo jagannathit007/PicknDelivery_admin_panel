@@ -12,11 +12,14 @@ interface ApiResponse<T> {
 // Define the Transaction interface
 export interface Transaction {
   _id?: string;
-  userId: string;
-  userType: 'customer' | 'admin' | 'rider';
+  fromUserId: string;
+  fromUserType: 'customer' | 'admin' | 'rider';
+  toUserId: string;
+  toUserType: 'customer' | 'admin' | 'rider';
+  paymentMethod: 'cash' | 'online';
+  paymentScreenshot?: string;
   orderId?: string;
   amount: number;
-  transactionType: 'credit' | 'debit';
   extraFields?: any;
   createdAt: string;
   updatedAt: string;
@@ -45,9 +48,9 @@ export interface TransactionFilters {
 
 // Define the TransactionListResponse interface
 interface TransactionListResponse {
-  status: number;
-  message: string;
-  data: {
+  // status: number;
+  // message: string;
+  // data: {
     docs: Transaction[];
     totalDocs: number;
     limit: number;
@@ -55,7 +58,7 @@ interface TransactionListResponse {
     totalPages: number;
     hasNextPage: boolean;
     hasPrevPage: boolean;
-  };
+  // };
 }
 
 // Define the TransactionResponse interface
@@ -81,7 +84,7 @@ const TransactionService: TransactionServiceType = {
         payload
       );
       const result = response.data; // Type is now ApiResponse<TransactionListResponse>
-      if (result.status === 200) {
+      if (result.status === 200 && result.data) {
         return result.data; // Return the TransactionListResponse
       } else {
         
