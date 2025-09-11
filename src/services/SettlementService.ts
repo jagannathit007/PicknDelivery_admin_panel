@@ -104,6 +104,10 @@ const SettlementService: SettlementServiceType = {
       );
       const result = response.data;
       if (result.status === 200 && result.data) {
+        toastHelper.showTost(
+          result.message || 'Balance request approved successfully',
+          'success'
+        );
         return result.data;
       } else {
         toastHelper.showTost(result.message || 'Failed to approve balance request', 'warning');

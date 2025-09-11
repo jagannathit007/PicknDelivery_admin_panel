@@ -17,11 +17,15 @@ import {
   FaClock,
 } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
-import SettlementService, { BalanceRequest, SettlementFilters } from "../../services/SettlementService";
+import SettlementService, {
+  BalanceRequest,
+  SettlementFilters,
+} from "../../services/SettlementService";
 import RiderService from "../../services/RiderService";
 import SettlementModal from "../../components/common/SettlementModal";
 import ApprovalConfirmationModal from "../../components/common/ApprovalConfirmationModal";
 import toastHelper from "../../utils/toastHelper";
+import Swal from "sweetalert2";
 
 interface SortConfig {
   key: keyof BalanceRequest | null;
@@ -55,9 +59,11 @@ function Settlement() {
   const [totalDocs, setTotalDocs] = useState(0);
   const [approvingId, setApprovingId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedBalanceRequest, setSelectedBalanceRequest] = useState<BalanceRequest | null>(null);
+  const [selectedBalanceRequest, setSelectedBalanceRequest] =
+    useState<BalanceRequest | null>(null);
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
-  const [balanceRequestToApprove, setBalanceRequestToApprove] = useState<BalanceRequest | null>(null);
+  const [balanceRequestToApprove, setBalanceRequestToApprove] =
+    useState<BalanceRequest | null>(null);
   const itemsPerPage = 10;
 
   // Fetch riders for the dropdown
@@ -69,7 +75,7 @@ function Settlement() {
         page: 1,
         limit: 100,
       });
-      
+
       if (response && response.status === 200 && response.data) {
         setRiders(response.data.docs);
       } else {
@@ -84,7 +90,10 @@ function Settlement() {
   };
 
   // Fetch balance requests from API
-  const fetchBalanceRequests = async (page = 1, filters: Partial<SettlementFilters> = {}) => {
+  const fetchBalanceRequests = async (
+    page = 1,
+    filters: Partial<SettlementFilters> = {}
+  ) => {
     setLoading(true);
     try {
       const response = await SettlementService.getPendingBalanceRequests({
@@ -113,18 +122,18 @@ function Settlement() {
   useEffect(() => {
     const filters: Partial<SettlementFilters> = {};
     if (selectedRider?._id) filters.riderId = selectedRider._id;
-    
+
     fetchBalanceRequests(currentPage, filters);
   }, [currentPage, selectedRider]);
 
   // Handle rider search with debouncing
   const handleRiderSearch = (searchTerm: string) => {
     setRiderSearchTerm(searchTerm);
-    
+
     if ((window as any).riderSearchTimeout) {
       clearTimeout((window as any).riderSearchTimeout);
     }
-    
+
     (window as any).riderSearchTimeout = setTimeout(() => {
       fetchRiders(searchTerm);
     }, 300);
@@ -147,9 +156,10 @@ function Settlement() {
   // Filtered riders for dropdown
   const filteredRiders = useMemo(() => {
     if (!riderSearchTerm) return riders;
-    return riders.filter(rider =>
-      rider.name.toLowerCase().includes(riderSearchTerm.toLowerCase()) ||
-      rider.mobile.includes(riderSearchTerm)
+    return riders.filter(
+      (rider) =>
+        rider.name.toLowerCase().includes(riderSearchTerm.toLowerCase()) ||
+        rider.mobile.includes(riderSearchTerm)
     );
   }, [riders, riderSearchTerm]);
 
@@ -157,14 +167,14 @@ function Settlement() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      if (!target.closest('.rider-dropdown-container')) {
+      if (!target.closest(".rider-dropdown-container")) {
         setIsRiderDropdownOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -228,16 +238,30 @@ function Settlement() {
   const handleConfirmApproval = async () => {
     if (!balanceRequestToApprove) return;
 
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to approve this balance request.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "rgba(65, 221, 51, 1)",
+      cancelButtonColor: "#d63030ff",
+      confirmButtonText: "Yes, approve it!",
+    });
+
+    if (!confirm.isConfirmed) return;
+
     setApprovingId(balanceRequestToApprove.rider._id);
     try {
-      const response = await SettlementService.approvePendingBalanceRequest(balanceRequestToApprove.rider._id);
+      const response = await SettlementService.approvePendingBalanceRequest(
+        balanceRequestToApprove.rider._id
+      );
       if (response) {
-        toastHelper.success("Balance request approved successfully");
         // Refresh the list
         const filters: Partial<SettlementFilters> = {};
         if (selectedRider?._id) filters.riderId = selectedRider._id;
         fetchBalanceRequests(currentPage, filters);
         // Close modals
+        setIsApprovalModalOpen(false);
         setIsApprovalModalOpen(false);
         setBalanceRequestToApprove(null);
       }
@@ -258,7 +282,8 @@ function Settlement() {
   // Filter and sort balance requests
   const filteredBalanceRequests = useMemo(() => {
     const filtered = balanceRequests.filter((request) => {
-      const matchesSearch = searchTerm === "" || 
+      const matchesSearch =
+        searchTerm === "" ||
         request.rider.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         request.rider.mobile.includes(searchTerm) ||
         request.totalBalance.toString().includes(searchTerm);
@@ -366,18 +391,22 @@ function Settlement() {
                   </button>
                 )}
               </div>
-              
+
               {/* Rider Dropdown */}
               {isRiderDropdownOpen && (
                 <div className="absolute z-50 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl max-h-80 overflow-auto transition-all duration-200 ease-in-out transform origin-top">
                   {isLoadingRiders ? (
                     <div className="px-4 py-3 text-center">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500 mx-auto"></div>
-                      <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Searching...</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+                        Searching...
+                      </p>
                     </div>
                   ) : filteredRiders.length === 0 ? (
                     <div className="px-4 py-3 text-gray-500 dark:text-gray-400 text-sm">
-                      {riderSearchTerm ? 'No riders found' : 'Type to search riders'}
+                      {riderSearchTerm
+                        ? "No riders found"
+                        : "Type to search riders"}
                     </div>
                   ) : (
                     filteredRiders.map((rider) => (
@@ -517,7 +546,7 @@ function Settlement() {
 
                     <td className="px-4 py-3">
                       <div className="flex flex-col gap-1">
-                        {request.balances.some(b => b.isSubbmitted) ? (
+                        {request.balances.some((b) => b.isSubbmitted) ? (
                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-500/10 dark:text-yellow-400">
                             <FaClock className="w-2 h-2 mr-1" />
                             Pending Approval
@@ -540,7 +569,9 @@ function Settlement() {
                     <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-sm">
                       <div className="flex items-center">
                         <FaCalendarAlt className="w-3 h-3 mr-1" />
-                        {request.latestSubmittedAt ? formatDate(request.latestSubmittedAt) : "N/A"}
+                        {request.latestSubmittedAt
+                          ? formatDate(request.latestSubmittedAt)
+                          : "N/A"}
                       </div>
                     </td>
 
@@ -553,7 +584,7 @@ function Settlement() {
                         >
                           <FaEye className="w-3 h-3" />
                         </button>
-                        {request.balances.some(b => b.isSubbmitted) && (
+                        {request.balances.some((b) => b.isSubbmitted) && (
                           <button
                             onClick={() => handleApproveRequest(request)}
                             disabled={approvingId === request.rider._id}

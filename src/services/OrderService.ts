@@ -34,7 +34,7 @@ export interface Order {
       mobile: string;
     };
   };
-  dropLocation: {
+  dropLocation: [{
     block: string;
     address: string;
     coordinates: string[];
@@ -42,7 +42,7 @@ export interface Order {
       name: string;
       mobile: string;
     };
-  };
+  }];
   fare: {
     distance: number;
     careCharge: number;
