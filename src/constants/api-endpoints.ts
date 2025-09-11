@@ -16,6 +16,9 @@ interface APIEndpoints {
   DASHBOARD: {
     GET_DASHBOARD_DATA: string;
   };
+  NOTIFICATIONS: {
+    GET_ADMIN_NOTIFICATIONS: string;
+  };
   RIDERS: {
     GET_ALL_RIDERS: string;
     CREATE_RIDER: string;
@@ -69,6 +72,13 @@ interface APIEndpoints {
     UPDATE_CATEGORY: string;
     DELETE_CATEGORY: string;
   };
+  FAQ: {
+    CREATE_FAQ: string;
+    GET_ALL_FAQS: string;
+    GET_FAQ: string;
+    UPDATE_FAQ: string;
+    DELETE_FAQ: string;
+  };
 }
 
 const API_ENDPOINTS: APIEndpoints = {
@@ -82,6 +92,9 @@ const API_ENDPOINTS: APIEndpoints = {
   },
   DASHBOARD: {
     GET_DASHBOARD_DATA: `${ADMIN_API_BASE_URL}/get-dashboard-data`,
+  },
+  NOTIFICATIONS: {
+    GET_ADMIN_NOTIFICATIONS: `${ADMIN_API_BASE_URL}/get-admin-notifications`,
   },
   VEHICLE: {
     CREATE_VEHICLE: `${ADMIN_API_BASE_URL}/create-vehicle-type`,
@@ -135,6 +148,13 @@ const API_ENDPOINTS: APIEndpoints = {
     GET_CATEGORY: `${ADMIN_API_BASE_URL}/get-category`,
     UPDATE_CATEGORY: `${ADMIN_API_BASE_URL}/update-category`,
     DELETE_CATEGORY: `${ADMIN_API_BASE_URL}/delete-category`,
+  },
+  FAQ: {
+    CREATE_FAQ: `${ADMIN_API_BASE_URL}/create-faq`,
+    GET_ALL_FAQS: `${ADMIN_API_BASE_URL}/get-faqs`,
+    GET_FAQ: `${ADMIN_API_BASE_URL}/get-faq`,
+    UPDATE_FAQ: `${ADMIN_API_BASE_URL}/update-faq`,
+    DELETE_FAQ: `${ADMIN_API_BASE_URL}/delete-faq`,
   },
 };
 

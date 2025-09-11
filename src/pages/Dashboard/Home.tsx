@@ -1,5 +1,6 @@
 import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
 import LiveRidersMap from "../../components/ecommerce/LiveRidersMap";
+import UnassignedOrdersTable from "../../components/ecommerce/UnassignedOrdersTable"; // Import the new component
 import PageMeta from "../../components/common/PageMeta";
 import { useEffect, useState } from "react";
 import UserService from "../../services/userService";
@@ -9,6 +10,8 @@ export default function Home() {
     liveRiders: [],
     earnings: 0,
     orders: 0,
+    unassignedOrders: 0,
+    topUnassignedOrders: [],
   });
   const [loading, setLoading] = useState(true);
 
@@ -19,8 +22,7 @@ export default function Home() {
         const response = await UserService.getDashboardData({
           selectedDate: new Date().toISOString(),
         });
-        
-        if (response && response.status === 'success') {
+        if (response && response.status === 200) {
           setDashboardData(response.data);
         }
       } catch (error) {
@@ -42,16 +44,25 @@ export default function Home() {
 
   return (
     <>
- 
+      <PageMeta title="Dashboard" />
       <div className="grid grid-cols-12 gap-4 md:gap-6">
-        <div className="col-span-12 space-y-4 xl:col-span-4">
-          <EcommerceMetrics 
-            earnings={dashboardData.earnings} 
-            orders={dashboardData.orders} 
+        {/* Metrics Section */}
+        <div className="col-span-12 space-y-4">
+          <EcommerceMetrics
+            earnings={dashboardData.earnings}
+            orders={dashboardData.orders}
+            unassignedOrders={dashboardData.unassignedOrders}
           />
         </div>
-        <div className="col-span-12 space-y-8 xl:col-span-8">
-          <LiveRidersMap riders={dashboardData.liveRiders}  />
+
+        {/* Unassigned Orders Table */}
+        <div className="col-span-12 space-y-4">
+          <UnassignedOrdersTable topUnassignedOrders={dashboardData.topUnassignedOrders} />
+        </div>
+
+        {/* Live Riders Map */}
+        <div className="col-span-12 space-y-4">
+          <LiveRidersMap riders={dashboardData.liveRiders} />
         </div>
       </div>
     </>
