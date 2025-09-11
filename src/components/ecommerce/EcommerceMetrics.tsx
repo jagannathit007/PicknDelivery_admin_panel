@@ -24,7 +24,8 @@ export default function EcommerceMetrics({ earnings, orders, unassignedOrders }:
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">Earnings</span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              ${earnings.toLocaleString()}
+                ${Number(earnings).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+
             </h4>
           </div>
           <Badge color="success">

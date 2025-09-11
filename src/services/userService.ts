@@ -66,6 +66,8 @@ interface DashboardData {
   liveRiders: Rider[];
   earnings: number;
   orders: number;
+  unassignedOrders: number;
+  topUnassignedOrders: any[];
 }
 
 // Interface for Dashboard Response
