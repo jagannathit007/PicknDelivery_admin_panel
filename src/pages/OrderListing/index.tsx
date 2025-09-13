@@ -22,6 +22,7 @@ import RiderService from "../../services/RiderService";
 import UserService from "../../services/userService";
 import LocationModal from "../../components/common/LocationModal";
 import RiderAssignmentModal from "../../components/common/RiderAssignmentModal";
+import OrderTrackingModal from "../../components/common/OrderTrackingModal";
 import toastHelper from "../../utils/toastHelper";
 import Swal from "sweetalert2";
 import { MdClose } from "react-icons/md";
@@ -58,6 +59,10 @@ function OrderListing() {
   const [isRiderAssignmentModalOpen, setIsRiderAssignmentModalOpen] =
     useState(false);
   const [selectedOrderForRider, setSelectedOrderForRider] =
+    useState<Order | null>(null);
+  const [isOrderTrackingModalOpen, setIsOrderTrackingModalOpen] =
+    useState(false);
+  const [selectedOrderForTracking, setSelectedOrderForTracking] =
     useState<Order | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 10;
@@ -433,6 +438,22 @@ const handleAssignRider = async (riderId: string) => {
       console.error("Error checking riders:", error);
       toastHelper.error("Failed to check rider availability!");
     }
+  };
+
+  // Open order tracking modal
+  const openOrderTrackingModal = (order: Order) => {
+    if (!order.rider || !order.rider._id) {
+      toastHelper.error("No rider assigned to this order!");
+      return;
+    }
+
+    if (order.status === "delivered" || order.status === "cancelled") {
+      toastHelper.error("Cannot track completed or cancelled order!");
+      return;
+    }
+
+    setSelectedOrderForTracking(order);
+    setIsOrderTrackingModalOpen(true);
   };
 
   // Filtered and sorted orders
@@ -875,37 +896,52 @@ const handleAssignRider = async (riderId: string) => {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          {!isCompleted && (
-                            <div className="flex space-x-2 justify-end ">
-                              {order.rider && order.rider._id ? (
-                                <button
-                                  onClick={() =>
-                                    openRiderAssignmentModal(order)
-                                  }
-                                  className="text-blue-600 hover:text-blue-900 bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded text-xs transition-colors"
-                                >
-                                  Reassign
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={() =>
-                                    openRiderAssignmentModal(order)
-                                  }
-                                  className="text-green-600 hover:text-green-900 bg-green-100 hover:bg-green-200 px-2 py-1 rounded text-xs transition-colors"
-                                >
-                                  Assign
-                                </button>
-                              )}
-                              {order.status !== "cancelled" && (
-                                <button
-                                  onClick={() => handleCancelOrder(order._id!)}
-                                  className="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-2 py-1 rounded text-xs transition-colors"
-                                >
-                                  <MdClose className="w-4 h-4" />
-                                </button>
-                              )}
-                            </div>
-                          )}
+                          <div className="flex space-x-2 justify-end">
+                            {/* Track Order Button - Show only if rider is assigned and order is not completed */}
+                            {order.rider && order.rider._id && !isCompleted && (
+                              <button
+                                onClick={() => openOrderTrackingModal(order)}
+                                className="text-purple-600 hover:text-purple-900 bg-purple-100 hover:bg-purple-200 px-2 py-1 rounded text-xs transition-colors flex items-center"
+                                title="Track Order on Map"
+                              >
+                                <FaCompass className="w-3 h-3 mr-1" />
+                                Track
+                              </button>
+                            )}
+                            
+                            {/* Other action buttons - Show only if order is not completed */}
+                            {!isCompleted && (
+                              <>
+                                {order.rider && order.rider._id ? (
+                                  <button
+                                    onClick={() =>
+                                      openRiderAssignmentModal(order)
+                                    }
+                                    className="text-blue-600 hover:text-blue-900 bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded text-xs transition-colors"
+                                  >
+                                    Reassign
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() =>
+                                      openRiderAssignmentModal(order)
+                                    }
+                                    className="text-green-600 hover:text-green-900 bg-green-100 hover:bg-green-200 px-2 py-1 rounded text-xs transition-colors"
+                                  >
+                                    Assign
+                                  </button>
+                                )}
+                                {order.status !== "cancelled" && (
+                                  <button
+                                    onClick={() => handleCancelOrder(order._id!)}
+                                    className="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-2 py-1 rounded text-xs transition-colors"
+                                  >
+                                    <MdClose className="w-4 h-4" />
+                                  </button>
+                                )}
+                              </>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     );
@@ -1012,6 +1048,14 @@ const handleAssignRider = async (riderId: string) => {
           onAssign={handleAssignRider}
           orderId={selectedOrderForRider._id!}
           currentRiderId={selectedOrderForRider.rider?._id}
+        />
+      )}
+      {selectedOrderForTracking && (
+        <OrderTrackingModal
+          isOpen={isOrderTrackingModalOpen}
+          onClose={() => setIsOrderTrackingModalOpen(false)}
+          orderId={selectedOrderForTracking._id!}
+          orderNo={selectedOrderForTracking.orderNo}
         />
       )}
     </div>

@@ -124,6 +124,24 @@ interface CancelOrderPayload {
   orderId: string;
 }
 
+interface GetOrderLocationsPayload {
+  orderId: string;
+}
+
+interface OrderLocationResponse {
+  status: number;
+  message: string;
+  data: {
+    orderId: string;
+    type: 'pickup' | 'drop';
+    locations: {
+      riderCurrentLocation: number[];
+      pickupLocation: any;
+      dropLocation: any;
+    };
+  };
+}
+
 class OrderService {
   // Get all orders with pagination and filters
   static async getOrders(
@@ -166,6 +184,22 @@ class OrderService {
       return response.data as OrderResponse;
     } catch (error: any) {
       console.error("Error cancelling order:", error);
+      throw error;
+    }
+  }
+
+  // Get order locations for tracking
+  static async getOrderLocations(
+    payload: GetOrderLocationsPayload
+  ): Promise<OrderLocationResponse> {
+    try {
+      const response = await api.post(
+        API_ENDPOINTS.ORDERS.GET_ORDER_LOCATIONS,
+        payload
+      );
+      return response.data as OrderLocationResponse;
+    } catch (error: any) {
+      console.error("Error fetching order locations:", error);
       throw error;
     }
   }
