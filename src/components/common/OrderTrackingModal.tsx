@@ -16,9 +16,31 @@ interface LocationData {
   orderId: string;
   type: 'pickup' | 'drop';
   locations: {
-    riderCurrentLocation: number[];
-    pickupLocation: any;
-    dropLocation: any;
+    riderCurrentLocation: string[];
+    pickupLocation: {
+      person: {
+        name: string;
+        mobile: string;
+      };
+      block: string;
+      address: string;
+      coordinates: string[];
+      isPickedUp: boolean;
+      productDetails: any[];
+    };
+    dropLocation: Array<{
+      person: {
+        name: string;
+        mobile: string;
+      };
+      block: string;
+      address: string;
+      coordinates: string[];
+      productDetails: any[];
+      isDelivered: boolean;
+      deliveryTime: string | null;
+      _id: string;
+    }>;
   };
 }
 
@@ -33,6 +55,7 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
   const [mapError, setMapError] = useState<string | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
+  const directionsRendererRef = useRef<any>(null);
   const { location: currentLocation, getCurrentLocation } = useCurrentLocation();
   const { isLoaded, loadError } = useGoogleMaps();
 
@@ -81,11 +104,17 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
       if (mapInstanceRef.current) {
         mapInstanceRef.current = null;
       }
+      if (directionsRendererRef.current) {
+        directionsRendererRef.current.setMap(null);
+        directionsRendererRef.current = null;
+      }
     };
   }, [isOpen, isLoaded, currentLocation, getCurrentLocation, initializeMap]);
 
   const plotLocationsOnMap = useCallback((data: LocationData) => {
     if (!mapInstanceRef.current || !window.google) return;
+
+    console.log('📍 Plotting locations on map with data:', data);
 
     const map = mapInstanceRef.current;
     
@@ -99,9 +128,11 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
       // Plot rider current location
       if (data.locations.riderCurrentLocation && data.locations.riderCurrentLocation.length >= 2) {
         const riderPosition = {
-          lat: data.locations.riderCurrentLocation[0],
-          lng: data.locations.riderCurrentLocation[1],
+          lat: parseFloat(data.locations.riderCurrentLocation[0]),
+          lng: parseFloat(data.locations.riderCurrentLocation[1]),
         };
+
+        console.log('🚗 Creating rider marker at:', riderPosition);
 
         const riderMarker = new window.google.maps.Marker({
           position: riderPosition,
@@ -270,6 +301,9 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
 
         markers.push(riderMarker);
         bounds.extend(riderPosition);
+        console.log('✅ Rider marker created and added to map');
+      } else {
+        console.warn('❌ Rider location data missing or invalid:', data.locations.riderCurrentLocation);
       }
 
       // Plot pickup location
@@ -280,6 +314,8 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
             lat: parseFloat(pickupCoords[0]),
             lng: parseFloat(pickupCoords[1]),
           };
+
+          console.log('📦 Creating pickup marker at:', pickupPosition);
 
           const pickupMarker = new window.google.maps.Marker({
             position: pickupPosition,
@@ -494,17 +530,25 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
 
           markers.push(pickupMarker);
           bounds.extend(pickupPosition);
+          console.log('✅ Pickup marker created and added to map');
+        } else {
+          console.warn('❌ Pickup coordinates invalid:', pickupCoords);
         }
+      } else {
+        console.warn('❌ Pickup location data missing:', data.locations.pickupLocation);
       }
 
       // Plot drop locations
       if (data.locations.dropLocation && Array.isArray(data.locations.dropLocation)) {
+        console.log('🏠 Processing drop locations:', data.locations.dropLocation);
         data.locations.dropLocation.forEach((dropLocation: any, index: number) => {
           if (dropLocation.coordinates && dropLocation.coordinates.length >= 2) {
             const dropPosition = {
               lat: parseFloat(dropLocation.coordinates[0]),
               lng: parseFloat(dropLocation.coordinates[1]),
             };
+
+            console.log(`🏠 Creating drop marker ${index + 1} at:`, dropPosition);
 
             const dropMarker = new window.google.maps.Marker({
               position: dropPosition,
@@ -719,8 +763,13 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
 
             markers.push(dropMarker);
             bounds.extend(dropPosition);
+            console.log(`✅ Drop marker ${index + 1} created and added to map`);
+          } else {
+            console.warn(`❌ Drop location ${index + 1} coordinates invalid:`, dropLocation.coordinates);
           }
         });
+      } else {
+        console.warn('❌ Drop location data missing or not array:', data.locations.dropLocation);
       }
 
       // Draw route based on order status
@@ -728,11 +777,38 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
 
       // Fit map to show all markers
       if (markers.length > 0) {
+        console.log(`🎯 Fitting map to show ${markers.length} markers`);
         map.fitBounds(bounds);
+      } else {
+        console.warn('❌ No markers to display, adding test marker');
+        // Add a test marker to verify map is working
+        const testMarker = new window.google.maps.Marker({
+          position: { lat: 28.6139, lng: 77.2090 }, // Delhi coordinates
+          map: map,
+          title: 'Test Marker',
+          icon: {
+            path: window.google.maps.SymbolPath.CIRCLE,
+            scale: 20,
+            fillColor: '#FF0000',
+            fillOpacity: 1,
+            strokeColor: '#ffffff',
+            strokeWeight: 3,
+          },
+          label: {
+            text: 'T',
+            color: 'white',
+            fontSize: '14px',
+            fontWeight: 'bold',
+          },
+        });
+        markers.push(testMarker);
+        console.log('🔴 Test marker added at Delhi coordinates');
       }
 
+      console.log('📍 Marker plotting completed. Total markers:', markers.length);
+
     } catch (error) {
-      console.error('Error plotting locations:', error);
+      console.error('❌ Error plotting locations:', error);
       setMapError('Failed to plot locations on map');
     }
   }, []);
@@ -740,25 +816,33 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
   const fetchOrderLocations = useCallback(async () => {
     if (!orderId) return;
 
+    console.log('🔍 Fetching order locations for orderId:', orderId);
     setLoading(true);
     setMapError(null);
 
     try {
       const response = await OrderService.getOrderLocations({ orderId });
       
+      console.log('📡 API Response:', response);
+      
       if (response && response.status === 200 && response.data) {
-        setLocationData(response.data);
+        console.log('✅ Location data received:', response.data);
+        setLocationData(response.data as unknown as LocationData);
         // Only plot locations if map is initialized
         if (mapInstanceRef.current) {
-          plotLocationsOnMap(response.data);
+          console.log('🗺️ Map is initialized, plotting locations...');
+          plotLocationsOnMap(response.data as unknown as LocationData);
+        } else {
+          console.warn('❌ Map not initialized yet, cannot plot locations');
         }
       } else {
         const errorMessage = response ? response.message : 'Failed to fetch order locations';
+        console.error('❌ API Error:', errorMessage);
         toastHelper.error(errorMessage);
         setMapError(errorMessage);
       }
     } catch (error: any) {
-      console.error('Error fetching order locations:', error);
+      console.error('❌ Error fetching order locations:', error);
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch order locations';
       toastHelper.error(errorMessage);
       setMapError(errorMessage);
@@ -770,12 +854,16 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
   const drawRoute = (data: LocationData) => {
     if (!mapInstanceRef.current || !window.google) return;
 
+    console.log('🗺️ Drawing route for data:', data);
+
     const map = mapInstanceRef.current;
     const directionsService = new window.google.maps.DirectionsService();
     
     // Clear any existing routes
-    const existingRoutes = document.querySelectorAll('.route-polyline');
-    existingRoutes.forEach(route => route.remove());
+    if (directionsRendererRef.current) {
+      directionsRendererRef.current.setMap(null);
+      directionsRendererRef.current = null;
+    }
 
     try {
       let origin: any = null;
@@ -785,12 +873,14 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
 
       // Determine route based on order status
       if (data.type === 'pickup') {
+        console.log('📍 Drawing pickup route');
         // Route from rider to pickup location
         if (data.locations.riderCurrentLocation && data.locations.riderCurrentLocation.length >= 2) {
           origin = new window.google.maps.LatLng(
-            data.locations.riderCurrentLocation[0],
-            data.locations.riderCurrentLocation[1]
+            parseFloat(data.locations.riderCurrentLocation[0]),
+            parseFloat(data.locations.riderCurrentLocation[1])
           );
+          console.log('🚗 Rider origin:', origin.toString());
         }
         
         if (data.locations.pickupLocation && data.locations.pickupLocation.coordinates) {
@@ -800,17 +890,20 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
               parseFloat(pickupCoords[0]),
               parseFloat(pickupCoords[1])
             );
+            console.log('📦 Pickup destination:', destination.toString());
           }
         }
         routeColor = '#10B981'; // Green for pickup route
         routeType = 'pickup';
       } else {
+        console.log('🏠 Drawing drop route');
         // Route from rider to first undelivered drop location
         if (data.locations.riderCurrentLocation && data.locations.riderCurrentLocation.length >= 2) {
           origin = new window.google.maps.LatLng(
-            data.locations.riderCurrentLocation[0],
-            data.locations.riderCurrentLocation[1]
+            parseFloat(data.locations.riderCurrentLocation[0]),
+            parseFloat(data.locations.riderCurrentLocation[1])
           );
+          console.log('🚗 Rider origin:', origin.toString());
         }
 
         // Find first undelivered drop location
@@ -826,6 +919,7 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                 parseFloat(dropCoords[0]),
                 parseFloat(dropCoords[1])
               );
+              console.log('🏠 Drop destination:', destination.toString());
             }
           }
         }
@@ -833,118 +927,186 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
         routeType = 'drop';
       }
 
+      console.log('🎯 Route details:', { origin, destination, routeColor, routeType });
+
       if (origin && destination) {
-        const directionsRenderer = new window.google.maps.DirectionsRenderer({
+        console.log('✅ Both origin and destination found, creating route...');
+        
+        // Create new directions renderer
+        directionsRendererRef.current = new window.google.maps.DirectionsRenderer({
           suppressMarkers: true, // We'll use our custom markers
           polylineOptions: {
             strokeColor: routeColor,
-            strokeWeight: 5,
-            strokeOpacity: 0.8,
+            strokeWeight: 6,
+            strokeOpacity: 0.9,
           },
         });
 
-        directionsRenderer.setMap(map);
+        directionsRendererRef.current.setMap(map);
 
-        directionsService.route(
-          {
-            origin: origin,
-            destination: destination,
-            travelMode: window.google.maps.TravelMode.DRIVING,
-            avoidHighways: false,
-            avoidTolls: false,
-          },
-          (result: any, status: any) => {
-            if (status === window.google.maps.DirectionsStatus.OK) {
-              directionsRenderer.setDirections(result);
-              
-              // Add route info to the map
-              const route = result.routes[0];
-              const leg = route.legs[0];
-              
-              // Create a custom info window for route details
-              const routeInfoWindow = new window.google.maps.InfoWindow({
-                content: `
+        const request = {
+          origin: origin,
+          destination: destination,
+          travelMode: window.google.maps.TravelMode.DRIVING,
+          avoidHighways: false,
+          avoidTolls: false,
+          optimizeWaypoints: false,
+          provideRouteAlternatives: false,
+          region: 'IN', // India region for better routing
+          unitSystem: window.google.maps.UnitSystem.METRIC,
+        };
+
+        console.log('🚀 Sending directions request:', request);
+
+        directionsService.route(request, (result: any, status: any) => {
+          console.log('📡 Directions response:', { status, result });
+          
+          if (status === window.google.maps.DirectionsStatus.OK && directionsRendererRef.current) {
+            console.log('✅ Route rendered successfully');
+            directionsRendererRef.current.setDirections(result);
+            
+            // Add route info to the map
+            const route = result.routes[0];
+            const leg = route.legs[0];
+            
+            // Create a custom info window for route details
+            const routeInfoWindow = new window.google.maps.InfoWindow({
+              content: `
+                <div style="
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                  padding: 12px;
+                  min-width: 200px;
+                ">
                   <div style="
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                    padding: 12px;
-                    min-width: 200px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 8px;
                   ">
                     <div style="
+                      width: 24px;
+                      height: 24px;
+                      background: ${routeColor};
+                      border-radius: 50%;
                       display: flex;
                       align-items: center;
-                      gap: 8px;
-                      margin-bottom: 8px;
-                    ">
-                      <div style="
-                        width: 24px;
-                        height: 24px;
-                        background: ${routeColor};
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        color: white;
-                        font-size: 12px;
-                        font-weight: bold;
-                      ">${routeType === 'pickup' ? 'P' : 'D'}</div>
-                      <h4 style="
-                        margin: 0;
-                        font-size: 14px;
-                        font-weight: 600;
-                        color: #374151;
-                      ">${routeType === 'pickup' ? 'To Pickup' : 'To Drop'}</h4>
-                    </div>
-                    <div style="
-                      background: #F3F4F6;
-                      padding: 8px;
-                      border-radius: 6px;
-                      border: 1px solid #E5E7EB;
-                    ">
-                      <p style="
-                        margin: 0 0 4px 0;
-                        font-size: 12px;
-                        color: #6B7280;
-                        font-weight: 500;
-                      ">Distance</p>
-                      <p style="
-                        margin: 0 0 8px 0;
-                        font-size: 13px;
-                        color: #374151;
-                        font-weight: 600;
-                      ">${leg.distance.text}</p>
-                      <p style="
-                        margin: 0 0 4px 0;
-                        font-size: 12px;
-                        color: #6B7280;
-                        font-weight: 500;
-                      ">Duration</p>
-                      <p style="
-                        margin: 0;
-                        font-size: 13px;
-                        color: #374151;
-                        font-weight: 600;
-                      ">${leg.duration.text}</p>
-                    </div>
+                      justify-content: center;
+                      color: white;
+                      font-size: 12px;
+                      font-weight: bold;
+                    ">${routeType === 'pickup' ? 'P' : 'D'}</div>
+                    <h4 style="
+                      margin: 0;
+                      font-size: 14px;
+                      font-weight: 600;
+                      color: #374151;
+                    ">${routeType === 'pickup' ? 'To Pickup' : 'To Drop'}</h4>
                   </div>
-                `,
-              });
+                  <div style="
+                    background: #F3F4F6;
+                    padding: 8px;
+                    border-radius: 6px;
+                    border: 1px solid #E5E7EB;
+                  ">
+                    <p style="
+                      margin: 0 0 4px 0;
+                      font-size: 12px;
+                      color: #6B7280;
+                      font-weight: 500;
+                    ">Distance</p>
+                    <p style="
+                      margin: 0 0 8px 0;
+                      font-size: 13px;
+                      color: #374151;
+                      font-weight: 600;
+                    ">${leg.distance.text}</p>
+                    <p style="
+                      margin: 0 0 4px 0;
+                      font-size: 12px;
+                      color: #6B7280;
+                      font-weight: 500;
+                    ">Duration</p>
+                    <p style="
+                      margin: 0;
+                      font-size: 13px;
+                      color: #374151;
+                      font-weight: 600;
+                    ">${leg.duration.text}</p>
+                  </div>
+                </div>
+              `,
+            });
 
-              // Position the info window at the midpoint of the route
-              const midpoint = new window.google.maps.LatLng(
-                (origin.lat() + destination.lat()) / 2,
-                (origin.lng() + destination.lng()) / 2
-              );
+            // Position the info window at the midpoint of the route
+            const midpoint = new window.google.maps.LatLng(
+              (origin.lat() + destination.lat()) / 2,
+              (origin.lng() + destination.lng()) / 2
+            );
+            
+            routeInfoWindow.setPosition(midpoint);
+            routeInfoWindow.open(map);
+          } else {
+            console.warn('❌ Directions request failed:', status);
+            console.warn('Available statuses:', {
+              OK: window.google.maps.DirectionsStatus.OK,
+              NOT_FOUND: window.google.maps.DirectionsStatus.NOT_FOUND,
+              ZERO_RESULTS: window.google.maps.DirectionsStatus.ZERO_RESULTS,
+              MAX_WAYPOINTS_EXCEEDED: window.google.maps.DirectionsStatus.MAX_WAYPOINTS_EXCEEDED,
+              INVALID_REQUEST: window.google.maps.DirectionsStatus.INVALID_REQUEST,
+              OVER_QUERY_LIMIT: window.google.maps.DirectionsStatus.OVER_QUERY_LIMIT,
+              REQUEST_DENIED: window.google.maps.DirectionsStatus.REQUEST_DENIED,
+              UNKNOWN_ERROR: window.google.maps.DirectionsStatus.UNKNOWN_ERROR
+            });
+            
+            // Try alternative travel modes if driving fails
+            if (status === window.google.maps.DirectionsStatus.ZERO_RESULTS) {
+              console.log('🔄 Trying alternative travel mode...');
+              const alternativeRequest = {
+                ...request,
+                travelMode: window.google.maps.TravelMode.WALKING,
+              };
               
-              routeInfoWindow.setPosition(midpoint);
-              routeInfoWindow.open(map);
+              directionsService.route(alternativeRequest, (altResult: any, altStatus: any) => {
+                if (altStatus === window.google.maps.DirectionsStatus.OK && directionsRendererRef.current) {
+                  console.log('✅ Alternative route rendered successfully');
+                  directionsRendererRef.current.setDirections(altResult);
+                } else {
+                  console.log('🔄 Drawing fallback straight line route...');
+                  const fallbackPolyline = new window.google.maps.Polyline({
+                    path: [origin, destination],
+                    geodesic: true,
+                    strokeColor: routeColor,
+                    strokeOpacity: 0.6,
+                    strokeWeight: 3,
+                  });
+                  fallbackPolyline.setMap(map);
+                }
+              });
             } else {
-              console.warn('Directions request failed:', status);
+              // Fallback: Draw a simple straight line if Directions API fails
+              console.log('🔄 Drawing fallback straight line route...');
+              const fallbackPolyline = new window.google.maps.Polyline({
+                path: [origin, destination],
+                geodesic: true,
+                strokeColor: routeColor,
+                strokeOpacity: 0.6,
+                strokeWeight: 3,
+              });
+              fallbackPolyline.setMap(map);
             }
           }
-        );
+        });
+      } else {
+        console.warn('❌ Missing origin or destination:', { origin, destination });
+        console.warn('Data structure:', {
+          riderLocation: data.locations.riderCurrentLocation,
+          pickupLocation: data.locations.pickupLocation,
+          dropLocation: data.locations.dropLocation,
+          type: data.type
+        });
       }
     } catch (error) {
-      console.error('Error drawing route:', error);
+      console.error('❌ Error drawing route:', error);
     }
   };
 
@@ -1022,8 +1184,8 @@ const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
         <div className="relative">
           <div
             ref={mapRef}
-            className="w-full h-[700px] bg-gray-100"
-            style={{ minHeight: '700px' }}
+            className="w-full h-[500px] bg-gray-100"
+            style={{ minHeight: '500px' }}
           />
           
           {/* Google Maps Loading Overlay */}

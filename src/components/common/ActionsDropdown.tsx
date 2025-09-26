@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaEllipsisV, FaMapMarkerAlt, FaCompass, FaUserPlus, FaUserEdit, FaTimes } from 'react-icons/fa';
+import { FaEllipsisV, FaMapMarkerAlt, FaCompass, FaUserPlus, FaUserEdit } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 
 interface ActionsDropdownProps {

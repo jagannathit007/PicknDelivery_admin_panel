@@ -35,7 +35,7 @@ export const GoogleMapsProvider: React.FC<GoogleMapsProviderProps> = ({ children
 
     // Load Google Maps script
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&libraries=geometry,marker`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&libraries=geometry,marker,places`;
     script.async = true;
     script.defer = true;
     
