@@ -264,28 +264,40 @@ export default function RiderModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">
-              {rider ? "Edit Rider" : "Add Rider"}
-            </h2>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-full max-w-5xl max-h-[95vh] overflow-hidden">
+        {/* Header */}
+        <div className="px-8 py-6 text-dark">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold">
+                {rider ? "Edit Rider Information" : "Add New Rider"}
+              </h2>
+              <p className="text-black-100 mt-1">
+                {rider ? "Update rider details and documents" : "Fill in the rider information below"}
+              </p>
+            </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-black/80 hover:text-black hover:bg-black/10 p-2 rounded-lg transition-all duration-200"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-8 overflow-y-auto max-h-[calc(95vh-120px)]">
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FaIdCard className="mr-2 text-blue-600" />
+            <div className="dark:from-gray-700 dark:to-gray-600 p-6 rounded-xl border border-blue-200 dark:border-gray-600">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                <div className="p-2 bg-blue-100 dark:bg-blue-500/20 rounded-lg mr-3">
+                  <FaIdCard className="text-blue-600 dark:text-blue-400" />
+                </div>
                 Basic Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -355,9 +367,11 @@ export default function RiderModal({
             </div>
 
             {/* Document Information */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FaIdCard className="mr-2 text-green-600" />
+            <div className="dark:from-gray-700 dark:to-gray-600 p-6 rounded-xl border border-green-200 dark:border-gray-600">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                <div className="p-2 bg-green-100 dark:bg-green-500/20 rounded-lg mr-3">
+                  <FaIdCard className="text-green-600 dark:text-green-400" />
+                </div>
                 Document Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -416,9 +430,11 @@ export default function RiderModal({
             </div>
 
             {/* Vehicle Information */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FaMotorcycle className="mr-2 text-purple-600" />
+            <div className="dark:from-gray-700 dark:to-gray-600 p-6 rounded-xl border border-purple-200 dark:border-gray-600">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                <div className="p-2 bg-purple-100 dark:bg-purple-500/20 rounded-lg mr-3">
+                  <FaMotorcycle className="text-purple-600 dark:text-purple-400" />
+                </div>
                 Vehicle Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -463,9 +479,11 @@ export default function RiderModal({
             </div>
 
             {/* Bank Information */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FaCreditCard className="mr-2 text-orange-600" />
+            <div className="dark:from-gray-700 dark:to-gray-600 p-6 rounded-xl border border-orange-200 dark:border-gray-600">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                <div className="p-2 bg-orange-100 dark:bg-orange-500/20 rounded-lg mr-3">
+                  <FaCreditCard className="text-orange-600 dark:text-orange-400" />
+                </div>
                 Bank Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -508,18 +526,33 @@ export default function RiderModal({
             </div>
 
             {/* Document Uploads */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Document Uploads</h3>
+            <div className="bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-700 dark:to-gray-600 p-6 rounded-xl border border-gray-200 dark:border-gray-600">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                <div className="p-2 bg-gray-100 dark:bg-gray-500/20 rounded-lg mr-3">
+                  <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                </div>
+                Document Uploads
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Profile Image */}
                 <div>
                   <Label>Profile Image</Label>
                   <div className="mt-2">
-                    <img
-                      src={imagePreviews.image ? imagePreviews.image : (rider?.image ? `${imageBaseUrl}/${rider.image}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu2XUjKXh-LnMkWDgqaXlVXJ6dJTfLBxIbnQ&s")}
-                      alt="Profile"
-                      className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mb-2"
-                    />
+                    {imagePreviews.image || rider?.image ? (
+                      <img
+                        src={imagePreviews.image ? imagePreviews.image : `${imageBaseUrl}/${rider.image}`}
+                        alt="Profile"
+                        className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mb-2"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center border-2 border-gray-200 mb-2">
+                        <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 448 512" className="w-8 h-8 text-gray-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"></path>
+                        </svg>
+                      </div>
+                    )}
                     <input
                       type="file"
                       accept="image/*"
@@ -533,11 +566,19 @@ export default function RiderModal({
                 <div>
                   <Label>RC Book Image</Label>
                   <div className="mt-2">
-                    <img
-                      src={imagePreviews.rcBookImage ? imagePreviews.rcBookImage : (rider?.rcBookImage ? `${imageBaseUrl}/${rider.rcBookImage}` : "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-blank-avatar-modern-vector-png-image_40962406.jpg")}
-                      alt="RC Book"
-                      className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mb-2"
-                    />
+                    {imagePreviews.rcBookImage || rider?.rcBookImage ? (
+                      <img
+                        src={imagePreviews.rcBookImage ? imagePreviews.rcBookImage : `${imageBaseUrl}/${rider.rcBookImage}`}
+                        alt="RC Book"
+                        className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mb-2"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center border-2 border-gray-200 mb-2">
+                        <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                    )}
                     <input
                       type="file"
                       accept="image/*"
@@ -551,11 +592,19 @@ export default function RiderModal({
                 <div>
                   <Label>License Image</Label>
                   <div className="mt-2">
-                    <img
-                      src={imagePreviews.licenceImage ? imagePreviews.licenceImage : (rider?.licenceImage ? `${imageBaseUrl}/${rider.licenceImage}` : "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-blank-avatar-modern-vector-png-image_40962406.jpg")}
-                      alt="License"
-                      className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mb-2"
-                    />
+                    {imagePreviews.licenceImage || rider?.licenceImage ? (
+                      <img
+                        src={imagePreviews.licenceImage ? imagePreviews.licenceImage : `${imageBaseUrl}/${rider.licenceImage}`}
+                        alt="License"
+                        className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mb-2"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center border-2 border-gray-200 mb-2">
+                        <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                    )}
                     <input
                       type="file"
                       accept="image/*"
@@ -569,11 +618,19 @@ export default function RiderModal({
                 <div>
                   <Label>Aadhar Front</Label>
                   <div className="mt-2">
-                    <img
-                      src={imagePreviews.aadharCardFrontImage ? imagePreviews.aadharCardFrontImage : (rider?.aadharCardFrontImage ? `${imageBaseUrl}/${rider.aadharCardFrontImage}` : "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-blank-avatar-modern-vector-png-image_40962406.jpg")}
-                      alt="Aadhar Front"
-                      className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mb-2"
-                    />
+                    {imagePreviews.aadharCardFrontImage || rider?.aadharCardFrontImage ? (
+                      <img
+                        src={imagePreviews.aadharCardFrontImage ? imagePreviews.aadharCardFrontImage : `${imageBaseUrl}/${rider.aadharCardFrontImage}`}
+                        alt="Aadhar Front"
+                        className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mb-2"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center border-2 border-gray-200 mb-2">
+                        <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                    )}
                     <input
                       type="file"
                       accept="image/*"
@@ -587,11 +644,19 @@ export default function RiderModal({
                 <div>
                   <Label>Aadhar Back</Label>
                   <div className="mt-2">
-                    <img
-                      src={imagePreviews.aadharCardBackImage ? imagePreviews.aadharCardBackImage : (rider?.aadharCardBackImage ? `${imageBaseUrl}/${rider.aadharCardBackImage}` : "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-blank-avatar-modern-vector-png-image_40962406.jpg")}
-                      alt="Aadhar Back"
-                      className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mb-2"
-                    />
+                    {imagePreviews.aadharCardBackImage || rider?.aadharCardBackImage ? (
+                      <img
+                        src={imagePreviews.aadharCardBackImage ? imagePreviews.aadharCardBackImage : `${imageBaseUrl}/${rider.aadharCardBackImage}`}
+                        alt="Aadhar Back"
+                        className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mb-2"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center border-2 border-gray-200 mb-2">
+                        <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                    )}
                     <input
                       type="file"
                       accept="image/*"
@@ -605,11 +670,17 @@ export default function RiderModal({
                 <div>
                   <Label>Vehicle Image</Label>
                   <div className="mt-2">
-                    <img
-                      src={imagePreviews.vehicleImage ? imagePreviews.vehicleImage : (rider?.vehicleImage ? `${imageBaseUrl}/${rider.vehicleImage}` : "https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-blank-avatar-modern-vector-png-image_40962406.jpg")}
-                      alt="Vehicle"
-                      className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mb-2"
-                    />
+                    {imagePreviews.vehicleImage || rider?.vehicleImage ? (
+                      <img
+                        src={imagePreviews.vehicleImage ? imagePreviews.vehicleImage : `${imageBaseUrl}/${rider.vehicleImage}`}
+                        alt="Vehicle"
+                        className="w-20 h-20 rounded-lg object-cover border-2 border-gray-200 mb-2"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center border-2 border-gray-200 mb-2">
+                        <FaMotorcycle className="w-8 h-8 text-gray-500" />
+                      </div>
+                    )}
                     <input
                       type="file"
                       accept="image/*"
@@ -622,8 +693,15 @@ export default function RiderModal({
             </div>
 
             {/* Status */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Status</h3>
+            <div className="bg-gradient-to-br from-slate-50 to-gray-50 dark:from-gray-700 dark:to-gray-600 p-6 rounded-xl border border-slate-200 dark:border-gray-600">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                <div className="p-2 bg-slate-100 dark:bg-slate-500/20 rounded-lg mr-3">
+                  <svg className="w-5 h-5 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                Status
+              </h3>
               <div className="flex space-x-6">
                 <label className="flex items-center space-x-3">
                   <input
@@ -647,21 +725,28 @@ export default function RiderModal({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex space-x-3 pt-4">
+            <div className="flex space-x-4 pt-6 border-t border-gray-200 dark:border-gray-600">
               <Button
                 variant="outline"
-                className="flex-1"
+                className="flex-1 py-3 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
                 onClick={onClose}
                 disabled={isLoading}
               >
                 Cancel
               </Button>
               <Button
-                className="flex-1"
+                className="flex-1 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium"
                 disabled={isLoading}
                 onClick={() => handleSubmit({} as React.FormEvent)}
               >
-                {isLoading ? "Saving..." : rider ? "Update" : "Save"}
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    {rider ? "Updating..." : "Saving..."}
+                  </div>
+                ) : (
+                  rider ? "Update Rider" : "Save Rider"
+                )}
               </Button>
             </div>
           </form>

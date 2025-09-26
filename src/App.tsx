@@ -30,14 +30,16 @@ import Coupons from "./pages/coupons/Coupons ";
 import Transactions from "./pages/Transactions";
 import Template from "./pages/Template";
 import Categories from "./pages/Categories/Categories";
+import { GoogleMapsProvider } from "./context/GoogleMapsContext";
 // import SocketStatus from "./components/common/SocketStatus";
 
 export default function App() {
   return (
     <>
-      <Router>
-        <ScrollToTop />
-        <Routes>
+      <GoogleMapsProvider>
+        <Router>
+          <ScrollToTop />
+          <Routes>
           {/* Redirect root to signin */}
           <Route path="/" element={<Navigate to="/signin" replace />} />
 
@@ -107,8 +109,9 @@ export default function App() {
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
+          </Routes>
+        </Router>
+      </GoogleMapsProvider>
       
       {/* Socket Status Component - Shows connection status and test buttons */}
       {/* <SocketStatus /> */}

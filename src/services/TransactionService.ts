@@ -12,13 +12,13 @@ interface ApiResponse<T> {
 // Define the Transaction interface
 export interface Transaction {
   _id?: string;
-  fromUserId: string;
-  fromUserType: 'customer' | 'admin' | 'rider';
-  toUserId: string;
-  toUserType: 'customer' | 'admin' | 'rider';
+  fromUserId: any;
+  fromUserType: any;
+  toUserId?: any;
+  toUserType: any;
   paymentMethod: 'cash' | 'online';
   paymentScreenshot?: string;
-  orderId?: string;
+  orderId?: any;
   amount: number;
   extraFields?: any;
   createdAt: string;

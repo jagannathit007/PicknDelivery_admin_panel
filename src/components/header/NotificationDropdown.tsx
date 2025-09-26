@@ -167,22 +167,22 @@ export default function NotificationDropdown() {
       <Dropdown
         isOpen={isOpen}
         onClose={closeDropdown}
-        className="absolute -right-[240px] mt-[17px] flex w-[350px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark sm:w-[361px] lg:right-0"
+        className="absolute -right-[240px] mt-[17px] flex w-[350px] flex-col rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 sm:w-[361px] lg:right-0"
       >
-        <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100 dark:border-gray-700">
-          <h5 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-            Notification
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+          <h5 className="text-sm font-semibold text-gray-900 dark:text-white">
+            Notifications
           </h5>
           <div className="flex items-center gap-2">
             <button
               onClick={toggleDropdown}
-              className="text-gray-500 transition dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+              className="text-gray-400 transition dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
               title="Close"
             >
               <svg
                 className="fill-current"
-                width="24"
-                height="24"
+                width="16"
+                height="16"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -196,71 +196,54 @@ export default function NotificationDropdown() {
             </button>
           </div>
         </div>
-        <ul className="flex flex-col h-auto overflow-y-auto custom-scrollbar">
-          {loading && notifications.length === 0 ? (
-            <li className="p-3 text-center text-gray-500">
-              Loading notifications...
-            </li>
-          ) : notifications.length === 0 ? (
-            <li className="p-3 text-center text-gray-500">
-              No notifications available
-            </li>
-          ) : (
-            notifications.map((notification) => (
-              <li key={notification.id}>
-                <DropdownItem
-                  onItemClick={closeDropdown}
-                  className="flex gap-3 rounded-lg border-b border-gray-100 p-3 px-4.5 py-3 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-white/5"
-                >
-                  {/* <span className="relative block w-full h-10 rounded-full z-1 max-w-10">
-                    <img
-                      width={40}
-                      height={40}
-                      src={notification.image}
-                      alt="User"
-                      className="w-full overflow-hidden rounded-full"
-                    />
-                    <span
-                      className={`absolute bottom-0 right-0 z-10 h-2.5 w-full max-w-2.5 rounded-full border-[1.5px] border-white ${
-                        notification.status === "success"
-                          ? "bg-success-500"
-                          : "bg-error-500"
-                      } dark:border-gray-900`}
-                    ></span>
-                  </span> */}
-                  <span className="block">
-                    <span className="mb-1.5 block text-theme-sm text-gray-500 dark:text-gray-400 space-x-1">
-                      <span className="font-medium text-gray-800 dark:text-white/90">
-                        {notification.category}
-                      </span>
-                      <span>-</span>
-                      <span className="font-medium text-gray-800 dark:text-white/90">
-                        {notification.user}
-                      </span>
-                      <span>{notification.action}</span>
-                      <span className="font-medium text-gray-800 dark:text-white/90">
-                        {notification.project}
-                      </span>
-                    </span>
-                    <span className="flex items-center gap-2 text-gray-500 text-theme-xs dark:text-gray-400">
-                      <span>{notification.category}</span>
-                      <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                      <span>{notification.time}</span>
-                    </span>
-                  </span>
-                </DropdownItem>
+        <div className="max-h-80 overflow-y-auto">
+          <ul className="flex flex-col">
+            {loading && notifications.length === 0 ? (
+              <li className="px-4 py-3 text-center text-sm text-gray-500 dark:text-gray-400">
+                Loading notifications...
               </li>
-            ))
-          )}
-        </ul>
+            ) : notifications.length === 0 ? (
+              <li className="px-4 py-3 text-center text-sm text-gray-500 dark:text-gray-400">
+                No notifications available
+              </li>
+            ) : (
+              notifications.map((notification) => (
+                <li key={notification.id}>
+                  <DropdownItem
+                    onItemClick={closeDropdown}
+                    className="flex gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 last:border-b-0"
+                  >
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 bg-gray-400 dark:bg-gray-500 rounded-full"></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-900 dark:text-white line-clamp-2">
+                        <span className="font-medium">{notification.user}</span> {notification.action}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          {notification.time}
+                        </span>
+                        <span className="text-xs text-gray-400 dark:text-gray-500">•</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                          {notification.category}
+                        </span>
+                      </div>
+                    </div>
+                  </DropdownItem>
+                </li>
+              ))
+            )}
+          </ul>
+        </div>
         {hasNextPage && (
-          <button
-            onClick={loadMore}
-            disabled={loading}
-            className="block px-4 py-2 mt-3 text-sm font-medium text-center text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
-          >
-            {loading ? "Loading..." : "Load More"}
-          </button>
+          <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+            <button
+              onClick={loadMore}
+              disabled={loading}
+              className="w-full px-3 py-2 text-sm font-medium text-center text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Loading..." : "Load More"}
+            </button>
+          </div>
         )}
         {/* <Link
           to="/notifications"

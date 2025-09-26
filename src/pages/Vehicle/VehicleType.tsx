@@ -1024,7 +1024,7 @@ const VehicleTypeComponent = () => {
                     {getSortIcon("isDeleted")}
                   </div>
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
+                <th className="px-4 py-3 text-left text-xs w-10 font-medium text-gray-500 dark:text-gray-400">
                   Actions
                 </th>
               </tr>
@@ -1093,32 +1093,32 @@ const VehicleTypeComponent = () => {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2">
                         <button
                           onClick={() => handlePreviewVehicle(vehicle)}
-                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20 dark:hover:bg-blue-500/20"
                           title="View Details"
                         >
                           <FaEye className="w-3 h-3" />
                         </button>
                         <button
                           onClick={() => handleEditVehicle(vehicle)}
-                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded"
-                          title="Edit"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-md hover:bg-green-100 hover:border-green-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-colors duration-200 dark:bg-green-500/10 dark:text-green-400 dark:border-green-500/20 dark:hover:bg-green-500/20"
+                          title="Edit Vehicle"
                         >
                           <FaEdit className="w-3 h-3" />
                         </button>
                         <button
                           onClick={() => handleManageFares(vehicle)}
-                          className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-500/10 rounded"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-purple-700 bg-purple-50 border border-purple-200 rounded-md hover:bg-purple-100 hover:border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-1 transition-colors duration-200 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20 dark:hover:bg-purple-500/20"
                           title="Manage Fares"
                         >
                           <FaDollarSign className="w-3 h-3" />
                         </button>
                         <button
                           onClick={() => handleDeleteClick(vehicle._id!)}
-                          className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded"
-                          title="Delete"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 hover:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-colors duration-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20 dark:hover:bg-red-500/20"
+                          title="Delete Vehicle"
                         >
                           <FaTrash className="w-3 h-3" />
                         </button>

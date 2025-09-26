@@ -86,11 +86,11 @@ const navItems: NavItem[] = [
     name: "Transaction",
     path: "/transaction",
   },
-  {
-    icon: <i className="fa-solid fa-hand-holding-dollar"></i>,
-    name: "Settlement",
-    path: "/settlement",
-  },
+  // {
+  //   icon: <i className="fa-solid fa-hand-holding-dollar"></i>,
+  //   name: "Settlement",
+  //   path: "/settlement",
+  // },
   // {
   //   icon: <GrTemplate />,
   //   name: "Templates",
@@ -101,11 +101,11 @@ const navItems: NavItem[] = [
     name: "Notification",
     path: "/notification",
   },
-  {
-    icon: <i className="fa-solid fa-circle-question"></i>,
-    name: "FAQ",
-    path: "/faq",
-  },
+  // {
+  //   icon: <i className="fa-solid fa-circle-question"></i>,
+  //   name: "FAQ",
+  //   path: "/faq",
+  // },
   // {
   //   icon: <RiCoupon2Line />,
   //   name: "Coupons",

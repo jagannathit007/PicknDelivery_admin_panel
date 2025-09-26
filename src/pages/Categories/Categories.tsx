@@ -225,21 +225,21 @@ function Categories() {
                     <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                       {formatDate(category.createdAt)}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                      <div className="flex gap-2">
+                    <td className="px-4 py-3 w-20">
+                      <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleEditCategory(category)}
-                          className="p-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                          title="Edit"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20 dark:hover:bg-blue-500/20"
+                          title="Edit Category"
                         >
-                          <FaEdit />
+                          <FaEdit className="w-3 h-3" />
                         </button>
                         <button
                           onClick={() => handleDeleteCategory(category._id!)}
-                          className="p-1 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
-                          title="Delete"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 hover:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-colors duration-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20 dark:hover:bg-red-500/20"
+                          title="Delete Category"
                         >
-                          <FaTrash />
+                          <FaTrash className="w-3 h-3" />
                         </button>
                       </div>
                     </td>

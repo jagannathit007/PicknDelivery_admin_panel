@@ -337,14 +337,14 @@ const Template = () => {
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-2">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleEditTemplate(template);
                               }}
-                              className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded"
-                              title="Edit"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20 dark:hover:bg-blue-500/20"
+                              title="Edit Template"
                             >
                               <FaEdit className="w-3 h-3" />
                             </button>
@@ -353,8 +353,8 @@ const Template = () => {
                                 e.stopPropagation();
                                 handleDeleteTemplate(template._id!);
                               }}
-                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded"
-                              title="Delete"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 hover:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-colors duration-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20 dark:hover:bg-red-500/20"
+                              title="Delete Template"
                             >
                               <FaTrash className="w-3 h-3" />
                             </button>

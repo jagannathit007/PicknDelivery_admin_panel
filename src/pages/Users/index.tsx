@@ -91,6 +91,21 @@ function UserTable() {
     });
   };
 
+  // Handle image error and show placeholder
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const imgElement = e.currentTarget;
+    const parentDiv = imgElement.parentElement;
+    if (parentDiv) {
+      parentDiv.innerHTML = `
+        <div class="w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center border-2 border-gray-200">
+          <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="w-5 h-5 text-gray-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+            <path d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"></path>
+          </svg>
+        </div>
+      `;
+    }
+  };
+
   // Filter and sort customers
   const filteredCustomers = useMemo(() => {
     const filtered = customers.filter((customer) => {
@@ -317,7 +332,7 @@ function UserTable() {
             <thead className="border-b border-gray-100 dark:border-gray-800">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Customer
+                  Profile
                 </th>
                 <th 
                   className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
@@ -384,17 +399,21 @@ function UserTable() {
                     key={customer._id}
                     className="hover:bg-gray-50 dark:hover:bg-white/[0.02]"
                   >
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 w-10">
                       <div className="flex items-center">
                         <div className="relative">
-                          <img
-                            src={customer.image ? imageBaseUrl + '/' + customer.image : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu2XUjKXh-LnMkWDgqaXlVXJ6dJTfLBxIbnQ&s"}
-                            alt={customer.name}
-                            className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-700"
-                          />
-                          {customer.isVerified && (
-                            <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-0.5">
-                              <FaCheckCircle className="w-2 h-2 text-white" />
+                          {customer.image ? (
+                            <img
+                              src={imageBaseUrl + '/' + customer.image}
+                              alt={customer.name}
+                              className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-700"
+                              onError={handleImageError}
+                            />
+                          ) : (
+                            <div className="w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center border-2 border-gray-200">
+                              <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 448 512" className="w-5 h-5 text-gray-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"></path>
+                              </svg>
                             </div>
                           )}
                         </div>
@@ -403,13 +422,13 @@ function UserTable() {
                     
                     <td className="px-4 py-3">
                       <div className="font-medium text-gray-800 dark:text-white/90 text-sm">
-                        {customer.name}
+                        {customer.name || "N/A"}
                       </div>
                     </td>
                     
                     <td className="px-4 py-3">
                       <div className="text-gray-600 dark:text-gray-400 text-sm font-mono">
-                        {customer.mobile}
+                        {customer.mobile || "N/A"}
                       </div>
                     </td>
                     
@@ -442,16 +461,15 @@ function UserTable() {
                       </span>
                     </td>
                     
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1">
+                    <td className="px-4 py-3 w-20">
+                      <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleEditCustomer(customer)}
-                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded"
-                          title="Edit"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20 dark:hover:bg-blue-500/20"
+                          title="Edit Customer"
                         >
                           <FaEdit className="w-3 h-3" />
                         </button>
-
                       </div>
                     </td>
                   </tr>

@@ -15,12 +15,17 @@ class SocketService {
     // Get the backend URL from environment or use default
     const backendUrl = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
     
+    console.log('🔌 Attempting to connect to socket server:', backendUrl);
+    
     this.socket = io(backendUrl, {
-      transports: ['websocket', 'polling'],
+      transports: ['polling', 'websocket'], // Try polling first, then websocket
       autoConnect: true,
       reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
+      reconnectionAttempts: 10,
+      reconnectionDelay: 2000,
+      reconnectionDelayMax: 10000,
+      timeout: 20000,
+      forceNew: true, // Force new connection
     });
 
     this.setupEventListeners();
@@ -46,8 +51,19 @@ class SocketService {
     });
 
     this.socket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
+      console.error('❌ Socket connection error:', error);
       this.isConnected = false;
+      
+      // Log specific error details
+      if (error.message) {
+        console.error('Error message:', error.message);
+      }
+      if ((error as any).description) {
+        console.error('Error description:', (error as any).description);
+      }
+      if ((error as any).context) {
+        console.error('Error context:', (error as any).context);
+      }
     });
 
     this.socket.on('reconnect', (attemptNumber) => {
@@ -56,6 +72,15 @@ class SocketService {
       
       // Rejoin admin room after reconnection
       this.joinAdminRoom();
+    });
+
+    this.socket.on('reconnect_error', (error) => {
+      console.error('❌ Socket reconnection error:', error);
+    });
+
+    this.socket.on('reconnect_failed', () => {
+      console.error('❌ Socket reconnection failed after all attempts');
+      this.isConnected = false;
     });
 
     // Listen for admin-specific messages
@@ -75,7 +100,6 @@ class SocketService {
   // Join admin room
   joinAdminRoom() {
     const adminDetails = AuthService.getUser();
-    console.log('adminDetails:', adminDetails);
     if(!adminDetails) {
       return;
     }
@@ -139,6 +163,25 @@ class SocketService {
       this.socket = null;
       this.isConnected = false;
       console.log('🔌 Socket disconnected');
+    }
+  }
+
+  // Force reconnect with new connection
+  forceReconnect() {
+    console.log('🔄 Forcing socket reconnection...');
+    this.disconnect();
+    
+    // Wait a bit before reconnecting
+    setTimeout(() => {
+      this.connect();
+    }, 1000);
+  }
+
+  // Check connection status and attempt to reconnect if needed
+  checkConnection() {
+    if (!this.socket || !this.isConnected) {
+      console.log('🔍 Socket not connected, attempting to reconnect...');
+      this.connect();
     }
   }
 }

@@ -7,8 +7,6 @@ import {
   FaEye,
   FaUser,
   FaCreditCard,
-  FaArrowUp,
-  FaArrowDown,
   FaCalendarAlt,
   FaChevronDown,
   FaMotorcycle,
@@ -385,10 +383,10 @@ function Transactions() {
                   Transaction ID
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Paid User Type
+                  Paid User
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Received User Type
+                  Received User
                 </th>
                 <th
                   className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
@@ -463,7 +461,7 @@ function Transactions() {
                         }`}
                       >
                         <FaUser className="w-2 h-2 mr-1" />
-                        {transaction.fromUserType.charAt(0).toUpperCase() + transaction.fromUserType.slice(1)}
+                        {transaction.fromUserType == 'rider' ? transaction.fromUserId!=null ? transaction.fromUserId!.name : 'N/A' : 'N/A'}
                       </span>
                     </td>
                     <td className="px-4 py-3">
@@ -477,7 +475,7 @@ function Transactions() {
                         }`}
                       >
                         <FaUser className="w-2 h-2 mr-1" />
-                        {transaction.toUserType.charAt(0).toUpperCase() + transaction.toUserType.slice(1)}
+                        {transaction.toUserType == 'admin' ? 'Admin' : transaction.toUserId!=null ? transaction.toUserId!.name : 'N/A'}
                       </span>
                     </td>
 
@@ -508,7 +506,7 @@ function Transactions() {
                       <div className="text-gray-600 dark:text-gray-400 text-sm">
                         {transaction.orderId ? (
                           <span className="font-mono text-xs">
-                            {transaction.orderId.substring(0, 8)}...
+                            {transaction.orderId!.orderNo || 'N/A'}
                           </span>
                         ) : (
                           <span className="text-gray-400 text-xs">N/A</span>
@@ -524,13 +522,14 @@ function Transactions() {
                     </td>
 
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleViewTransaction(transaction)}
-                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded"
-                          title="View Details"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors duration-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20 dark:hover:bg-blue-500/20"
+                          title="View Transaction Details"
                         >
                           <FaEye className="w-3 h-3" />
+                          View
                         </button>
                       </div>
                     </td>

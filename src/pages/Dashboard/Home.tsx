@@ -45,9 +45,15 @@ export default function Home() {
   return (
     <>
       <PageMeta title="Dashboard" description="" />
-      <div className="grid grid-cols-12 gap-4 md:gap-6">
+      <div className="space-y-6">
+        {/* Page Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Overview of your delivery operations</p>
+        </div>
+
         {/* Metrics Section */}
-        <div className="col-span-12 space-y-4">
+        <div>
           <EcommerceMetrics
             earnings={dashboardData.earnings}
             orders={dashboardData.orders}
@@ -55,14 +61,17 @@ export default function Home() {
           />
         </div>
 
-        {/* Unassigned Orders Table */}
-        <div className="col-span-12 space-y-4">
-          <UnassignedOrdersTable topUnassignedOrders={dashboardData.topUnassignedOrders} />
-        </div>
+        {/* Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Unassigned Orders Table */}
+          <div className="lg:col-span-1">
+            <UnassignedOrdersTable topUnassignedOrders={dashboardData.topUnassignedOrders} />
+          </div>
 
-        {/* Live Riders Map */}
-        <div className="col-span-12 space-y-4">
-          <LiveRidersMap riders={dashboardData.liveRiders} />
+          {/* Live Riders Map */}
+          <div className="lg:col-span-1">
+            <LiveRidersMap riders={dashboardData.liveRiders} />
+          </div>
         </div>
       </div>
     </>

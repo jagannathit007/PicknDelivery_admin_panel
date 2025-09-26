@@ -15,7 +15,6 @@ export default function UserDropdown() {
   useEffect(() => {
     const user = AuthService.getUser();
     if (user) {
-      console.log("user", user);
       setUserDetails(user);
     }
   }, []);

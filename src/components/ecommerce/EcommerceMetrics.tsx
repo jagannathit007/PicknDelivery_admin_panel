@@ -1,10 +1,7 @@
 import {
-  ArrowDownIcon,
-  ArrowUpIcon,
   BoxIconLine,
   GroupIcon,
 } from "../../icons";
-import Badge from "../ui/badge/Badge";
 
 interface EcommerceMetricsProps {
   earnings: number;
@@ -14,62 +11,55 @@ interface EcommerceMetricsProps {
 
 export default function EcommerceMetrics({ earnings, orders, unassignedOrders }: EcommerceMetricsProps) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-6">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {/* Earnings Metric */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-          <GroupIcon className="text-gray-800 size-6 dark:text-white/90" />
-        </div>
-        <div className="flex items-end justify-between mt-5">
-          <div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">Earnings</span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-                ${Number(earnings).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-
-            </h4>
+      <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-lg dark:bg-gray-700">
+              <GroupIcon className="text-gray-600 size-4 dark:text-gray-300" />
+            </div>
+            <div>
+              <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Earnings</span>
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                ₹{Number(earnings).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+              </h4>
+            </div>
           </div>
-          <Badge color="success">
-            <ArrowUpIcon />
-            11.01%
-          </Badge>
         </div>
       </div>
 
       {/* Orders Metric */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-          <BoxIconLine className="text-gray-800 size-6 dark:text-white/90" />
-        </div>
-        <div className="flex items-end justify-between mt-5">
-          <div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">Orders</span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {orders.toLocaleString()}
-            </h4>
+      <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-lg dark:bg-gray-700">
+              <BoxIconLine className="text-gray-600 size-4 dark:text-gray-300" />
+            </div>
+            <div>
+              <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Orders</span>
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {orders.toLocaleString('en-IN')}
+              </h4>
+            </div>
           </div>
-          <Badge color="error">
-            <ArrowDownIcon />
-            9.05%
-          </Badge>
         </div>
       </div>
 
       {/* Unassigned Orders Metric */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-          <BoxIconLine className="text-gray-800 size-6 dark:text-white/90" />
-        </div>
-        <div className="flex items-end justify-between mt-5">
-          <div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">Unassigned Orders</span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {unassignedOrders.toLocaleString()}
-            </h4>
+      <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-lg dark:bg-gray-700">
+              <BoxIconLine className="text-gray-600 size-4 dark:text-gray-300" />
+            </div>
+            <div>
+              <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Unassigned Orders</span>
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {unassignedOrders.toLocaleString('en-IN')}
+              </h4>
+            </div>
           </div>
-          <Badge color="warning">
-            <ArrowDownIcon />
-            5.02%
-          </Badge>
         </div>
       </div>
     </div>

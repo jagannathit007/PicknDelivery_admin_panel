@@ -137,12 +137,12 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                 <div className="flex items-center gap-2 mb-2">
                   <FaUser className="text-gray-500 dark:text-gray-400" />
                   <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Paid User Type
+                    Paid User
                   </span>
                 </div>
                 <span className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${fromUserTypeInfo.color}`}>
                   {fromUserTypeInfo.icon}
-                  {transaction.fromUserType.charAt(0).toUpperCase() + transaction.fromUserType.slice(1)}
+                  {transaction.fromUserType == 'rider' ? transaction.fromUserId!=null ? transaction.fromUserId!.name : 'N/A' : 'N/A'}
                 </span>
               </div>
 
@@ -151,7 +151,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                 <div className="flex items-center gap-2 mb-2">
                   <FaUser className="text-gray-500 dark:text-gray-400" />
                   <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Received User Type
+                    Received User
                   </span>
                 </div>
                 <span className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium ${toUserTypeInfo.color}`}>
@@ -187,7 +187,6 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                 </p>
               </div>
 
-              {/* Order ID */}
               <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <FaIdCard className="text-gray-500 dark:text-gray-400" />
@@ -196,7 +195,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                   </span>
                 </div>
                 <p className="font-mono text-sm text-gray-800 dark:text-white/90">
-                  {transaction.orderId || "N/A"}
+                  {transaction.orderId!=null ? transaction.orderId.orderNo : "N/A"}
                 </p>
               </div>
             </div>

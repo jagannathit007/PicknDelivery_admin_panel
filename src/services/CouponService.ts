@@ -54,7 +54,7 @@ interface CouponPayload {
 // Define the CouponServiceType interface
 interface CouponServiceType {
   getCoupons: (payload: CouponListPayload) => Promise<CouponListResponse | false>;
-  saveCoupon: (payload: CouponPayload) => Promise<CouponResponse | false>;
+  saveCoupon: (payload: CouponPayload) => Promise<CouponPayload | false>;
   deleteCoupon: (id: string) => Promise<CouponResponse | false>;
 }
 
@@ -88,19 +88,19 @@ const CouponService: CouponServiceType = {
     }
   },
 
-  saveCoupon: async (payload: CouponPayload): Promise<CouponResponse | false> => {
+  saveCoupon: async (payload: CouponPayload): Promise<CouponPayload | false> => {
     try {
       // Type the response as ApiResponse<CouponResponse>
-      const response = await api.post<ApiResponse<CouponResponse>>(
+      const response = await api.post<ApiResponse<CouponPayload>>(
         API_ENDPOINTS.COUPON.SAVE_COUPON,
         payload
       );
-      const result = response.data;
-      if (result.data.status === 200) {
-        toastHelper.showTost(result.data.message || 'Coupon saved successfully!', 'success');
-        return result.data;
+      const result = response;
+      if (result.data.data != null) {
+        toastHelper.showTost('Coupon saved successfully!', 'success');
+        return result.data.data;
       } else {
-        toastHelper.showTost(result.data.message || 'Failed to save coupon', 'warning');
+        toastHelper.showTost('Failed to save coupon', 'warning');
         return false;
       }
     } catch (error: any) {

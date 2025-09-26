@@ -316,10 +316,10 @@ function Notification() {
                       />
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-800 dark:text-white/90">
-                      {item.name}
+                      {item.name || "N/A"}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                      {item.mobile}
+                      {item.mobile || "N/A"}
                     </td>
                     {recipientType === "customer" && (
                       <td className="px-4 py-3">
