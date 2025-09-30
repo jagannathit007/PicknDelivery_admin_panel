@@ -79,6 +79,7 @@ const navItems: NavItem[] = [
       { name: "Users", path: "/users", pro: false },
       { name: "Templates", path: "/template", pro: false },
       { name: "Coupons", path: "/coupons", pro: false },
+      { name: "Country Config", path: "/country-config", pro: false },
     ],
   },
   {

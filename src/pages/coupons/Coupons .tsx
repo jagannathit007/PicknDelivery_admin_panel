@@ -290,12 +290,6 @@ function Coupons() {
                   Code
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Description
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
-                  Type
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
                   Discount
                 </th>
                 <th className="px-4 p-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">
@@ -335,18 +329,16 @@ function Coupons() {
                   >
                     <td className="px-4 py-3 text-sm text-gray-800 dark:text-white/90">
                       {coupon.code}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                      {coupon.description}
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        <b>Expiry Date: </b>{formatDate(coupon.expiryDate)}
+                      <div>
+                        {coupon.description}
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                          <b>Expiry Date: </b>{formatDate(coupon.expiryDate)}
+                        </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                      {coupon.type === "percentage" ? "Percentage" : "Fixed"}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                      {coupon.discount}{coupon.type === "percentage" ? "%" : ""}
+                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 text-center">
+                      <div>{coupon.discount}{coupon.type === "percentage" ? "%" : ""}</div>
+                      <div>[{coupon.type === "percentage" ? "Percentage" : "Fixed"}]</div>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                       {coupon.minOrderAmount}
@@ -354,8 +346,8 @@ function Coupons() {
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${coupon.isActive
-                            ? "bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400"
-                            : "bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-400"
+                          ? "bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400"
+                          : "bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-400"
                           }`}
                       >
                         {coupon.isActive ? "Active" : "Inactive"}
@@ -407,8 +399,8 @@ function Coupons() {
                     key={pageNum}
                     onClick={() => setCurrentPage(pageNum)}
                     className={`px-3 py-2 rounded-lg text-sm ${currentPage === pageNum
-                        ? "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20"
-                        : "bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/[0.03]"
+                      ? "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20"
+                      : "bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/[0.03]"
                       }`}
                   >
                     {pageNum}

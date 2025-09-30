@@ -27,6 +27,7 @@ import Earnings from './components/dashboard/Earnings';
 import LiveRiders from './components/dashboard/Riders';
 import Notification from "./pages/notification/Notification";
 import Coupons from "./pages/coupons/Coupons ";
+import CountryConfigPage from "./pages/CountryConfig/CountryConfig";
 import Transactions from "./pages/Transactions";
 import Template from "./pages/Template";
 import Categories from "./pages/Categories/Categories";
@@ -75,6 +76,9 @@ export default function App() {
 
             {/* Coupons */}
             <Route path="/coupons" element={<Coupons />} />
+
+            {/* Country Config */}
+            <Route path="/country-config" element={<CountryConfigPage />} />
 
             {/* order listing */}
             <Route path="/order-listing" element={<OrderListing />} />

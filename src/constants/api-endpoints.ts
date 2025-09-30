@@ -80,6 +80,11 @@ interface APIEndpoints {
     UPDATE_FAQ: string;
     DELETE_FAQ: string;
   };
+  COUNTRY: {
+    GET_ALL_COUNTRIES: string;
+    SAVE_COUNTRY: string;
+    DELETE_COUNTRY: string;
+  };
 }
 
 const API_ENDPOINTS: APIEndpoints = {
@@ -157,6 +162,11 @@ const API_ENDPOINTS: APIEndpoints = {
     GET_FAQ: `${ADMIN_API_BASE_URL}/get-faq`,
     UPDATE_FAQ: `${ADMIN_API_BASE_URL}/update-faq`,
     DELETE_FAQ: `${ADMIN_API_BASE_URL}/delete-faq`,
+  },
+  COUNTRY: {
+    GET_ALL_COUNTRIES: `${ADMIN_API_BASE_URL}/getCountryConfig`,
+    SAVE_COUNTRY: `${ADMIN_API_BASE_URL}/saveCountryConfig`,
+    DELETE_COUNTRY: `${ADMIN_API_BASE_URL}/deleteCountryConfig`,
   },
 };
 
